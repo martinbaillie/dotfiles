@@ -1,0 +1,8 @@
+#!/bin/sh
+# 0 * * * * /usr/bin/checkupdates > ~/.current_pacman_packages
+PACKAGES="$(cat ~/.current_pacman_packages 2>/dev/null| wc -l)"
+if [[ $PACKAGES -gt 0 ]]; then
+    echo "%{F\$NMAG}%{F-}$PACKAGES"
+else
+    echo "%{F\$NCYA}%{F-}0"
+fi

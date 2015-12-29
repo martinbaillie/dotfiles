@@ -1,0 +1,21 @@
+#!/bin/sh
+BAT_STATS=$(acpi --battery 2>/dev/null | cut -d' ' -f3 | sed 's/,//')
+if [ "$BAT_STATS" == "" ] || [ "$BAT_STATS" == "Full" ]
+then
+    echo "%{F$NGRN}  AC"
+elif [ "$BAT_STATS" == "Charging" ]
+then
+    echo "%{F$NCYA} " $(acpi --battery | cut -d' ' -f4 | sed 's/%,//')"%+"
+elif [ "$BAT_STATS" == "Discharging" ]
+then
+    CHARGE="$(acpi --battery | cut -d' ' -f4 | sed 's/%,//')"
+    if [[ "$CHARGE" -gt 50 ]]; then
+        echo "%{F$NCYA} " $CHARGE"%-"
+    elif [[ "$CHARGE" -gt 20 ]]; then
+        echo "%{F$NYEL} " $CHARGE"%-"
+    else
+        echo "%{F$NRED} " $CHARGE"%-"
+    fi
+else
+  echo "%{F$NGRN}Refreshing..."
+fi

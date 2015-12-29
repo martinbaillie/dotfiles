@@ -1,0 +1,4 @@
+archie ansible_ssh_port=22 ansible_ssh_host=192.168.4.40 ansible_ssh_user=vagrant
+
+[site]
+archie

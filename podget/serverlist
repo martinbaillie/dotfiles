@@ -1,0 +1,40 @@
+# Default Server List for podget
+#
+# FORMAT:    <url> <category> <name>
+#
+# NOTES:
+#    1. URL Rules:
+#      A. Any spaces in the URL need to be converted to %20
+#    2. Category Rules:
+#      A.  Must be one word without spaces.
+#      B.  You may use underscores and dashes.
+#      C.  You can insert date substitions.
+#          %YY%  ==  Year
+#          %MM%  ==  Month
+#          %DD%  ==  Day
+#    3. Name Rules:
+#      A.  If you are creating ASX playlists, make sure the feed name does not
+#          have any spaces in it and the filename cannot be blank.
+#      B.  You can leave the feed name blank, and files will be saved in the
+#          category directory.
+#      C.  Names with spaces are only compatible with filesystems that allow for spaces
+#          in filenames.  For example, spaces in feed names are OK for feeds saved to
+#          Linux ext partitions but are not OK for those saved to Microsoft FAT partitions.
+#    4. Disable the downloading of any feed by commenting it out with a leading #.
+#
+# Examples:
+#   http://www.lugradio.org/episodes.rss Linux LUG Radio
+#
+# Example with date substitution in the category and a blank feed name:
+#   http://downloads.bbc.co.uk/rmhttp/downloadtrial/worldservice/summary/rss.xml News-%YY%-%MM%-%DD%
+#
+# Example of two ways to do a feed with authentication:
+#   http://somesite.com/feed.rss CATEGORY Feed Name USER:username PASS:password
+#     OR
+#   http://username:password@somesite.com/feed.rss CATEGORY Feed Name
+#
+#   NOTE:   The second method will fail if a colon (:) is part of the username or password.
+#           Both methods will fail if a space is part of the username or password.
+#
+http://www.residentadvisor.net/xml/podcast.xml Techno Resident Advisor
+http://www.beatsinspace.net/feed.xml Techno Beats In Space

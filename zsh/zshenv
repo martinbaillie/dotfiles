@@ -1,0 +1,45 @@
+# EXPORTS {
+export EDITOR=vim
+export VISUAL=vim
+
+export XDG_CONFIG_HOME=/home/martin/.config
+
+#export BSPWM_SOCKET="/tmp/bspwm-socket"
+export PANEL_FIFO="/tmp/panel-fifo"
+
+export HISTSIZE=60000
+export HISTFILE=~/.zsh/zsh_history
+
+export IRCNICK=zslothy
+export IRCUSER=zslothy
+export IRCNAME=zslothy
+export IRCSERVER=irc.freenode.net
+
+export CLICOLOR=true
+
+export PATH="/usr/local/lib/cw:$PATH:/sbin:/opt/Citrix/ICAClient:/home/martin/Code/bin"
+
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
+
+# xmonad is not a reparenting window manager, tell java
+export _JAVA_AWT_WM_NONREPARENTING=1
+# ALIASES {
+case `uname` in
+  Darwin)
+    gvim() { [ -z "$(command gvim --serverlist)" ] && command gvim "$@" || command gvim --remote-silent "$@" ; }
+    alias ls='ls -FG'
+    alias vim=gvim
+    export BROWSER='open'
+    ;;
+  Linux)
+    alias ls='ls -F --color=auto'
+    export BROWSER=chromium
+    ;;
+esac
+alias urxvt=urxvtc
+alias vi=vim
+alias pi='ssh osmc@osmc'
+alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
+alias conky-refresh="killall -SIGUSR1 conky"
+# }

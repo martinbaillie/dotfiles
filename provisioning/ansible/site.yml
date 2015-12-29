@@ -1,0 +1,8 @@
+---
+- name: apply the common server configuration
+  hosts: all
+  sudo: yes
+  tags: common
+  roles:
+    - common
+    - dotfiles

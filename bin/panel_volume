@@ -1,0 +1,63 @@
+#!/bin/sh
+HEADPHONE_JACK=$(amixer -c 0 contents | grep -i "Headphone Jack" | cut -d, -f1 | cut -d= -f2)
+VOLUME_STATUS=$(amixer get Master | tail -n 1 | cut -d '[' -f 4 | sed 's/].*//g')
+VOLUME_LEVEL=$(amixer get Master | tail -n 1 | cut -d '[' -f 2 | sed 's/\%].*//g')
+HEADPHONE=$(amixer -c 0 contents | grep $HEADPHONE_JACK -A 2 2>/dev/null | tail -n 1 | cut -d '=' -f 2)
+
+if [ "$VOLUME_STATUS" == "on" ] && ( [ "$HEADPHONE" == "off" ] || [ "$HEADPHONE" == "" ] );
+then ICON="%{F\$NCYA} "
+elif [ "$VOLUME_STATUS" == "on" ] && [ "$HEADPHONE" == "on" ];
+then ICON="%{F\$NYEL} "
+elif [ "$VOLUME_STATUS" == "off" ] && [ "$HEADPHONE" == "on" ];
+then ICON="%{F\$NRED} "
+else ICON="%{F\$NRED} "
+fi
+echo "$ICON%{F-}$VOLUME_LEVEL%"
+
+#case $VOLUME_LEVEL in
+        #100)   if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5——————————"
+                #else echo "$ICON" "\f1——————————"
+                #fi
+                #;;
+        #[0-9]) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5—\f0—————————"
+                #else echo "$ICON" "\f1—\f0—————————"
+                #fi
+                #;;
+        #1*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5——\f0————————"
+                #else echo "$ICON" "\f1——\f0————————"
+                #fi
+                #;;
+        #2*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5———\f0———————"
+                #else echo "$ICON" "\f1———\f0———————"
+                #fi
+                #;;
+        #3*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5————\f0——————"
+                #else echo "$ICON" "\f1————\f0——————"
+                #fi
+                #;;
+        #4*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5—————\f0—————"
+                #else echo "$ICON" "\f1—————\f0—————"
+                #fi
+                #;;
+        #5*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5——————\f0————"
+                #else echo "$ICON" "\f1——————\f0————"
+                #fi
+                #;;
+        #6*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5———————\f0———"
+                #else echo "$ICON" "\f1———————\f0———"
+                #fi
+                #;;
+        #7*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5————————\f0——"
+                #else echo "$ICON" "\f1————————\f0——"
+                #fi
+                #;;
+        #8*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5——————————\f0—"
+                #else echo "$ICON" "\f1——————————\f0—"
+                #fi
+                #;;
+        #9*) if [ "$VOLUME_STATUS" == "on" ]; then echo "$ICON" "\f5——————————"
+                #else echo "$ICON" "\f1——————————"
+                #fi
+                #;;
+#esac
+

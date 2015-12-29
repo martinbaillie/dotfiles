@@ -1,0 +1,169 @@
+# vim: set ft=sxhkdrc
+#
+# bspwm hotkeys
+#
+###########
+# WINDOWS #
+###########
+
+# close window
+super + q
+    bspc window -c
+
+# fullscreen
+super + f
+    bspc window -t {floating,fullscreen}
+
+# move current window to largest space
+super + m
+    bspc window -s biggest
+
+# switch workspaces
+super + {_,shift + }{1-9,0}
+    bspc {desktop -f,window -d} {i,ii,iii,iv,v,vi,vii,viii,ix,x}
+
+# move to prev and next desktop
+#super + shift + {Left, Right}
+    #bspc desktop -f {prev.occupied,next.occupied} 
+
+# move to next and prev windoW
+alt + {_,shift + } Tab
+    bspc window -f {next.occupied,prev.occupied}
+
+# move current window to largest space
+super + m
+        bspc window -s biggest
+
+# move window around in tree 
+super + shift + {Left,Down,Up,Right}
+        bspc window -s {left,down,up,right}
+
+# resize with keys 
+super + {Left,Down,Up,Right}
+        bspc window -e {left -10,down +10,up -10,right +10} || bspc window -e {right -10,up +10,down -10,left +10}
+
+# move or resize window with mouse
+super + button{1-3}
+    bspc pointer -g {move,resize_side,resize_corner}
+
+# needed for ^^^^
+super + !button{1-3}
+    bspc pointer -t %i %i
+
+alt + @button{1-3}
+    bspc pointer -u
+
+alt + {a,f} 
+    ~/.config/bspwm/bin/bspwm_resize {-p,-n} -x -s 20
+
+alt + {s,d}
+    ~/.config/bspwm/bin/bspwm_resize {-p,-n} -y -s 20
+
+##########
+# TILING #
+##########
+
+# balance tree
+super + b
+    bspc desktop -B
+
+# circulate leaves of tree
+super + shift + {comma,period}
+    bspc desktop -F {horizontal,vertical}
+
+# rotate tree edge
+super + {comma,period}
+    bspc desktop -R {90,270}
+
+################
+# APPLICATIONS #
+################
+
+super + Return
+    urxvtc 
+
+super + shift + Return
+    chromium
+
+super + alt + Return
+    firefox
+
+alt + space
+    spawn_dmenu
+
+super + l
+    alock -bg shade:shade=40 -auth pam 2>&1 >/dev/null &
+
+super + e
+    urxvtc -e ranger
+
+super + n
+    urxvtc -e ncmpcpp
+
+#######
+# X11 #
+#######
+
+# volume
+XF86AudioRaiseVolume
+    amixer -q sset Master '3%+' unmute
+
+super + alt + Up
+    amixer -q sset Master '3%+' unmute
+
+XF86AudioLowerVolume
+    amixer -q sset Master '3%-' unmute
+
+super + alt + Down
+    amixer -q sset Master '3%-' unmute
+
+XF86AudioMute
+    amixer -q sset Master toggle
+
+super + alt + End
+    amixer -q sset Master toggle
+
+# music
+XF86AudioPlay
+    mpc toggle
+
+super + alt + Home
+    mpc toggle
+    
+XF86AudioNext
+    mpc next
+
+super + alt + Right
+    mpc next
+
+XF86AudioPrev
+    mpc prev
+
+super + alt + Left
+    mpc prev
+
+# brightness
+#XF86MonBrightnessDown
+    #xbacklight -dec 10
+
+#XF86MonBrightnessUp
+    #xbacklight -inc 10
+
+XF86Sleep
+    systemctl suspend
+
+Print
+    scrot -e 'mv $f ~/Pictures/ 2>/dev/null'
+
+alt + Print
+import -window "$(xdotool getwindowfocus -f)" ~/Pictures/snapwin-$(date +%F_%H%M%S_%N).png
+
+#############
+# WM / KEYS #
+#############
+
+# make sxhkd reload its configuration files
+super + shift + Escape
+    pkill -USR1 -x sxhkd
+
+# exit bspwm

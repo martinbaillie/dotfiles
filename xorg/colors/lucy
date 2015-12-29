@@ -1,0 +1,31 @@
+! Default
+URxvt*background : #16131a
+URxvt*foreground : #c9c1d4
+! Black
+URxvt*color0     : #201c26
+URxvt*color8     : #4a4552
+! Red
+URxvt*color1     : #ad5c6f
+URxvt*color9     : #f796ad
+! Green
+URxvt*color2     : #7ea377
+URxvt*color10    : #a9e39d
+! Yellow
+URxvt*color3     : #ab9484
+URxvt*color11    : #f5d1b8
+! Blue
+URxvt*color4     : #778ed1
+URxvt*color12    : #c4cdff
+! Magenta
+URxvt*color5     : #a1719d
+URxvt*color13    : #e6aae1
+! Cyan
+URxvt*color6     : #73a5ab
+URxvt*color14    : #aae0e6
+! White
+URxvt*color7     : #b1a8bd
+URxvt*color15    : #ece1fa
+
+URxvt*color235: #26222b
+URxvt*color237: #333038
+URxvt*color245: #898391

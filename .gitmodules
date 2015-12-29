@@ -1,0 +1,30 @@
+[submodule "vim/bundle/vundle"]
+	path = vim/bundle/vundle
+	url = https://github.com/gmarik/vundle.git
+  branch = master
+  ignore = all
+[submodule "zsh/zprezto"]
+	path = zsh/zprezto
+	url = https://github.com/sorin-ionescu/prezto.git
+  branch = master
+  ignore = all
+[submodule "tmux/tmux-yank"]
+	path = tmux/tmux-yank
+	url = https://github.com/tmux-plugins/tmux-yank
+  branch = master
+  ignore = all
+[submodule "private"]
+	path = private
+	url = https://martinbaillie@bitbucket.org/martinbaillie/dotfiles.private.git
+  branch = master
+  ignore = all
+[submodule "zsh/base16-shell"]
+	path = zsh/base16-shell
+	url = https://github.com/chriskempson/base16-shell.git
+  branch = master
+  ignore = all
+[submodule "xorg/base16-xresources"]
+	path = xorg/base16-xresources
+	url = https://github.com/chriskempson/base16-xresources.git
+  branch = master
+  ignore = all

@@ -1,0 +1,377 @@
+" vim: set foldmarker={{,}} foldenable foldmethod=marker:
+" === Bootstrap {{
+scriptencoding utf-8
+set encoding=utf-8
+set nocompatible
+
+syntax on
+set synmaxcol=200
+set lazyredraw
+
+let mapleader = ","
+" }}
+" === Machine {{
+silent function! OSX()
+	return has('macunix')
+endfunction
+silent function! NIX()
+	return has('unix') && !has('macunix') && !has('win32unix')
+endfunction
+silent function! WIN()
+	return  (has('win16') || has('win32') || has('win64'))
+endfunction
+
+if WIN()
+  let $HOME = $USERPROFILE
+
+  if filereadable(expand("$HOME/.vim/authorinfo.vim"))
+    so $HOME/.vim/authorinfo.vim
+    let g:vimrc_author='Martin Baillie <martin.baillie@verint.com>'
+    nmap <F4> :AuthorInfoDetect<cr>
+  endif
+elseif (OSX() || NIX())
+  cmap w!! w !sudo tee % >/dev/null
+endif
+" }}
+" === General Settings {{
+set number
+set numberwidth=5
+set cursorline
+set backspace=indent,eol,start
+set history=1000
+set showcmd
+set showmode
+set showmatch
+set modeline
+set gcr=a:blinkon0
+set visualbell t_vb=
+set autoread
+set autochdir
+set hidden
+set laststatus=2
+set tabpagemax=100
+set splitbelow
+set splitright
+set virtualedit=block
+set wrap
+set linebreak
+
+" === Swap and Undo
+set noswapfile
+set nobackup
+set nowb
+
+" === Indentation
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
+set expandtab
+
+filetype plugin on
+filetype indent on
+
+set list listchars=tab:\ \ ,trail:·
+"set list
+"set listchars=tab:\ ·,eol:⏎
+"set listchars+=trail:·
+"set listchars+=extends:»,precedes:«
+
+" === Folds
+"set foldmethod=marker " use marker strategy
+"set foldmarker={,} " default fold marker
+set foldmethod=indent   "fold based on indent
+set foldnestmax=3       "deepest fold is 3 levels
+set nofoldenable        "dont fold by default
+
+" === Completion
+set wildmode=longest,list
+set wildmenu                "enable ctrl-n and ctrl-p to scroll thru matches
+set wildignore=*.o,*.obj,*~ "stuff to ignore when tab completing
+set wildignore+=*vim/backups*
+set wildignore+=*DS_Store*
+set wildignore+=log/**
+set wildignore+=tmp/**
+set wildignore+=*.png,*.jpg,*.gif
+
+" === Scrolling
+set scrolloff=8
+set sidescrolloff=15
+set sidescroll=1
+
+" === Searching
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+" }}
+" === Default Mappings {{
+" Buffers and Tabs
+map <C-t> <Esc>:tabnew
+map <C-Left> <Esc>:bp<CR>
+map <C-Right> <Esc>:bn<CR>
+
+nnoremap <leader>l :bn<CR>
+nnoremap <leader>h :bp<CR>
+nnoremap <leader>1 :1b<CR>
+nnoremap <leader>2 :2b<CR>
+nnoremap <leader>3 :3b<CR>
+nnoremap <leader>4 :4b<CR>
+nnoremap <leader>5 :5b<CR>
+nnoremap <leader>6 :6b<CR>
+nnoremap <leader>7 :7b<CR>
+nnoremap <leader>8 :8b<CR>
+nnoremap <leader>9 :9b<CR>
+nnoremap <leader>0 :10b<CR>
+
+" Close buffer
+nmap <leader>x :bd<cr>
+
+" Fold with leader-space
+nnoremap <leader><space> za
+nnoremap <space> za
+
+" Enter to bottom, Backspace to top, 12<enter> to 12th line
+nnoremap <CR> G
+nnoremap <BS> gg
+
+" leader-leader to go visual-line
+nmap <leader><leader> V
+
+" leader-/ to clear the highlighting of :set hlsearch
+nmap <silent> <leader>/ :nohlsearch<CR>
+
+" Save with leader-w
+noremap <leader>q :q<cr>
+nnoremap <leader>w :w<cr>
+
+" Automatically jump to end of text
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+" Visual paste doesn't replace paste buffer
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+  let s:restore_reg = @"
+  return "p@=RestoreRegister()\<cr>"
+endfunction
+vmap <silent> <expr> p <sid>Repl()
+" Yank from cursor to EOL
+nnoremap Y y$
+" Stop cursor jumping around while joining lines
+nnoremap J mzJ`z
+" Center after searching
+nnoremap n nzz
+nnoremap } }zz
+nnoremap N Nzz
+" }}
+" === Plugins {{
+" :BundleInstall 
+" OR
+" vim --noplugin -u vim/vundles.vim -N "+set hidden" "+syntax on" +BundleClean! +BundleInstall +qall
+
+filetype off
+
+set rtp+=$HOME/.vim/bundle/vundle/
+set rtp+=$HOME/.vim/vundles/
+call vundle#rc()
+
+" === Base
+Plugin 'gmarik/vundle'
+
+" === Scheme
+Plugin 'chriskempson/base16-vim'
+
+" === Logs
+Plugin 'dzeban/vim-log-syntax'
+
+" === Behaviour
+Plugin 'terryma/vim-expand-region'
+
+" === Statusbar
+Plugin 'bling/vim-airline'
+let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled=1
+
+" === Git
+Plugin 'tpope/vim-fugitive'
+
+" === Nerd
+Plugin 'scrooloose/nerdtree.git'
+Plugin 'jistr/vim-nerdtree-tabs.git'
+Plugin 'scrooloose/nerdcommenter'
+
+let g:nerdtree_tabs_open_on_gui_startup=0
+let g:NERDShutUp=1
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.\.$', '\.$']
+let NERDTreeChDirMode=0
+let NERDTreeWinSize=45
+
+" Open NERDTree if no files opened
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+" Close VIM if NERDTree is only buffer
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+" === Syntax
+Plugin 'raichoo/haskell-vim'
+Plugin 'scrooloose/syntastic.git'
+let g:syntastic_enable_signs=1
+let g:syntastic_auto_jump=0
+let g:syntastic_auto_loc_list=1
+let g:syntastic_quiet_messages = {'level': 'warnings'}
+if WIN()
+  let g:loaded_syntastic_xml_xmllint_checker=0
+  let g:loaded_syntastic_xslt_xmllint_checker=0
+  let g:loaded_syntastic_docbk_xmllint_checker=0
+endif
+
+" === Buffergator
+Plugin 'jeetsukumaran/vim-buffergator'
+let g:buffergator_viewport_split_policy = 'R'
+
+" === Searching
+Plugin 'rking/ag.vim'
+
+" === Ctrl-P
+Plugin 'kien/ctrlp.vim'
+if executable('ag')
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  "" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  if NIX()
+    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+    " ag is fast enough that CtrlP doesn't need to cache
+    let g:ctrlp_use_caching = 0
+  elseif WIN()
+    "let g:ctrlp_user_command = 'ag -l --nocolor -g "" %s'
+          "\ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
+    let g:ctrlp_user_command = {
+          \ 'types': {
+          \ 1: ['.git', 'cd %s && git ls-files'],
+          \ },
+          \ 'fallback': 'ag -l --nocolor -g "" %s'
+          \ }
+  endif
+else
+  let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site|core)$',
+  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+\}
+  let g:ctrlp_working_path_mode = 'r'
+
+  " Fall back to using git ls-files if Ag is not available
+  "let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others']
+endif
+
+" === Neocomplete
+Plugin 'Shougo/neocomplete.git'
+if has("lua")
+  let g:acp_enableAtStartup = 0
+  let g:neocomplete#enable_at_startup = 1
+  let g:neocomplete#enable_camel_case = 1
+  let g:neocomplete#enable_smart_case = 1
+
+  " Default # of completions is 100, that's crazy.
+  let g:neocomplete#max_list = 5
+
+  " Set minimum syntax keyword length.
+  let g:neocomplete#auto_completion_start_length = 3
+
+  " This makes sure we use neocomplete completefunc instead of
+  " the one in rails.vim, otherwise this plugin will crap out.
+  let g:neocomplete#force_overwrite_completefunc = 1
+
+  " Define keyword.
+  if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+  endif
+  let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+  " Enable omni completion.
+  autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+  autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+  autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+  autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+endif
+
+filetype plugin indent on
+
+" CTRL-P Plugin
+nmap <leader>p :CtrlP<cr>
+nmap <leader>n :CtrlPBuffer<cr>
+nmap <leader>m :CtrlPMRU<cr>
+
+" Expand Region Plugin
+vmap v <Plug>(expand_region_expand)
+vmap <C-v> <Plug>(expand_region_shrink)
+
+" NERDTree Plugin
+map <silent> <C-e> :NERDTreeToggle %:p:h<CR>
+map <leader>e :NERDTreeToggle %:p:h<CR>
+map <leader>r :NERDTreeFind<cr>
+
+" === XML Formatter
+if filereadable(expand("$HOME/.vim/xmlformatter.vim"))
+  so $HOME/.vim/xmlformatter.vim
+endif
+nmap <silent> <C-x> :%FormatXML<CR>
+vmap <silent> <C-x> :FormatXML<CR>
+" }}
+" === UI {{
+set t_Co=256
+let base16colorspace=256
+if WIN()
+  set background=dark
+  colorscheme base16-default
+elseif NIX()
+  if filereadable(expand("$HOME/.base16_vimrc"))
+    so $HOME/.base16_vimrc
+  else
+    set background=dark
+    colorscheme base16-monokai
+  endif
+elseif OSX()
+  if filereadable(expand("$HOME/.base16_vimrc"))
+    so $HOME/.base16_vimrc
+  else
+    set background=dark
+    colorscheme base16-default
+  endif
+endif
+
+if has('gui_running')
+  set noerrorbells t_vb=
+  set mousehide
+  set guioptions=
+
+  if WIN()
+    au GUIEnter * simalt ~x
+    map <F11> <Esc>:call libcallnr("gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+    so $VIMRUNTIME/mswin.vim
+    set guifont=DejaVu_Sans_Mono_for_Powerline:h10:cANSI
+    "set guifont=Droid\ Sans\ Mono\ for\ Powerline\ Plus\ Nerd\ File\ Types:h11
+  elseif (OSX() || NIX())
+    if OSX()
+      set guioptions-=L
+      set guifont=Inconsolata\ for\ Powerline:h13
+      map <D-CR> :set invfu<CR>
+      set fu
+    endif
+  endif
+endif
+" }}
+" === Local {{
+if filereadable(expand("$HOME/.vimrc.local"))
+  so $HOME/.vimrc.local 
+endif
+" }}

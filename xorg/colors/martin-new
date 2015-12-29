@@ -1,0 +1,28 @@
+!!URxvt Color Scheme
+*background:  #020305
+*foreground:  #EBEAE5
+
+! BLACK 
+*color0:  #525252
+*color8:  #707070 
+! RED 
+*color1:  #D48E9C
+*color9:  #D99CA6
+! GREEN
+*color2:  #BBBB87
+*color10: #BFAF72
+! ORANGE 
+*color3:  #F9CC8F
+*color11: #F3B386 
+! BLUE
+*color4:  #6178C4
+*color12: #7BA9F8
+! MAGENTA 
+*color5:  #9F9CA9
+*color13: #B3A5B2 
+! CYAN 
+*color6:  #88AABB
+*color14: #AACCDD 
+! WHITE 
+*color7:  #D2D1D4
+*color15: #D6DAC3

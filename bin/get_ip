@@ -1,0 +1,2 @@
+#!/bin/sh
+curl -s icanhazip.com > ~/.current_external_ip

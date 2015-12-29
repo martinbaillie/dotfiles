@@ -1,0 +1,41 @@
+# Colour Switching
+BASE16_SWITCHER="$HOME/Code/bin/base16_switcher.sh"
+[[ -f $BASE16_SWITCHER ]] && source $BASE16_SWITCHER
+
+# Functions
+fpath=( $HOME/.zfuncs "${fpath[@]}" )
+autoload -Uz prompt_martin_setup
+
+# Prezto
+[[ -f ~/.zprezto/init.zsh ]] && source ~/.zprezto/init.zsh
+
+# Update tmux/screen titles
+case $TERM in
+  screen*)
+    precmd(){
+      # Restore tmux-title to 'zsh'
+      printf "\033kzsh\033\\"
+      # Restore urxvt-title to 'zsh'
+      print -Pn "\e]2;zsh:%~\a"
+    }
+    preexec(){
+      # set tmux-title to running program
+      printf "\033k$(echo "$1" | cut -d" " -f1)\033\\"
+      # set urxvt-title to running program
+      print -Pn "\e]2;zsh:$(echo "$1" | cut -d" " -f1)\a"
+    }
+    ;;
+esac
+
+# Spacing issue in ZSH / urxvt right-side
+export ZLE_RPROMPT_INDENT=1
+
+# Editor-based inline editing - vi mode
+set -o vi
+
+# Some annoying defaults
+unalias rm
+setopt clobber
+
+# Local machine mods
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

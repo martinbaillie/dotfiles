@@ -1,0 +1,61 @@
+#!/bin/sh
+FIRST_DESK_MAIN=i
+REMAINING_DESKS_MAIN="ii iii iv v"
+FIRST_DESK_SECONDARY=I
+REMAINING_DESKS_SECONDARY="II III IV V"
+
+MONITORS_ASSOCIATED=`bspc query -M | wc -l` 
+#if [[ -z `xrandr | grep " connected" | grep 'VGA'` ]]; then
+	#No monitor connected
+	bspc desktop ^1 -n $FIRST_DESK_MAIN
+	bspc monitor -a $REMAINING_DESKS_MAIN
+	bspc config top_padding 18
+#else
+	#bspc desktop ^1 -n $FIRST_DESK_SECONDARY
+	#bspc monitor -a $REMAINING_DESKS_SECONDARY
+
+	#bspc monitor -f next
+
+	#bspc desktop Desktop2 -n $FIRST_DESK_MAIN
+	#bspc monitor -a $REMAINING_DESKS_MAIN
+	#bspc config -m VGA1 top_padding 14
+#fi
+
+bspc config border_width        2
+bspc config window_gap          8
+
+bspc config split_ratio 0.50
+bspc config borderless_monocle true
+bspc config gapless_monocle true
+bspc config focus_follows_pointer true
+#bspc config focus_follows_focus true
+#bspc config history_aware_focus true
+bspc config apply_floating_atom true
+bspc config ignore_ewmh_focus true
+bspc config auto_alternate true
+bspc config auto_cancel true
+bspc config normal_frame_opacity 0.0
+#bspc config focused_frame_opacity 0.1
+
+bspc config focused_border_color         "#98971a"
+#bspc config focused_border_color         "#242424"
+bspc config normal_border_color          "#141414"
+bspc config active_border_color          "#5C5955"
+bspc config focused_locked_border_color  "#00C7D8"
+bspc config normal_locked_border_color   "#708D8F"
+bspc config active_locked_border_color   "#808C8D"
+bspc config urgent_border_color          "#93F388"
+bspc config presel_border_color          "#101010"
+
+
+# Default to floating
+#bspc desktop -t floating=on 
+
+# Rules
+bspc rule -a transgui floating=on center=true
+#bspc rule -a Chromium desktop=^1 follow=on floating=on center=true
+
+# Autostart
+hash panel 2>/dev/null && { panel & } 
+hash mpd 2>/dev/null && { mpd & } 
+hash dropboxd 2>/dev/null && { dropboxd & } 

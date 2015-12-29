@@ -1,0 +1,31 @@
+---
+#- name: Clone dotfiles
+  #tags: dotfiles.clone
+   #git: repo=git@bitbucket.org:martinbaillie/dotfiles.git dest=/home/"{{ admin_user }}"/dotfiles
+  #when: DOTFILES != None
+
+- name: Chown dotfiles
+  tags: dotfiles.own
+  file: path=/vagrant state=directory recurse=true owner="{{ admin_user }}" group=users
+  when: DOTFILES != None
+
+- name: Link dotfiles folder
+  tags: dotfiles.folder.link
+  file: src=/vagrant state=link dest=/home/"{{ admin_user }}"/.dotfiles force=true owner="{{ admin_user }}" group=users
+  when: DOTFILES != None
+
+- name: Link individual dotfiles
+  tags: dotfiles.individual.link
+  file: src=/home/"{{ admin_user }}"/.dotfiles/"{{ item.src }}" state=link dest=/home/"{{ admin_user }}"/"{{ item.dst }}" force=true owner="{{ admin_user }}" group=users
+  with_items:
+    - { src: vim/vimrc, dst: .vimrc }
+    - { src: vim, dst: .vim }
+
+    - { src: zsh/zshrc, dst: .zshrc }
+    - { src: zsh/zshenv, dst: .zshenv }
+    - { src: zsh, dst: .zsh }
+
+    - { src: tmux/tmux.conf, dst: .tmux.conf }
+
+    - { src: git/gitconfig, dst: .gitconfig }
+  when: DOTFILES != None

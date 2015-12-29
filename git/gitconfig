@@ -1,0 +1,10 @@
+[user]
+	name = Martin Baillie
+  email = "(none)"
+[alias]
+	st = status
+	ci = commit
+[url "https://github.com"]
+  insteadOf = git://github.com
+[push]
+	default = simple
