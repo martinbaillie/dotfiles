@@ -4,6 +4,7 @@ ssh/id_rsa
 ssh/known_hosts
 
 vim/bundle/
+!vim/bundle/vundle/
 vim/backup/
 vim/tmp/
 
