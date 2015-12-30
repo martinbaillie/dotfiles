@@ -1,8 +1,8 @@
 # Dotfiles
 ### About
-My personal configs for xmonad, lemonbar, xorg, dmenu, vim, zsh, tmux and others. 
+My personal configs for xmonad, lemonbar, xorg, dmenu, vim, zsh, tmux and others.
 
-Actively used to varying degrees on my Arch Linux, OpenBSD & OS X machines.
+These are actively used to varying degrees on my Arch Linux, OpenBSD & OS X machines.
 
 ### Installation
 - `git clone --recursive git@github.com:martinbaillie/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`
@@ -12,7 +12,7 @@ Actively used to varying degrees on my Arch Linux, OpenBSD & OS X machines.
 - `make update && ./configure`
 
 ### Colour Scheme
-Switch between any [base16](https://github.com/chriskempson/base16) colour scheme by using base16<tab> at a zsh shell.
+Switch between any [base16](https://github.com/chriskempson/base16) colour scheme by using `base16<tab>` at a zsh shell.
 This will switch vim, zsh, Xresources, xmonad, lemonbar and dmenu to the chosen theme.
 
 ### License
