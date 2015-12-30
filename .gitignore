@@ -2,6 +2,7 @@ ncmpcpp/error.log
 
 ssh/id_rsa
 ssh/known_hosts
+ssh/putty
 
 vim/bundle/
 !vim/bundle/vundle/
