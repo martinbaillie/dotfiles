@@ -102,15 +102,6 @@ removeKeys =
     , "M-c"
     ]
 
-{-workspaces' =-}
-    {-[-}
-    {-"term",-}
-    {-"www",-}
-    {-"chat",-}
-    {-"work",-}
-    {-"misc"-}
-    {-]-}
-
 layoutHook' = smartBorders
     $ borderResize
     $ spacing 20
@@ -153,7 +144,6 @@ main = do
         , focusFollowsMouse       = focusFollowsMouse'
         , layoutHook              = layoutHook'
         , manageHook              = manageHook'
-        {-, workspaces              = workspaces'-}
         , logHook                 = logHook' pipe
         , normalBorderColor       = "#281200"
         , focusedBorderColor      = "#a07230"
