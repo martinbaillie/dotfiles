@@ -42,9 +42,7 @@ function make_wm_infos() {
                 dat="$(eval echo ${line#?})"
                 ;;
             M*)
-                echo "got mus line $line" >> /tmp/meh
                 mus="$(eval echo ${line#?})"
-                echo "got mus $mus" >> /tmp/meh
                 ;;
             N*)
                 net="$(eval echo ${line#?})"
