@@ -124,9 +124,17 @@ endif
 		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slimlock.conf /etc/
 		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist
 		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/ntp.conf /etc/ntp.conf
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/hosts /etc/hosts
 		@echo symlinked: etc \(as root\)
 	
+etc-home-net::
+ifneq ($(EUID),0)
+		@echo "Please run as root user"
+		@exit 1
+endif
+		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/hosts /etc/hosts
+		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/auto.patience /etc/autofs/auto.patience
+		@echo symlinked: etc-home-net \(as root\)
+
 check-dead:
 	find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -print
 
