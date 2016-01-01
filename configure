@@ -29,6 +29,7 @@ sudo systemctl enable ntpd --force
 
 install dmenu2 hsetroot unclutter mpd mpc ncmpcpp alsa-utils podget redshift wmname compton dunst scrot pcmanfm evince irssi
 
+install rxvt-unicode-256xresources
 install chromium firefox urxvtcd urxvt-perls st vim tmux
 install chromium-pepper-flash jdk7 transmission-gtk transmission-remote-gtk
 
