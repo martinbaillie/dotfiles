@@ -12,11 +12,11 @@ endif
 
 .PHONY: install
 
-install: ssh zsh tmux xorg vim git bin mpd ncmpcpp irssi conky podget private
+install: ssh zsh tmux x vim git bin mpd ncmpcpp irssi conky podget private
 
 basic: ssh zsh tmux vim git
 
-x: xorg xmonad xmobar
+x: xorg xmonad
 
 bin::
 	@test -d ${HOME}/Code || mkdir -p ${HOME}/Code
@@ -67,18 +67,15 @@ xorg::
 	@ln $(LN_FLAGS) $(DOTFILES)/xorg/base16-xresources ${HOME}/.config/base16-xresources
 	@ln $(LN_FLAGS) $(DOTFILES)/xorg/wallpapers ${HOME}/.wallpapers
 	@ln $(LN_FLAGS) ${HOME}/.wallpapers/tinytile.jpg ${HOME}/.wallpapers/current
-	@xrdb -load ${HOME}/.Xresources
+	@if ! test -z "$$DISPLAY"; then \
+		xrdb -load ${HOME}/.Xresources; \
+	fi
 	@echo symlinked: xorg
 
 xmonad::
 	@ln $(LN_FLAGS) $(DOTFILES)/xmonad ${HOME}/.xmonad
 	@xmonad --recompile
 	@echo symlinked: xmonad
-
-xmobar::
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/xmobar ${HOME}/.config/xmobar
-	@echo symlinked: xmobar
 
 mpd::
 	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
