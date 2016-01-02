@@ -18,10 +18,11 @@ import XMonad.Layout.NoBorders              (smartBorders)
 import XMonad.Layout.BorderResize
 import XMonad.Layout.Magnifier
 
-import XMonad.Hooks.DynamicLog --constrain
+import XMonad.Hooks.DynamicLog              (dynamicLogWithPP, PP(..))
 import XMonad.Hooks.EwmhDesktops            (ewmh)
 import XMonad.Hooks.ManageDocks             (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers           (doFullFloat)
+import XMonad.Hooks.SetWMName
 
 import qualified XMonad.StackSet as W       (swapMaster, focusDown, focusUp)
 
@@ -115,11 +116,13 @@ manageHook' = manageDocks <+>
     composeAll
         [ className =? "Transgui"       --> doFloat
         , className =? "Gimp"           --> doFloat
-        , className =? "Slack"          --> doShift "3"
         , className =? "chromium"       --> doShift "2"
         , className =? "Firefox"        --> doShift "2"
         , className =? "Iceweasel"      --> doShift "2"
-        , className =? "Wfica_Seamless" --> doShift "4"
+        , className =? "Slack"          --> doShift "3"
+        , className =? "Nixnote2"       --> doShift "4"
+        , className =? "VirtualBox"     --> doShift "5"
+        , className =? "Wfica_Seamless" --> doShift "6"
         , className =? "Wfica_Seamless" --> doFullFloat ]
 
 logHook' fd = dynamicLogWithPP def
@@ -139,12 +142,13 @@ main = do
     xmonad
         $ ewmh
         $ defaultConfig
-        { modMask                 = modMask'
-        , terminal                = terminal'
-        , focusFollowsMouse       = focusFollowsMouse'
-        , layoutHook              = layoutHook'
-        , manageHook              = manageHook'
-        , logHook                 = logHook' pipe
-        , normalBorderColor       = "#281200"
-        , focusedBorderColor      = "#a07230"
+        { modMask               = modMask'
+        , terminal              = terminal'
+        , focusFollowsMouse     = focusFollowsMouse'
+        , layoutHook            = layoutHook'
+        , manageHook            = manageHook'
+        , logHook               = logHook' pipe 
+        , startupHook           = setWMName "LG3D" {- JVM window parenting hack -}
+        , normalBorderColor     = "#281200"
+        , focusedBorderColor    = "#a07230"
         } `additionalKeysP` additionalKeys `removeKeysP` removeKeys
