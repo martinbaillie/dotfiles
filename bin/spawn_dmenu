@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 pkill -x dmenu
 
 bgDef="$(grep background ~/.base16_xresources|cut -d: -f2|sed -e 's/^[[:space:]]*//')"
@@ -11,4 +11,4 @@ sbColour="$(grep -E define\.base08 ~/.base16_xresources|cut -d' ' -f3)"
 
 fn="xft:Tewi:style=normal:pixelsize=11"
 
-dmenu_run -fn "$fn" -i -o 0.95 -y 15 -l 15 -w 200 -nb $bgColour -nf $fgColour -sb $sbColour 2>/dev/null
+dmenu_run -fn "$fn" -i -nb $bgColour -nf $fgColour -sb $sbColour 2>/dev/null

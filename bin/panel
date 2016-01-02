@@ -82,4 +82,4 @@ function make_wm_infos() {
         make_wm_infos
         printf "%s\n" "%{l}$pac$vol$mus%{c}$wm_infos%{r}$net$bat$dat"
     done
-} | lemonbar -f "$FONT" -f "$ICON" -B "$BG" -F "$FG" -p
+} | lemonbar -f "$FONT1" -f "$FONT2" -f "$FONT3" -f "$ICON" -B "$BG" -F "$FG" -p
