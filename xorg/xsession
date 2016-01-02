@@ -68,9 +68,8 @@ hash dropboxd 2>/dev/null && { dropboxd & }
 #hash xcompmgr 2>/dev/null && { xcompmgr -c & }
 #hash compton 2>/dev/null && { compton & }
 
-# start redshift
-hash redshift 2>/dev/null && { redshift & }
-
+# start redshift (lat and long set to Sydney)
+hash redshift 2>/dev/null && { redshift -l 33.86:151.20 -t 5700:3600 -g 0.8 -m randr -v & }
 # start notification daemons
 hash dunst 2>/dev/null && { dunst & }
 hash mpdnotify 2>/dev/null && { mpdnotify start & }
