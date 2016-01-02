@@ -11,4 +11,4 @@ sbColour="$(grep -E define\.base08 ~/.base16_xresources|cut -d' ' -f3)"
 
 fn="xft:Tewi:style=normal:pixelsize=11"
 
-dmenu_run -fn "$fn" -i -nb $bgColour -nf $fgColour -sb $sbColour 2>/dev/null
+dmenu_run -hist ~/.dmenu-history -fn "$fn" -i -nb $bgColour -nf $fgColour -sb $sbColour 2>/dev/null
