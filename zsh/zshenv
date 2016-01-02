@@ -20,10 +20,11 @@ export CLICOLOR=true
 export PATH="/usr/local/lib/cw:$PATH:/sbin:/opt/Citrix/ICAClient:/home/martin/Code/bin"
 
 # Ensure path arrays do not contain duplicates.
-typeset -gU cdpath fpath mailpath path
+typeset -g cdpath fpath mailpath path
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
+
 # ALIASES {
 case `uname` in
   Darwin)
