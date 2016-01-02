@@ -20,31 +20,32 @@ install() {
 install xorg-server xorg-xinit xorg-xset xorg-xrdb xorg-xrandr xorg-xsetroot xorg-setxkbmap xorg-xwininfo xorg-xprop xorg-xfd xorg-xlsfonts xorg-xmodmap xorg-xmessage xclip xdotool
 
 install xmonad-git xmonad-contrib-git
-install gtk3 gnome-themes-standard siji-git bdf-tewi-git powerline-fonts-git ttf-dejavu ttf-liberation adobe-source-han-sans-otc-fonts
+install gtk3 gnome-themes-standard siji-git gohufont phallus-fonts-git bdf-tewi-git powerline-fonts-git ttf-dejavu ttf-liberation adobe-source-han-sans-otc-fonts
 
 install slim archlinux-themes-slim xautolock polkit conky lemonbar-xft-git
-install rng-tools ntp autofs cronie pm-utils
+install rng-tools ntp autofs cronie pm-utils ntfs-3g
 sudo systemctl enable slim --force
 sudo systemctl enable rngd --force
 sudo systemctl enable ntpd --force
 sudo systemctl enable cron --force
 sudo systemctl enable autofs --force
 
-install dmenu2 hsetroot unclutter mpd mpc ncmpcpp alsa-utils podget redshift wmname compton dunst scrot pcmanfm evince irssi
+install dmenu-xft-mouse-height-fuzzy-history hsetroot unclutter mpd mpc ncmpcpp alsa-utils podget redshift wmname compton dunst scrot pcmanfm evince irssi
 
 install rxvt-unicode-256xresources
 install chromium firefox urxvtcd urxvt-perls st vim tmux
 install chromium-pepper-flash jdk7 transmission-gtk transmission-remote-gtk
 
-install openssh wget ncdu the_silver_searcher sift-bin speedtest-cli archey-git dnsutils nmap
+install openssh wget unzip ncdu the_silver_searcher sift-bin speedtest-cli archey-git dnsutils nmap htop
 
 # laptop specific
 install acpi acpid xf86-input-synaptics xorg-xinput xorg-xbacklight wireless_tools
 
 # work specific
-install icaclient meld slack-desktop
-install docker-git 
+install icaclient meld slack-desktop nixnote2-git
+install docker-git
 install docker-compose-git
+#install vagrant virtualbox
 
 # tidyup
 # pacman -Scc
