@@ -28,7 +28,7 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # ALIASES {
 case `uname` in
   Darwin)
-    gvim() { [ -z "$(command gvim --serverlist)" ] && command gvim "$@" || command gvim --remote-silent "$@" ; }
+    gvim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
     alias ls='ls -FG'
     alias vim=gvim
     export BROWSER='open'
