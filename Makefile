@@ -1,10 +1,10 @@
 DOTFILES 			:= $(shell pwd)
-EUID					:= $(shell id -u -r)
+EUID				:= $(shell id -u -r)
 UNAME 				:= $(shell uname -s)
-GIT 					:= $(shell which git)
+GIT					:= $(shell which git)
 
-PRIVATE_REPO 	= $(DOTFILES)/private
-LN_FLAGS 			= -sfn
+PRIVATE_REPO		= $(DOTFILES)/private
+LN_FLAGS			= -sfn
 
 ifeq ($(UNAME),Darwin)
 else
@@ -12,9 +12,11 @@ endif
 
 .PHONY: install
 
-install: ssh zsh tmux x vim git bin mpd ncmpcpp irssi conky podget private
+install: ssh zsh tmux x vim git bin mpd ncmpcpp irssi conky podget private crontab
 
-basic: ssh zsh tmux vim git
+install-mac: basic private
+
+basic: ssh zsh tmux vim git bin
 
 x: xorg xmonad
 
@@ -108,12 +110,14 @@ ifneq "$(wildcard $(PRIVATE_REPO) )" ""
 		@ln $(LN_FLAGS) $(DOTFILES)/private/gnupg ${HOME}/.gnupg
 		@ln $(LN_FLAGS) $(DOTFILES)/private/keybase ${HOME}/.keybase
 		@echo symlinked: private
-		@crontab ${DOTFILES}/private/etc/crontab
-		@echo installed: crontab
 else
 		@echo private repo not found 
 		@exit 1
 endif
+
+crontab::
+		@crontab ${DOTFILES}/private/etc/crontab
+		@echo installed: crontab
 
 etc::
 ifneq ($(EUID),0)

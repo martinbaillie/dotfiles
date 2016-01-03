@@ -1,10 +1,10 @@
 [user]
-	name = Martin Baillie
-  email = "(none)"
+    name = Martin Baillie
+    email = "(none)"
 [alias]
-	st = status
-	ci = commit
+    st = status
+    ci = commit
 [url "https://github.com"]
-  insteadOf = git://github.com
+    insteadOf = git://github.com
 [push]
-	default = simple
+    default = simple
