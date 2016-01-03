@@ -12,9 +12,9 @@ endif
 
 .PHONY: install
 
-install: ssh zsh tmux x vim git bin mpd ncmpcpp irssi conky podget private crontab
+install: basic private haskell x mpd ncmpcpp irssi conky podget crontab
 
-install-mac: basic private
+install-mac: basic private haskell
 
 basic: ssh zsh tmux vim git bin
 
@@ -91,7 +91,11 @@ ncmpcpp::
 
 podget::
 	@ln $(LN_FLAGS) $(DOTFILES)/podget ${HOME}/.podget
-	@echo symlinked: podget 
+	@echo symlinked: podget
+
+haskell::
+	@ln $(LN_FLAGS) $(DOTFILES)/haskell/haskeline ${HOME}/.haskeline
+	@echo symlinked: haskell
 
 ssh::
 	@ln $(LN_FLAGS) $(DOTFILES)/ssh ${HOME}/.ssh
