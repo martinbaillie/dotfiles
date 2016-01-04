@@ -48,7 +48,7 @@ additionalKeys =
 
     , ("M-e",                     spawn "pcmanfm")
     , ("M-S-l",                   spawn "slimlock")
-    , ("M-q",                     spawn "pkill lemonbar; xmonad --recompile && xmonad --restart")
+    , ("M-S-q",                   spawn "pkill lemonbar; xmonad --recompile && xmonad --restart")
 
     , ("M-w",                     kill)
 
@@ -122,6 +122,7 @@ manageHook' = manageDocks <+>
         , className =? "Slack"          --> doShift "3"
         , className =? "Nixnote2"       --> doShift "4"
         , className =? "VirtualBox"     --> doShift "5"
+        , className =? "VirtualBox"     --> doFloat
         , className =? "Wfica_Seamless" --> doShift "6"
         , className =? "Wfica_Seamless" --> doFullFloat ]
 
