@@ -48,7 +48,7 @@ function prompt_martin_setup {
     'rprompt' '%A%B%S%a%d%m%r%U%u'
 
   # Define prompts.
-  PROMPT='%(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
+  PROMPT='%F{cyan}%c%f %(!. %B%F{red}#%f%b.)${editor_info[keymap]} '
   RPROMPT='${git_info:+${(e)git_info[prompt]}}${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}%F{cyan}%f'
   SPROMPT='zsh: did you mean %F{green}%r%f [nyae]? '
 }
