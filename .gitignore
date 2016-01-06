@@ -13,7 +13,6 @@ mpd/mpd.db
 mpd/mpd.log
 mpd/mpd.pid
 mpd/mpdstate
-mpd/playlists/
 
 zsh/zsh_history
 
