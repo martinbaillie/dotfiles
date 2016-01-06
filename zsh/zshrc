@@ -37,5 +37,8 @@ set -o vi
 unalias rm
 setopt clobber
 
+# Dir colors
+eval $(dircolors -b $HOME/.dircolors)
+
 # Local machine mods
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

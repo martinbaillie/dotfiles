@@ -26,6 +26,7 @@ bin::
 	@echo symlinked: bin 
 
 zsh::
+	@ln $(LN_FLAGS) $(DOTFILES)/zsh/dircolors ${HOME}/.dircolors
 	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zshrc ${HOME}/.zshrc
 	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zshenv ${HOME}/.zshenv
 	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zlogin ${HOME}/.zlogin

@@ -18,8 +18,9 @@ install() {
 #yaourt -S --noconfirm chef-dk
 
 install xorg-server xorg-xinit xorg-xset xorg-xrdb xorg-xrandr xorg-xsetroot xorg-setxkbmap xorg-xwininfo xorg-xprop xorg-xfd xorg-xlsfonts xorg-xmodmap xorg-xmessage xclip xdotool
+install xmonad-git
+install xmonad-contrib-git
 
-install xmonad-git xmonad-contrib-git
 install gtk3 gnome-themes-standard siji-git gohufont phallus-fonts-git bdf-tewi-git powerline-fonts-git ttf-dejavu ttf-liberation adobe-source-han-sans-otc-fonts
 
 install slim archlinux-themes-slim xautolock polkit conky lemonbar-xft-git
@@ -42,7 +43,7 @@ install openssh wget unzip ncdu the_silver_searcher sift-bin speedtest-cli arche
 install acpi acpid xf86-input-synaptics xorg-xinput xorg-xbacklight wireless_tools
 
 # work specific
-install icaclient meld slack-desktop nixnote2-git
+install icaclient meld slack-desktop nixnote2-git ruby
 install docker-git
 install docker-compose-git
 #install vagrant virtualbox
