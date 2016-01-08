@@ -34,8 +34,10 @@ sudo systemctl enable autofs --force
 install dmenu-xft-mouse-height-fuzzy-history hsetroot unclutter mpd mpc ncmpcpp alsa-utils podget redshift wmname compton dunst scrot pcmanfm evince irssi
 
 install rxvt-unicode-256xresources
-install chromium firefox urxvtcd urxvt-perls st vim tmux
-install chromium-pepper-flash jdk7 transmission-gtk transmission-remote-gtk
+install firefox
+install chromium chromium-pepper-flash
+install urxvtcd urxvt-perls st vim tmux
+install jdk7 transmission-gtk transmission-remote-gtk
 
 install openssh wget unzip ncdu the_silver_searcher sift-bin speedtest-cli archey-git dnsutils nmap htop
 

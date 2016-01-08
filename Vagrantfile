@@ -8,7 +8,7 @@ ANSIBLE_VERBOSE = ENV['ANSIBLE_VERBOSE'].nil? ? 'vvvv' : ENV['ANSIBLE_VERBOSE']
 ANSIBLE_TAGS    = ENV['ANSIBLE_TAGS']
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "terrywang/archlinux"
+  config.vm.box = "martinbaillie/archlinux"
   config.vm.box_check_update = false
   config.vm.hostname = "archie"
   config.vm.network :private_network, ip: VM_IP
