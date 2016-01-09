@@ -1,0 +1,41 @@
+## arg 1:  the new package version
+pre_install() {
+    :
+}
+
+## arg 1:  the new package version
+post_install() {
+    echo "force enabling slim service..."
+    systemctl enable slim --force 2>/dev/null
+    echo "force enabling rngd service..."
+    systemctl enable rngd --force 2>/dev/null
+    echo "force enabling rngd service..."
+    systemctl enable ntpd --force 2>/dev/null
+    echo "force enabling ntpd service..."
+    systemctl enable cronie --force 2>/dev/null
+    echo "force enabling cronie service..."
+    systemctl enable autofs --force 2>/dev/null
+    echo "force enabling autofs service..."
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+    :
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+    post_install $1
+}
+
+## arg 1:  the old package version
+pre_remove() {
+    :
+}
+
+## arg 1:  the old package version
+post_remove() {
+    :
+}

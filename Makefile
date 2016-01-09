@@ -12,13 +12,17 @@ endif
 
 .PHONY: install
 
-install: basic private haskell x mpd ncmpcpp irssi conky podget crontab
+install: dep basic private haskell x mpd ncmpcpp irssi conky podget crontab
 
 install-mac: basic private haskell
 
 basic: ssh zsh tmux vim git bin
 
 x: xorg xmonad
+
+dep::
+	@makepkg -fsi --noconfirm
+	@rm -rf pkg/ src/ *.xz
 
 bin::
 	@test -d ${HOME}/Code || mkdir -p ${HOME}/Code
@@ -72,7 +76,7 @@ xorg::
 	@ln $(LN_FLAGS) ${HOME}/.wallpapers/tinytile.jpg ${HOME}/.wallpapers/current
 	@if ! test -z "$$DISPLAY"; then \
 		xrdb -load ${HOME}/.Xresources; \
-	fi
+		fi
 	@echo symlinked: xorg
 
 xmonad::
@@ -109,43 +113,50 @@ update:
 
 private::
 ifneq "$(wildcard $(PRIVATE_REPO) )" ""
-		@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_rsa ${HOME}/.ssh/id_rsa
-		@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/putty ${HOME}/.ssh/putty
-		@chmod 600 ${HOME}/.ssh/id_rsa
-		@ln $(LN_FLAGS) $(DOTFILES)/private/gnupg ${HOME}/.gnupg
-		@ln $(LN_FLAGS) $(DOTFILES)/private/keybase ${HOME}/.keybase
-		@echo symlinked: private
+	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_rsa ${HOME}/.ssh/id_rsa
+	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/putty ${HOME}/.ssh/putty
+	@chmod 600 ${HOME}/.ssh/id_rsa
+	@ln $(LN_FLAGS) $(DOTFILES)/private/gnupg ${HOME}/.gnupg
+	@ln $(LN_FLAGS) $(DOTFILES)/private/keybase ${HOME}/.keybase
+	@echo symlinked: private
 else
-		@echo private repo not found 
-		@exit 1
+	@echo private repo not found 
+	@exit 1
 endif
 
 crontab::
-		@crontab ${DOTFILES}/private/etc/crontab
-		@echo installed: crontab
+	@crontab ${DOTFILES}/private/etc/crontab
+	@echo installed: crontab
 
 etc::
 ifneq ($(EUID),0)
-		@echo "Please run as root user"
-		@exit 1
+	@echo "Please run as root user"
+	@exit 1
 endif
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slim.conf /etc/
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slimlock.conf /etc/
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/ntp.conf /etc/ntp.conf
-		@echo symlinked: etc \(as root\)
-	
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slim.conf /etc/
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slimlock.conf /etc/
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/ntp.conf /etc/ntp.conf
+	@echo symlinked: etc \(as root\)
+
 etc-home-net::
 ifneq ($(EUID),0)
-		@echo "Please run as root user"
-		@exit 1
+	@echo "Please run as root user"
+	@exit 1
 endif
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/hosts /etc/hosts
-		@ln $(LN_FLAGS) $(DOTFILES)/private/etc/auto.patience /etc/autofs/auto.patience
-		@echo symlinked: etc-home-net \(as root\)
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/hosts /etc/hosts
+	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/auto.patience /etc/autofs/auto.patience
+	@echo symlinked: etc-home-net \(as root\)
 
 check-dead:
 	find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -print
 
 clean-dead:
 	find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -delete
+
+clean-packages:
+ifneq ($(EUID),0)
+	@echo "Please run as root user"
+	@exit 1
+endif
+	@pacman -Scc --noconfirm
