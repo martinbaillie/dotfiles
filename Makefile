@@ -12,7 +12,7 @@ endif
 
 .PHONY: install
 
-install: dep basic private haskell x mpd ncmpcpp irssi conky podget crontab
+install: basic private haskell x mpd ncmpcpp irssi conky podget crontab
 
 install-mac: basic private haskell
 

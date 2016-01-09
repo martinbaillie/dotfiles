@@ -107,7 +107,6 @@ aurdepends=(
 'hsetroot'
 'rxvt-unicode-256xresources'
 'sift-bin'
-'cw'
 'st'
 'transmission-gtk'
 'transmission-remote-gtk'
