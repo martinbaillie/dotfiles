@@ -17,7 +17,10 @@ export IRCSERVER=irc.freenode.net
 
 export CLICOLOR=true
 
-export PATH="/usr/local/lib/cw:$PATH:/sbin:/opt/Citrix/ICAClient:/home/martin/Code/bin"
+export PATH="/usr/lib/cw:$PATH:/sbin:/opt/Citrix/ICAClient:/home/martin/Code/bin"
+
+# Stop colorwrapper interfering with scripts
+export NOCOLOR_PIPE=true
 
 # Ensure path arrays do not contain duplicates.
 typeset -g cdpath fpath mailpath path
