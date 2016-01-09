@@ -17,6 +17,8 @@ install() {
 # todo: have chef do most of this default setup
 #yaourt -S --noconfirm chef-dk
 
+install pkgbuild-introspection namcap
+
 install xorg-server xorg-xinit xorg-xset xorg-xrdb xorg-xrandr xorg-xsetroot xorg-setxkbmap xorg-xwininfo xorg-xprop xorg-xfd xorg-xlsfonts xorg-xmodmap xorg-xmessage xclip xdotool
 install xmonad-git
 install xmonad-contrib-git
@@ -36,10 +38,10 @@ install dmenu-xft-mouse-height-fuzzy-history hsetroot unclutter mpd mpc ncmpcpp 
 install rxvt-unicode-256xresources
 install firefox
 install chromium chromium-pepper-flash
-install urxvtcd urxvt-perls st vim tmux
+install urxvtcd urxvt-perls cw st vim tmux
 install jdk7 transmission-gtk transmission-remote-gtk
 
-install openssh wget unzip ncdu the_silver_searcher sift-bin speedtest-cli archey-git dnsutils nmap htop
+install openssh wget unzip ncdu the_silver_searcher sift-bin speedtest-cli archey-git dnsutils nmap htop lsof ltrace strace
 
 # laptop specific
 install acpi acpid xf86-input-synaptics xorg-xinput xorg-xbacklight wireless_tools
