@@ -6,10 +6,10 @@ These are actively used to varying degrees on my Arch Linux, OpenBSD & OS X mach
 
 ### Installation
 - `git clone --recursive git@github.com:martinbaillie/dotfiles.git ~/.dotfiles && cd ~/.dotfiles`
-- `./configure && make install`
+- `make dep && make install`
 
 ### Update
-- `make update && ./configure`
+- `make update && make dep && make install`
 
 ### Colour Scheme
 Switch between any [base16](https://github.com/chriskempson/base16) colour scheme by using `base16<tab>` at a zsh shell.
