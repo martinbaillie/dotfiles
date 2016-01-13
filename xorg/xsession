@@ -80,6 +80,9 @@ hash xautolock 2>/dev/null && { xautolock -time 30 -locker "systemctl suspend" -
 # JVM bug
 hash wmname 2>/dev/null && wmname LG3D 
 
+# Machine specific autoruns
+[ -f $HOME/.xsession.local ] && sh $HOME/.xsession.local &
+
 # panel
 export PANEL_FIFO=/tmp/panel-fifo
 [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
