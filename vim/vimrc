@@ -334,6 +334,7 @@ if WIN()
   set background=dark
   colorscheme base16-default
 elseif NIX()
+  set mouse=a
   if filereadable(expand("$HOME/.base16_vimrc"))
     so $HOME/.base16_vimrc
   else
