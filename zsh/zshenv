@@ -2,7 +2,9 @@
 export EDITOR=vim
 export VISUAL=vim
 
-export XDG_CONFIG_HOME=/home/martin/.config
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_DATA_DIRS=$XDG_DATA_HOME:/usr/local/share/:/usr/share/
 
 #export BSPWM_SOCKET="/tmp/bspwm-socket"
 export PANEL_FIFO="/tmp/panel-fifo"

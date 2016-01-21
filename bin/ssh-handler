@@ -1,0 +1,3 @@
+#!/bin/bash -x
+dest=${1#ssh://}
+urxvtc -hold -e sh -c "TERM=xterm ssh ${dest}"
