@@ -30,3 +30,6 @@ fonts/*
 
 .vagrant
 .docker
+
+xdg
+!xdg/share/applications/
