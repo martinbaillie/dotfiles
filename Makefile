@@ -12,13 +12,13 @@ endif
 
 .PHONY: install
 
-install: basic private haskell x mpd ncmpcpp irssi conky podget crontab
+install: basic private haskell x mpd ncmpcpp irssi dunst conky podget crontab
 
 install-mac: basic private haskell
 
 basic: ssh zsh tmux vim git bin
 
-x: xorg xmonad
+x: xorg xmonad xdg
 
 dep::
 	@makepkg -fsi --noconfirm
@@ -65,6 +65,17 @@ conky::
 git::
 	@ln $(LN_FLAGS) $(DOTFILES)/git/gitconfig ${HOME}/.gitconfig
 	@echo symlinked: git
+
+xdg::
+	@test -d ${HOME}/.local || mkdir -p ${HOME}/.local
+	@ln $(LN_FLAGS) $(DOTFILES)/xdg/share ${HOME}/.local/share
+	@update-desktop-database ${HOME}/.local/share/applications
+	@echo symlinked: xdg
+
+dunst::
+	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
+	@ln $(LN_FLAGS) $(DOTFILES)/dunst/dunstrc ${HOME}/.config/dunstrc
+	@echo symlinked: dunst
 
 xorg::
 	@ln $(LN_FLAGS) $(DOTFILES)/xorg/xsession ${HOME}/.xsession

@@ -5,10 +5,10 @@
     browser = /usr/bin/chromium
     dmenu = /usr/bin/dmenu -p dunst:
     follow = none
-    font = Terminus (TTF) 12
+    font = Tewi 9
     format = "<b>%s</b>\n%b"
     # geometry [{width}]x{height}][+/-{x}+/-{y}]
-    geometry = "0-10+10"
+    geometry = "0-0+15"
     history_length = 20
     horizontal_padding = 8
     idle_threshold = 120
@@ -30,29 +30,23 @@
 
 [frame]
     width = 1
-    color = "6092BE"
+#    color = "6092BE"
 
 [shortcuts]
     context = ctrl+shift+period
 
 [urgency_low]
-    background = "#6092BE"
-    foreground = "#FFFFFF"
+#    background = "#6092BE"
+#    foreground = "#FFFFFF"
     timeout = 10
 
 [urgency_normal]
-    background = "#6092BE"
-    foreground = "#FFFFFF"
+#    background = "#6092BE"
+#    foreground = "#FFFFFF"
     timeout = 20
 
 [urgency_critical]
-    background = "#801515"
-    foreground = "#D46A6A"
+#   background = "#801515"
+#   foreground = "#D46A6A"
     timeout = 0
 
-[irc]
-    appname = "weechat"
-    format  = "%s: %b"
-    urgency = low
-    background = "#83c83d"
-    foreground = "#000000"
