@@ -3,7 +3,7 @@
 . ~/.zshenv
 
 # sane key repeat rate
-xset r rate 180 40
+xset r rate 200 40
 
 # no bell
 xset -b
