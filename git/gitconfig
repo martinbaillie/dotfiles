@@ -8,3 +8,5 @@
     insteadOf = git://github.com
 [push]
     default = simple
+[credential]
+	helper = store
