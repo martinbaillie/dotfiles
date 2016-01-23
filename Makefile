@@ -120,7 +120,7 @@ ssh::
 	@echo symlinked: ssh
 
 update:
-	$(GIT) pull && $(GIT) submodule foreach git checkout master && $(GIT) submodule foreach git pull
+	$(GIT) pull && $(GIT) submodule foreach git checkout master && $(GIT) submodule foreach git pull && cabal update
 
 private::
 ifneq "$(wildcard $(PRIVATE_REPO) )" ""

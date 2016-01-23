@@ -1,14 +1,18 @@
 import My.Spacing                           (SPACING(SPACING), spacing)
+import My.Xresources                        (xdefault)
 
 import System.Environment                   (getEnv)
 import System.Posix.IO                      (openFd, OpenMode(..), defaultFileFlags, fdWrite)
 
 import Control.Monad                        (void)
 
+import Data.Maybe                           (fromMaybe)
+
 import XMonad
 
 import XMonad.Util.EZConfig                 (additionalKeysP, removeKeysP)
 import XMonad.Util.Run                      (spawnPipe, safeSpawn, runInTerm)
+import XMonad.Util.Paste                    (pasteSelection) -- is this needed? alt-v?
 
 import XMonad.Actions.WindowGo              (runOrRaise, raiseMaybe)
 
@@ -140,8 +144,10 @@ logHook' fd = dynamicLogWithPP def
 
 main :: IO ()
 main = do
-    fifo <- getEnv "PANEL_FIFO"
-    pipe <- openFd fifo WriteOnly Nothing defaultFileFlags
+    fifo                        <- getEnv "PANEL_FIFO"
+    pipe                        <- openFd fifo WriteOnly Nothing defaultFileFlags
+    normalBorderColor'          <- xdefault "color1"
+    focusedBorderColor'         <- xdefault "color4"
     xmonad
         $ ewmh
         $ defaultConfig
@@ -152,6 +158,6 @@ main = do
         , manageHook            = manageHook'
         , logHook               = logHook' pipe 
         , startupHook           = setWMName "LG3D" {- JVM window parenting hack -}
-        , normalBorderColor     = "#281200"
-        , focusedBorderColor    = "#a07230"
+        , normalBorderColor     = fromMaybe "gray" normalBorderColor'
+        , focusedBorderColor    = fromMaybe "green" focusedBorderColor'
         } `additionalKeysP` additionalKeys `removeKeysP` removeKeys

@@ -130,21 +130,27 @@ aurdepends=(
 'docker-compose-git'
 #'chef-dk'
 )
+cabaldepends=(
+'X11-rm'
+)
 license="BSD"
 install="${pkgname}.install"
 
 prepare() {
-# Install yaourt if not available
-if ! type yaourt &> /dev/null; then
-    echo "Missing AUR helper: yaourt. Installing now"
-    curl https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz | tar xz -C /tmp
-    curl https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz | tar xz -C /tmp
-    pushd /tmp/package-query && makepkg --needed -c --noconfirm -i package-query && popd
-    pushd /tmp/yaourt && makepkg --needed -c --noconfirm -i yaourt && popd
-    rm -rf /tmp/yaourt /tmp/package-query
-fi
+    # Install yaourt if not available
+    if ! type yaourt &> /dev/null; then
+        echo "Missing AUR helper: yaourt. Installing now"
+        curl https://aur.archlinux.org/cgit/aur.git/snapshot/package-query.tar.gz | tar xz -C /tmp
+        curl https://aur.archlinux.org/cgit/aur.git/snapshot/yaourt.tar.gz | tar xz -C /tmp
+        pushd /tmp/package-query && makepkg --needed -c --noconfirm -i package-query && popd
+        pushd /tmp/yaourt && makepkg --needed -c --noconfirm -i yaourt && popd
+        rm -rf /tmp/yaourt /tmp/package-query
+    fi
     echo "Installing AUR dependencies using helper: yaourt"
     yaourt -S --noconfirm --needed ${aurdepends[@]}
+
+    echo "Installing Haskell dependencies using helper: cabal"
+    cabal install ${cabaldepends[@]}
 }
 
 build() { :; }
