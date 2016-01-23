@@ -121,10 +121,12 @@ manageHook' = manageDocks <+>
         , className =? "Iceweasel"      --> doShift "2"
         , className =? "Slack"          --> doShift "3"
         , className =? "Nixnote2"       --> doShift "4"
-        , className =? "VirtualBox"     --> doShift "5"
+        , className =? "VirtualBox"     --> doShift "6"
         , className =? "VirtualBox"     --> doFloat
-        , className =? "Wfica_Seamless" --> doShift "6"
-        , className =? "Wfica_Seamless" --> doFullFloat ]
+        , className =? "Wfica_Seamless" --> doShift "5"
+        , className =? "Wfica_Seamless" --> doFullFloat
+        , className =? "Wfica"          --> doShift "5"
+        , className =? "Wfica"          --> doFullFloat ]
 
 logHook' fd = dynamicLogWithPP def
     { ppCurrent         = const "a"
