@@ -67,8 +67,8 @@ git::
 	@echo symlinked: git
 
 xdg::
-	@test -d ${HOME}/.local || mkdir -p ${HOME}/.local
-	@ln $(LN_FLAGS) $(DOTFILES)/xdg/share ${HOME}/.local/share
+	@test -d ${HOME}/.local/share || mkdir -p ${HOME}/.local/share
+	@ln $(LN_FLAGS) $(DOTFILES)/xdg/share/applications ${HOME}/.local/share
 	@update-desktop-database ${HOME}/.local/share/applications
 	@echo symlinked: xdg
 
