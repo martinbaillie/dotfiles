@@ -31,5 +31,6 @@ fonts/*
 .vagrant
 .docker
 
-xdg
-!xdg/share/applications/
+xdg/share/gvfs-metadata
+xdg/share/*.xbel
+xdg/share/applications/*.cache

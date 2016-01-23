@@ -1,0 +1,4 @@
+[Desktop Entry]
+Terminal=false
+Type=Application
+Exec=ssh-handler %U
