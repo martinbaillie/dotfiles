@@ -40,7 +40,7 @@ DIR                   38;5;111
 DOOR                  38;5;127
 EXEC                  38;5;208;1
 FIFO                  38;5;126
-FILE                  38;5;253
+FILE                  38;5;64;1
 LINK                  target
 MULTIHARDLINK         38;5;222;1
 # "NORMAL don't reset the bold attribute -
@@ -73,15 +73,15 @@ STICKY_OTHER_WRITABLE 48;5;235;38;5;139;3
 # plain-text {{{2
 .txt                  38;5;253
 # markup {{{2
-.etx                  38;5;184
-.info                 38;5;184
-.markdown             38;5;184
-.md                   38;5;184
-.mkd                  38;5;184
-.nfo                  38;5;184
-.pod                  38;5;184
-.tex                  38;5;184
-.textile              38;5;184
+.etx                  38;5;166
+.info                 38;5;166
+.markdown             38;5;166
+.md                   38;5;166
+.mkd                  38;5;166
+.nfo                  38;5;166
+.pod                  38;5;166
+.tex                  38;5;166
+.textile              38;5;166
 # key-value, non-relational data {{{2
 .json                 38;5;178
 .msg                  38;5;178

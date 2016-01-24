@@ -84,7 +84,7 @@ xorg::
 	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
 	@ln $(LN_FLAGS) $(DOTFILES)/xorg/base16-xresources ${HOME}/.config/base16-xresources
 	@ln $(LN_FLAGS) $(DOTFILES)/xorg/wallpapers ${HOME}/.wallpapers
-	@ln $(LN_FLAGS) ${HOME}/.wallpapers/tinytile.jpg ${HOME}/.wallpapers/current
+	@ln $(LN_FLAGS) ${HOME}/.wallpapers/Mountain.png ${HOME}/.wallpapers/current
 	@if ! test -z "$$DISPLAY"; then \
 		xrdb -load ${HOME}/.Xresources; \
 		fi
