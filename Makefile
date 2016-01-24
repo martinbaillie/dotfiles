@@ -92,8 +92,9 @@ xorg::
 
 xmonad::
 	@ln $(LN_FLAGS) $(DOTFILES)/xmonad ${HOME}/.xmonad
-	@xmonad --recompile
 	@echo symlinked: xmonad
+	@xmonad --recompile
+	@echo compiled: xmonad
 
 mpd::
 	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
@@ -111,6 +112,7 @@ podget::
 
 haskell::
 	@ln $(LN_FLAGS) $(DOTFILES)/haskell/haskeline ${HOME}/.haskeline
+	@xmonad --recompile
 	@echo symlinked: haskell
 
 ssh::

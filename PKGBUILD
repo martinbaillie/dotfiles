@@ -89,6 +89,7 @@ makedepends=(
 )
 aurdepends=(
 # xorg
+'cabal-install'
 'xmonad-git'
 'xmonad-contrib-git'
 
@@ -150,6 +151,7 @@ prepare() {
     yaourt -S --noconfirm --needed ${aurdepends[@]}
 
     echo "Installing Haskell dependencies using helper: cabal"
+    cabal update
     cabal install ${cabaldepends[@]}
 }
 

@@ -34,3 +34,5 @@ fonts/*
 xdg/share/gvfs-metadata
 xdg/share/*.xbel
 xdg/share/applications/*.cache
+
+xorg/wallpapers/current
