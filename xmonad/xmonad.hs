@@ -22,13 +22,17 @@ import XMonad.Layout.NoBorders              (smartBorders)
 import XMonad.Layout.BorderResize
 import XMonad.Layout.Magnifier
 
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.Accordion
+import XMonad.Layout.Circle
+
 import XMonad.Hooks.DynamicLog              (dynamicLogWithPP, PP(..))
 import XMonad.Hooks.EwmhDesktops            (ewmh)
 import XMonad.Hooks.ManageDocks             (avoidStruts, manageDocks)
 import XMonad.Hooks.ManageHelpers           (doFullFloat)
 import XMonad.Hooks.SetWMName
 
-import qualified XMonad.StackSet as W       (swapMaster, focusDown, focusUp)
+import qualified XMonad.StackSet as Win     (swapMaster, focusDown, focusUp)
 
 terminal' :: String
 terminal' = "urxvtc"
@@ -51,14 +55,14 @@ additionalKeys =
     , ("M-n",                     raiseMaybe (runInTerm "" "ncmpcpp") (title =? "^ncmpcpp"))
 
     , ("M-e",                     spawn "pcmanfm")
-    , ("M-S-l",                   spawn "slimlock")
+    , ("M-M1-l",                  spawn "slimlock")
     , ("M-S-q",                   spawn "pkill lemonbar; xmonad --recompile && xmonad --restart")
 
     , ("M-w",                     kill)
 
-    , ("M-m",                     windows W.swapMaster)
-    , ("M1-<Tab>",                windows W.focusDown)
-    , ("M1-S-<Tab>",              windows W.focusUp)
+    , ("M-m",                     windows Win.swapMaster)
+    , ("M1-<Tab>",                windows Win.focusDown)
+    , ("M1-S-<Tab>",              windows Win.focusUp)
 
     , ("M1-<Space>",              spawn "~/Code/bin/spawn_dmenu")
 
@@ -93,16 +97,23 @@ additionalKeys =
     , ("M-j",                     sendMessage $ ExpandTowards D)
     , ("M-k",                     sendMessage $ ExpandTowards U)
     , ("M-l",                     sendMessage $ ExpandTowards R)
-    , ("M-s",                     sendMessage $ Swap)
-    , ("M-r",                     sendMessage $ Rotate)
-    , ("M-b",                     sendMessage $ Balance)
+
+    , ("M-S-h",                   sendMessage Shrink)
+    , ("M-S-l",                   sendMessage Expand)
+    , ("M-S-j",                   sendMessage MirrorShrink)
+    , ("M-S-k",                   sendMessage MirrorExpand)
+
     , ("M-<Page_Up>",             sendMessage $ SPACING 5)
     , ("M-<Page_Down>",           sendMessage $ SPACING (negate 5))
+
+    , ("M-s",                     sendMessage Swap)
+    , ("M-r",                     sendMessage Rotate)
+    , ("M-b",                     sendMessage Balance)
     ]
 
 removeKeys =
     [
-    "M-p"
+      "M-p"
     , "M-S-p"
     , "M-c"
     ]
@@ -114,6 +125,12 @@ layoutHook' = smartBorders
     $ emptyBSP
     |||
     onWorkspace "1" (magnifiercz 1.5 emptyBSP) (magnifiercz 1.1 emptyBSP)
+    |||
+    ResizableTall 1 (3/100) (68/100) []
+    |||
+    Circle
+    |||
+    Accordion
 
 manageHook' :: ManageHook
 manageHook' = manageDocks <+>
