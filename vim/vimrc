@@ -70,9 +70,6 @@ set softtabstop=4
 set tabstop=4
 set expandtab
 
-filetype plugin on
-filetype indent on
-
 set list listchars=tab:\ \ ,trail:·
 "set list
 "set listchars=tab:\ ·,eol:⏎
@@ -171,40 +168,33 @@ nnoremap } }zz
 nnoremap N Nzz
 " }}
 " === Plugins {{
-" :BundleInstall 
-" OR
-" vim --noplugin -u vim/vundles.vim -N "+set hidden" "+syntax on" +BundleClean! +BundleInstall +qall
-
-filetype off
-
-set rtp+=$HOME/.vim/bundle/vundle/
-set rtp+=$HOME/.vim/vundles/
-call vundle#rc()
+set rtp+=$HOME/.vim/bundle/neobundle.vim/
+call neobundle#begin(expand('$HOME/.vim/bundle/'))
 
 " === Base
-Plugin 'gmarik/vundle'
+NeoBundleFetch 'Shougo/neobundle.vim'
 
 " === Scheme
-Plugin 'chriskempson/base16-vim'
+NeoBundle 'chriskempson/base16-vim'
 
 " === Logs
-Plugin 'dzeban/vim-log-syntax'
+NeoBundle 'dzeban/vim-log-syntax'
 
 " === Behaviour
-Plugin 'terryma/vim-expand-region'
+NeoBundle 'terryma/vim-expand-region'
 
 " === Statusbar
-Plugin 'bling/vim-airline'
+NeoBundle 'bling/vim-airline'
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 
 " === Git
-Plugin 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-fugitive'
 
 " === Nerd
-Plugin 'scrooloose/nerdtree.git'
-Plugin 'jistr/vim-nerdtree-tabs.git'
-Plugin 'scrooloose/nerdcommenter'
+NeoBundle 'scrooloose/nerdtree.git'
+NeoBundle 'jistr/vim-nerdtree-tabs.git'
+NeoBundle 'scrooloose/nerdcommenter'
 
 let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
@@ -221,8 +211,8 @@ let NERDTreeWinSize=45
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 " === Syntax
-Plugin 'raichoo/haskell-vim'
-Plugin 'scrooloose/syntastic.git'
+NeoBundle 'raichoo/haskell-vim'
+NeoBundle 'scrooloose/syntastic.git'
 let g:syntastic_enable_signs=1
 let g:syntastic_auto_jump=0
 let g:syntastic_auto_loc_list=1
@@ -234,14 +224,14 @@ if WIN()
 endif
 
 " === Buffergator
-Plugin 'jeetsukumaran/vim-buffergator'
+NeoBundle 'jeetsukumaran/vim-buffergator'
 let g:buffergator_viewport_split_policy = 'R'
 
 " === Searching
-Plugin 'rking/ag.vim'
+NeoBundle 'rking/ag.vim'
 
 " === Ctrl-P
-Plugin 'kien/ctrlp.vim'
+NeoBundle 'kien/ctrlp.vim'
 if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor
 
@@ -272,7 +262,7 @@ else
 endif
 
 " === Neocomplete
-Plugin 'Shougo/neocomplete.git'
+NeoBundle 'Shougo/neocomplete.git'
 if has("lua")
   let g:acp_enableAtStartup = 0
   let g:neocomplete#enable_at_startup = 1
@@ -304,8 +294,6 @@ if has("lua")
   autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 endif
 
-filetype plugin indent on
-
 " CTRL-P Plugin
 nmap <leader>p :CtrlP<cr>
 nmap <leader>n :CtrlPBuffer<cr>
@@ -320,7 +308,11 @@ map <silent> <C-e> :NERDTreeToggle %:p:h<CR>
 map <leader>e :NERDTreeToggle %:p:h<CR>
 map <leader>r :NERDTreeFind<cr>
 
-" === XML Formatter
+filetype plugin indent on
+call neobundle#end()
+NeoBundleCheck
+
+" === XML Formatter {{
 if filereadable(expand("$HOME/.vim/xmlformatter.vim"))
   so $HOME/.vim/xmlformatter.vim
 endif
@@ -328,7 +320,7 @@ nmap <silent> <C-x> :%FormatXML<CR>
 vmap <silent> <C-x> :FormatXML<CR>
 " }}
 " === UI {{
-set t_Co=256
+"set t_Co=256
 let base16colorspace=256
 if WIN()
   set background=dark

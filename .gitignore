@@ -5,9 +5,10 @@ ssh/known_hosts
 ssh/putty
 
 vim/bundle/
-!vim/bundle/vundle/
+!vim/bundle/neobundle.git/
 vim/backup/
 vim/tmp/
+vim/bundle/NeoBundle.lock
 
 mpd/mpd.db
 mpd/mpd.log

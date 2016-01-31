@@ -12,7 +12,7 @@ endif
 
 .PHONY: install
 
-install: basic private haskell x mpd ncmpcpp irssi dunst conky podget crontab
+install: basic private x haskell mpd ncmpcpp irssi dunst conky podget crontab
 
 install-mac: basic private haskell
 
@@ -51,7 +51,7 @@ vim::
 	@echo symlinked: vim
 	@ln $(LN_FLAGS) $(DOTFILES)/vim/vimrc ${HOME}/.vimrc
 	@ln $(LN_FLAGS) $(DOTFILES)/vim ${HOME}/.vim
-	@vim +PluginInstall +qall
+	@vim +NeoBundleInstall +qall
 
 irssi::
 	@ln $(LN_FLAGS) $(DOTFILES)/irssi ${HOME}/.irssi
