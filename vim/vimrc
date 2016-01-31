@@ -184,9 +184,11 @@ NeoBundle 'dzeban/vim-log-syntax'
 NeoBundle 'terryma/vim-expand-region'
 
 " === Statusbar
-NeoBundle 'bling/vim-airline'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
+let g:airline_theme = 'base16'
 
 " === Git
 NeoBundle 'tpope/vim-fugitive'
@@ -320,7 +322,7 @@ nmap <silent> <C-x> :%FormatXML<CR>
 vmap <silent> <C-x> :FormatXML<CR>
 " }}
 " === UI {{
-"set t_Co=256
+set t_Co=256
 let base16colorspace=256
 if WIN()
   set background=dark
