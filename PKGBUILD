@@ -134,7 +134,7 @@ aurdepends=(
 cabaldepends=(
 'X11-rm'
 )
-license="BSD"
+license=("BSD")
 install="${pkgname}.install"
 
 prepare() {
