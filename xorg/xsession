@@ -52,7 +52,7 @@ xset fp rehash
 [ -f $HOME/.Xresources ] && xrdb -load $HOME/.Xresources
 
 # set a wallpaper
-hash hsetroot && { hsetroot -fill $HOME/.wallpapers/current & }
+hash hsetroot 2>/dev/null && { hsetroot -fill $HOME/.wallpapers/current & }
 
 # hide the mouse when not used
 hash unclutter 2>/dev/null && { unclutter -noevents & }
