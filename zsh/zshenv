@@ -1,12 +1,12 @@
 # EXPORTS {
 export EDITOR=vim
 export VISUAL=vim
+export PAGER=vimpager
 
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_DATA_HOME=$HOME/.local/share
 export XDG_DATA_DIRS=$XDG_DATA_HOME:/usr/local/share/:/usr/share/
 
-#export BSPWM_SOCKET="/tmp/bspwm-socket"
 export PANEL_FIFO="/tmp/panel-fifo"
 
 export HISTSIZE=60000
@@ -19,13 +19,14 @@ export IRCSERVER=irc.freenode.net
 
 export CLICOLOR=true
 
-export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:/home/martin/Code/bin"
-
-# Ensure path arrays do not contain duplicates.
-typeset -g cdpath fpath mailpath path
+export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
+export JAVA_HOME=/usr/lib/jvm/java-7-jdk
+
+# Ensure path arrays do not contain duplicates.
+typeset -g cdpath fpath mailpath path
 
 # ALIASES {
 case `uname` in
@@ -40,9 +41,15 @@ case `uname` in
     export BROWSER=chromium
     ;;
 esac
+alias less=$PAGER
 alias urxvt=urxvtc
 alias vi=vim
 alias pi='ssh osmc@osmc'
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias conky-refresh="killall -SIGUSR1 conky"
+
+alias docker-rm-stopped='docker rm $(docker ps -q -f status=exited)'
+alias docker-rm-dangling-images='docker rmi $(docker images -f "dangling=true" -q)'
+alias docker-rm-dangling-volumes='docker volume rm $(docker volume ls -f "dangling=true" -q)'
+alias docker-inspect-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
 # }

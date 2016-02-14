@@ -9,6 +9,7 @@ arch=('x86_64' 'i686')
 makedepends=(
 # fundamentals
 'vim'
+'vimpager'
 'zsh'
 'tmux'
 'git'
@@ -62,6 +63,7 @@ makedepends=(
 'openssh'
 'wget'
 'unzip'
+'tree'
 
 # browser
 'firefox'
@@ -86,6 +88,7 @@ makedepends=(
 'lsof'
 'ltrace'
 'strace'
+'shellcheck'
 )
 aurdepends=(
 # xorg
@@ -133,6 +136,8 @@ aurdepends=(
 )
 cabaldepends=(
 'X11-rm'
+'hlint'
+'ghc-mod'
 )
 license=("BSD")
 install="${pkgname}.install"
