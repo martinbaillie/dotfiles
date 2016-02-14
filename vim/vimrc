@@ -96,6 +96,10 @@ set wildignore+=log/**
 set wildignore+=tmp/**
 set wildignore+=*.png,*.jpg,*.gif
 
+set clipboard=unnamedplus,autoselect
+set completeopt=menuone,menu,longest
+set cmdheight=1
+
 " === Scrolling
 set scrolloff=8
 set sidescrolloff=15
@@ -176,6 +180,15 @@ call neobundle#begin(expand('$HOME/.vim/bundle/'))
 
 " === Base
 NeoBundleFetch 'Shougo/neobundle.vim'
+NeoBundle 'Shougo/vimproc.vim', {
+            \ 'build' : {
+            \     'windows' : 'tools\\update-dll-mingw',
+            \     'cygwin' : 'make -f make_cygwin.mak',
+            \     'mac' : 'make',
+            \     'linux' : 'make',
+            \     'unix' : 'gmake',
+            \    },
+            \ }
 
 " === Scheme
 NeoBundle 'chriskempson/base16-vim'
@@ -186,6 +199,17 @@ NeoBundle 'dzeban/vim-log-syntax'
 " === Behaviour
 NeoBundle 'terryma/vim-expand-region'
 
+NeoBundle 'ervandew/supertab'
+let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
+
+if has("gui_running")
+  imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+else " no gui
+  if NIX()
+    inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
+  endif
+endif
+
 " === Statusbar
 NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'vim-airline/vim-airline-themes'
@@ -195,11 +219,25 @@ let g:airline_theme = 'base16'
 
 " === Git
 NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'airblade/vim-gitgutter'
+
+" === Coding
+NeoBundle 'raichoo/haskell-vim'
+NeoBundle 'ekalinin/Dockerfile.vim'
+NeoBundle 'eagletmt/ghcmod-vim'
+map <silent> tw :GhcModTypeInsert<CR>
+map <silent> ts :GhcModSplitFunCase<CR>
+map <silent> tq :GhcModType<CR>
+map <silent> te :GhcModTypeClear<CR>
+
+NeoBundle 'eagletmt/neco-ghc'
+let g:haskellmode_completion_ghc = 1
+autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 
 " === Nerd
 NeoBundle 'scrooloose/nerdtree.git'
-NeoBundle 'jistr/vim-nerdtree-tabs.git'
 NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'jistr/vim-nerdtree-tabs.git'
 
 let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
@@ -214,19 +252,6 @@ let NERDTreeWinSize=45
 
 " Close VIM if NERDTree is only buffer
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
-
-" === Syntax
-NeoBundle 'raichoo/haskell-vim'
-NeoBundle 'scrooloose/syntastic.git'
-let g:syntastic_enable_signs=1
-let g:syntastic_auto_jump=0
-let g:syntastic_auto_loc_list=1
-let g:syntastic_quiet_messages = {'level': 'warnings'}
-if WIN()
-  let g:loaded_syntastic_xml_xmllint_checker=0
-  let g:loaded_syntastic_xslt_xmllint_checker=0
-  let g:loaded_syntastic_docbk_xmllint_checker=0
-endif
 
 " === Buffergator
 NeoBundle 'jeetsukumaran/vim-buffergator'
@@ -313,10 +338,32 @@ map <silent> <C-e> :NERDTreeToggle %:p:h<CR>
 map <leader>e :NERDTreeToggle %:p:h<CR>
 map <leader>r :NERDTreeFind<cr>
 
+" === Syntax
+NeoBundle 'scrooloose/syntastic.git'
+map <Leader>s :SyntasticToggleMode<CR>
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_enable_signs = 1
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = "⚠"
+
+if WIN()
+  let g:loaded_syntastic_xml_xmllint_checker=0
+  let g:loaded_syntastic_xslt_xmllint_checker=0
+  let g:loaded_syntastic_docbk_xmllint_checker=0
+endif
+
 filetype plugin indent on
 call neobundle#end()
 NeoBundleCheck
-
+" }}
 " === XML Formatter {{
 if filereadable(expand("$HOME/.vim/xmlformatter.vim"))
   so $HOME/.vim/xmlformatter.vim

@@ -89,6 +89,8 @@ makedepends=(
 'ltrace'
 'strace'
 'shellcheck'
+'eslint'
+'tidy'
 )
 aurdepends=(
 # xorg
