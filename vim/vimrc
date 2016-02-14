@@ -65,10 +65,13 @@ set nowb
 set autoindent
 set smartindent
 set smarttab
+set expandtab
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
-set expandtab
+autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
+autocmd Filetype yaml setlocal ts=2 sts=2 sw=2
 
 set list listchars=tab:\ \ ,trail:·
 "set list
