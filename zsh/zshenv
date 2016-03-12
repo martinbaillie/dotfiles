@@ -23,7 +23,7 @@ export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
-export JAVA_HOME=/usr/lib/jvm/java-7-jdk
+export JAVA_HOME=/usr/lib/jvm/default-runtime
 
 # Ensure path arrays do not contain duplicates.
 typeset -g cdpath fpath mailpath path
