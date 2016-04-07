@@ -4,6 +4,11 @@ servers = (
     address = "chat.freenode.net";
     chatnet = "Freenode";
     port = "6667";
+  },
+  {
+    address = "baillie.redirectme.net";
+    chatnet = "Freenode";
+    port = "31339";
   }
 );
 
