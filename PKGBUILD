@@ -68,7 +68,7 @@ makedepends=(
 # browser
 'firefox'
 'chromium'
-'chromium-pepper-flash'
+#'chromium-pepper-flash'
 
 # laptop
 'acpi'
