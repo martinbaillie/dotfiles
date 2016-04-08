@@ -3,6 +3,7 @@ ncmpcpp/error.log
 ssh/id_rsa
 ssh/known_hosts
 ssh/putty
+ssh/config
 
 vim/bundle/
 !vim/bundle/neobundle.git/
