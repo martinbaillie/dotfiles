@@ -19,7 +19,7 @@ export IRCSERVER=irc.freenode.net
 
 export CLICOLOR=true
 
-export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin"
+export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
