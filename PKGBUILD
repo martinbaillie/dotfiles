@@ -68,7 +68,7 @@ makedepends=(
 # browser
 'firefox'
 'chromium'
-'chromium-pepper-flash'
+#'chromium-pepper-flash'
 
 # laptop
 'acpi'
@@ -120,6 +120,7 @@ aurdepends=(
 'speedtest-cli'
 'archey-git'
 'nixnote2-git'
+'neofetch-git'
 
 # package building
 'pkgbuild-introspection'
@@ -159,7 +160,7 @@ prepare() {
 
     echo "Installing Haskell dependencies using helper: cabal"
     cabal update
-    cabal install ${cabaldepends[@]}
+    cabal install --force-reinstalls ${cabaldepends[@]}
 }
 
 build() { :; }
