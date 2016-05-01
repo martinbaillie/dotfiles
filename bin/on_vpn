@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ifconfig utun0 2>/dev/null|grep UP >/dev/null

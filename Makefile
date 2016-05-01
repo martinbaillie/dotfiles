@@ -112,7 +112,10 @@ podget::
 
 haskell::
 	@ln $(LN_FLAGS) $(DOTFILES)/haskell/haskeline ${HOME}/.haskeline
+	@ln $(LN_FLAGS) $(DOTFILES)/haskell/ghci ${HOME}/.ghci
+ifneq (, $(shell which xmonad))
 	@xmonad --recompile
+endif
 	@echo symlinked: haskell
 
 ssh::
