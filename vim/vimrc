@@ -131,7 +131,7 @@ nnoremap <leader>9 :9b<CR>
 nnoremap <leader>0 :10b<CR>
 
 " Close buffer
-nmap <leader>x :bd<cr>
+nmap <leader>x :BD<cr>
 
 " Fold with leader-space
 nnoremap <leader><space> za
@@ -230,9 +230,9 @@ map <silent> ts :GhcModSplitFunCase<CR>
 map <silent> tq :GhcModType<CR>
 map <silent> te :GhcModTypeClear<CR>
 
-NeoBundle 'eagletmt/neco-ghc'
-let g:haskellmode_completion_ghc = 1
-autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
+"NeoBundle 'eagletmt/neco-ghc'
+"let g:haskellmode_completion_ghc = 1
+"autocmd FileType haskell setlocal omnifunc=necoghc#omnifunc
 
 " === Nerd
 NeoBundle 'scrooloose/nerdtree.git'
@@ -253,9 +253,11 @@ let NERDTreeWinSize=45
 " Close VIM if NERDTree is only buffer
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-" === Buffergator
+" === Buffers
 NeoBundle 'jeetsukumaran/vim-buffergator'
 let g:buffergator_viewport_split_policy = 'R'
+NeoBundle 'qpkorr/vim-bufkill'
+NeoBundle 'nathanaelkane/vim-command-w.git'
 
 " === Searching
 NeoBundle 'rking/ag.vim'
@@ -411,6 +413,11 @@ if has('gui_running')
       set guifont=Inconsolata\ for\ Powerline:h13
       map <D-CR> :set invfu<CR>
       set fu
+      set clipboard=unnamed
+
+      macmenu &File.Close key=<nop>
+      nmap <D-w> :CommandW<CR>
+      imap <D-w> <Esc>:CommandW<CR>
     endif
   endif
 endif

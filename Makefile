@@ -50,6 +50,7 @@ tmux::
 vim::
 	@echo symlinked: vim
 	@ln $(LN_FLAGS) $(DOTFILES)/vim/vimrc ${HOME}/.vimrc
+	@ln $(LN_FLAGS) $(DOTFILES)/vim/vimrc ${HOME}/.gvimrc
 	@ln $(LN_FLAGS) $(DOTFILES)/vim ${HOME}/.vim
 	@vim +NeoBundleInstall +qall
 
