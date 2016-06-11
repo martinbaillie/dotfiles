@@ -55,6 +55,7 @@ makedepends=(
 'compton'
 'dunst'
 'scrot'
+'shutter'
 'pcmanfm'
 'evince'
 'irssi'
@@ -91,6 +92,7 @@ makedepends=(
 'shellcheck'
 'eslint'
 'tidy'
+'stack'
 )
 aurdepends=(
 # xorg

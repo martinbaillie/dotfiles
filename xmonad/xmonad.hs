@@ -66,7 +66,7 @@ additionalKeys =
 
     , ("M1-<Space>",              spawn "~/Code/bin/spawn_dmenu")
 
-    , ("<Print>",                 spawn "scrot -e 'mv $f ~/Pictures/ 2>/dev/null'")
+    , ("<Print>",                 spawn "shutter -s")
     , ("M-<Print>",               spawn "scrot -u -e 'mv $f ~/Pictures/ 2>/dev/null'")
 
     , ("<XF86Sleep>",             spawn "systemctl suspend")
@@ -120,7 +120,7 @@ removeKeys =
 
 layoutHook' = smartBorders
     $ borderResize
-    $ spacing 20
+    $ spacing 25
     $ avoidStruts
     $ emptyBSP
     |||
