@@ -38,7 +38,9 @@ unalias rm
 setopt clobber
 
 # Dir colors
-eval $(dircolors -b $HOME/.dircolors)
+if hash dircolors 2>/dev/null; then
+    eval $(dircolors -b $HOME/.dircolors)
+fi
 
 # Local machine mods
 if [ -f ~/.zshrc.local ]; then source ~/.zshrc.local; fi
