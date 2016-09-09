@@ -3,6 +3,7 @@
 [alias]
     st = status
     ci = commit
+    lastchange = log -p --follow -n 1
 [url "https://github.com"]
     insteadOf = git://github.com
 [push]
