@@ -131,6 +131,7 @@ update:
 private::
 ifneq "$(wildcard $(PRIVATE_REPO) )" ""
 	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_rsa ${HOME}/.ssh/id_rsa
+	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_ed25519 ${HOME}/.ssh/id_ed25519
 	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/config ${HOME}/.ssh/config
 	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/putty ${HOME}/.ssh/putty
 	@chmod 600 ${HOME}/.ssh/id_rsa
