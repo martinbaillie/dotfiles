@@ -11,6 +11,7 @@ vim/bundle/
 vim/backup/
 vim/tmp/
 vim/bundle/NeoBundle.lock
+vim/spell
 
 mpd/mpd.db
 mpd/mpd.log

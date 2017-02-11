@@ -10,3 +10,5 @@
     default = simple
 [credential]
 	helper = store
+[merge]
+	tool = gvimdiff
