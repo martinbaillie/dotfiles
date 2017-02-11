@@ -35,6 +35,7 @@ set -o vi
 
 # Some annoying defaults
 unalias rm
+unalias gb
 setopt clobber
 
 # Dir colors

@@ -17,13 +17,18 @@ export IRCUSER=zslothy
 export IRCNAME=zslothy
 export IRCSERVER=irc.freenode.net
 
+export GOPATH=$HOME/Code/go
+export GOROOT=/usr/local/opt/go/libexec
+
 export CLICOLOR=true
 
-export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin"
+export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin:$GOPATH/bin:$GOROOT/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
 export JAVA_HOME=/usr/lib/jvm/default-runtime
+
+export GOOS=$(uname -s | tr '[:upper:]' '[:lower:]')
 
 # Ensure path arrays do not contain duplicates.
 typeset -g cdpath fpath mailpath path
