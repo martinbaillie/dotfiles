@@ -3,6 +3,7 @@
 scriptencoding utf-8
 set encoding=utf-8
 set nocompatible
+set shell=bash\ -i
 
 syntax on
 set synmaxcol=200
@@ -26,7 +27,7 @@ if WIN()
 
   if filereadable(expand("$HOME/.vim/authorinfo.vim"))
     so $HOME/.vim/authorinfo.vim
-    let g:vimrc_author='Martin Baillie <martin.baillie@verint.com>'
+    let g:vimrc_author='Martin Baillie <martin.t.baillie@gmail.com>'
     nmap <F4> :AuthorInfoDetect<cr>
   endif
 elseif (OSX() || NIX())
@@ -72,6 +73,7 @@ set tabstop=4
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 autocmd Filetype yaml setlocal ts=2 sts=2 sw=2
+autocmd FileType latex,tex,md,markdown,text setlocal spell spelllang=en_au
 
 set list listchars=tab:\ \ ,trail:·
 "set list
@@ -199,17 +201,6 @@ NeoBundle 'dzeban/vim-log-syntax'
 " === Behaviour
 NeoBundle 'terryma/vim-expand-region'
 
-NeoBundle 'ervandew/supertab'
-let g:SuperTabDefaultCompletionType = '<c-x><c-o>'
-
-if has("gui_running")
-  imap <c-space> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-else " no gui
-  if NIX()
-    inoremap <Nul> <c-r>=SuperTabAlternateCompletion("\<lt>c-x>\<lt>c-o>")<cr>
-  endif
-endif
-
 " === Statusbar
 NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'vim-airline/vim-airline-themes'
@@ -222,13 +213,28 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'airblade/vim-gitgutter'
 
 " === Coding
+NeoBundle 'fatih/vim-go'
+let g:go_fmt_command = "goimports"
+
+NeoBundle 'suan/vim-instant-markdown'
 NeoBundle 'raichoo/haskell-vim'
 NeoBundle 'ekalinin/Dockerfile.vim'
+NeoBundle 'itchyny/vim-haskell-indent'
+"NeoBundle 'rizzatti/dash.vim'
 NeoBundle 'eagletmt/ghcmod-vim'
 map <silent> tw :GhcModTypeInsert<CR>
 map <silent> ts :GhcModSplitFunCase<CR>
 map <silent> tq :GhcModType<CR>
 map <silent> te :GhcModTypeClear<CR>
+
+let s:width = 80
+function! HaskellModuleSection(...)
+    let name = 0 < a:0 ? a:1 : inputdialog("Section name: ")
+    return  repeat('-', s:width) . "\n"
+    \       . "--  " . name . "\n"
+    \       . "\n"
+endfunction
+nmap <silent> --s "=HaskellModuleSection()<CR>gp
 
 "NeoBundle 'eagletmt/neco-ghc'
 "let g:haskellmode_completion_ghc = 1
@@ -355,6 +361,8 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_enable_signs = 1
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_warning_symbol = "⚠"
+let g:syntastic_haskell_checkers = ['ghc-mod']
+
 
 if WIN()
   let g:loaded_syntastic_xml_xmllint_checker=0
