@@ -14,7 +14,7 @@ for script in $script_dir/base16*.sh; do
 
   ln -fs $script_dir/base16-${theme}.${variation}.sh $HOME/.base16_theme
   ln -fs $xresources_dir/base16-${theme}.${variation}.256.xresources $HOME/.base16_xresources
-  xrdb -load "$HOME/.Xresources"
+  hash xrdb 2>/dev/null && xrdb -load "$HOME/.Xresources"
 
   export BASE21_THEME=base16-${theme}base16
   export BASE16_VARIATION=$variation
@@ -23,9 +23,16 @@ for script in $script_dir/base16*.sh; do
     tmux_${variation}
   fi
 
+  if [ -e "$HOME/.vim/bundle/base16-vim/colors/base16-$theme-$variation.vim" ];
+  then
+      vim_theme="base16-$theme-$variation"
+  else
+      vim_theme="base16-$theme"
+  fi
+
   cat <<- EOF > "$HOME/.base16_vimrc"
   set background=$variation
-  colorscheme base16-$theme
+  colorscheme $vim_theme
 EOF
 
   [[ -s ~/.base16_theme ]] && . ~/.base16_theme
