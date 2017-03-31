@@ -38,7 +38,7 @@ case `uname` in
   Darwin)
     gvim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
     alias ls='ls -FG'
-    alias vim=gvim
+    alias vim=nvim
     export BROWSER='open'
     ;;
   Linux)

@@ -33,6 +33,7 @@ for script in $script_dir/base16*.sh; do
   cat <<- EOF > "$HOME/.base16_vimrc"
   set background=$variation
   colorscheme $vim_theme
+  let g:spacevim_colorscheme='$vim_theme'
 EOF
 
   [[ -s ~/.base16_theme ]] && . ~/.base16_theme
