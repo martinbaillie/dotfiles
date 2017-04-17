@@ -38,6 +38,14 @@ unalias rm
 unalias gb
 setopt clobber
 
+# Change Directory Recent (cdr) functionality
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':completion:*' recent-dirs-insert both
+zstyle ':chpwd:*' recent-dirs-max 500
+zstyle ':chpwd:*' recent-dirs-default true
+alias cd=cdr
+
 # Dir colors
 if hash dircolors 2>/dev/null; then
     eval $(dircolors -b $HOME/.dircolors)
@@ -45,3 +53,5 @@ fi
 
 # Local machine mods
 if [ -f ~/.zshrc.local ]; then source ~/.zshrc.local; fi
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
