@@ -11,4 +11,8 @@
 [credential]
 	helper = store
 [merge]
-	tool = gvimdiff
+    tool = vimdiff
+[mergetool]
+    prompt = true
+[mergetool "vimdiff"]
+    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
