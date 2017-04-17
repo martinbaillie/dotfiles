@@ -43,3 +43,5 @@ xdg/share/applications/*-Default.desktop
 xorg/wallpapers/current
 
 *.lock
+
+spacevim/.netrwhist
