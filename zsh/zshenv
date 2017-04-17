@@ -1,6 +1,6 @@
 # EXPORTS {
-export EDITOR=vim
-export VISUAL=vim
+export EDITOR=nvim
+export VISUAL=nvim
 export PAGER=vimpager
 
 export XDG_CONFIG_HOME=$HOME/.config
@@ -37,8 +37,9 @@ typeset -g cdpath fpath mailpath path
 case `uname` in
   Darwin)
     gvim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
+#    vim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
+    vim () { if ps -ef | grep "[n]vim" &>/dev/null; then nvr --remote-silent "$@"; else NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim "$@"; fi }
     alias ls='ls -FG'
-    alias vim=nvim
     export BROWSER='open'
     ;;
   Linux)
