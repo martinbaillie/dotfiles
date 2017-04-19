@@ -1,5 +1,6 @@
 [user]
     name = Martin Baillie
+	signingkey = 49363764
 [alias]
     st = status
     ci = commit
@@ -16,3 +17,7 @@
     prompt = true
 [mergetool "vimdiff"]
     cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[commit]
+	gpgsign = true
+[gpg]
+	program = /usr/local/MacGPG2/bin/gpg2
