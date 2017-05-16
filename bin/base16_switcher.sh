@@ -23,7 +23,8 @@ for script in $script_dir/base16*.sh; do
     tmux_${variation}
   fi
 
-  if [ -e "$HOME/.vim/bundle/base16-vim/colors/base16-$theme-$variation.vim" ];
+  if [ -e "$HOME/.vim/bundle/base16-vim/colors/base16-$theme-$variation.vim" ] || \
+      [ -e "$HOME/.config/nvim/dein/repos/github.com/chriskempson/base16-vim/colors/base16-$theme-$variation.vim" ];
   then
       vim_theme="base16-$theme-$variation"
   else

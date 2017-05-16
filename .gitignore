@@ -13,6 +13,9 @@ vim/tmp/
 vim/bundle/NeoBundle.lock
 vim/spell
 
+nvim/dein
+nvim/.netrwhist
+
 mpd/mpd.db
 mpd/mpd.log
 mpd/mpd.pid

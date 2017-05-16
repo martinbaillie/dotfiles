@@ -54,6 +54,11 @@ vim::
 	@ln $(LN_FLAGS) $(DOTFILES)/vim ${HOME}/.vim
 	@vim +NeoBundleInstall +qall
 
+nvim::
+	@echo symlinked: nvim
+	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
+	@ln $(LN_FLAGS) $(DOTFILES)/nvim ${HOME}/.config/nvim
+
 irssi::
 	@ln $(LN_FLAGS) $(DOTFILES)/irssi ${HOME}/.irssi
 	@echo symlinked: irssi
