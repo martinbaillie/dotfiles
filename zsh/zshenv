@@ -22,7 +22,7 @@ export GOROOT=/usr/local/opt/go/libexec
 
 export CLICOLOR=true
 
-export PATH="$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin:$GOPATH/bin:$GOROOT/bin"
+export PATH="/usr/local/bin:$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin:$GOPATH/bin:$GOROOT/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -36,9 +36,10 @@ typeset -g cdpath fpath mailpath path
 # ALIASES {
 case `uname` in
   Darwin)
-    gvim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
-#    vim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
-    vim () { if ps -ef | grep "[n]vim" &>/dev/null; then nvr --remote-silent "$@"; else NVIM_LISTEN_ADDRESS=/tmp/nvimsocket nvim "$@"; fi }
+    #vim () { [ -z "$(vim --serverlist)" ] && command vim "$@" || command vim --remote-silent "$@" ; }
+    #vim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
+    vim () { export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket; if [ -S "${NVIM_LISTEN_ADDRESS}" ]; then nvr --remote-silent "$@"; else nvim "$@"; fi }
+    #vim () { export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket; if ps x | grep "[n]vim" &>/dev/null; then nvr --remote-silent "$@"; else nvim "$@"; fi }
     alias ls='ls -FG'
     export BROWSER='open'
     ;;
@@ -50,7 +51,6 @@ esac
 alias less=$PAGER
 alias urxvt=urxvtc
 alias vi=vim
-alias pi='ssh osmc@osmc'
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias conky-refresh="killall -SIGUSR1 conky"
 
