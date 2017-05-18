@@ -17,9 +17,6 @@ if dein#load_state('$HOME/.config/nvim/dein')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('qpkorr/vim-bufkill')
 
-  " todo: am i going to use this?
-  call dein#add('Shougo/denite.nvim')
-
   call dein#add('Shougo/deoplete.nvim')
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
@@ -30,11 +27,16 @@ if dein#load_state('$HOME/.config/nvim/dein')
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
   call dein#add('pbogut/fzf-mru.vim')
 
-  call dein#add('fatih/vim-go', {'on_ft' : 'go'})
   call dein#add('scrooloose/nerdcommenter')
+  call dein#add('scrooloose/nerdtree')
   
+  call dein#add('tpope/vim-fugitive')
+  call dein#add('airblade/vim-gitgutter')
+  call dein#add('neomake/neomake')
+
   call dein#add('plasticboy/vim-markdown', {'on_ft' : 'markdown'})
   call dein#add('davinche/godown-vim', {'on_ft' : 'markdown'})
+  call dein#add('fatih/vim-go', {'on_ft' : 'go'})
 
   call dein#end()
   call dein#save_state()
@@ -112,11 +114,12 @@ nnoremap J mzJ`z
 nnoremap n nzz
 nnoremap } }zz
 nnoremap N Nzz
-" enter to bottom, Backspace to top, 12<enter> to 12th line
+" enter to bottom, backspace to top, 12<enter> to 12th line
 nnoremap <CR> G
 nnoremap <BS> gg
-" combine with iterm2 sending esc+c upon mod+c
+" combine with iterm2 profile sending esc+c upon mod+y, esc+a on mod+a
 vnoremap <M-y> "+y
+nnoremap <M-a> ggvG
 
 "
 " plugin settings
@@ -195,7 +198,14 @@ nmap <leader>9 <Plug>AirlineSelectTab9
 nmap <leader>- <Plug>AirlineSelectPrevTab
 nmap <leader>= <Plug>AirlineSelectNextTab
 
-" denite
+" nerdtree
+let g:NERDShutUp=1
+let NERDTreeShowHidden=1
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.\.$', '\.$']
+let NERDTreeChDirMode=0
+map <silent> <c-e> :NERDTreeToggle %:p:h<cr>
+map <leader>e :NERDTreeToggle %:p:h<cr>
+map <leader>r :NERDTreeFind<cr>
 
 " markdown/godown 
 let g:godown_autorun=1
@@ -203,12 +213,16 @@ let g:godown_autorun=1
 " bufkill
 nmap <leader>x :BD<cr>
 
+" gitgutter
+let g:gitgutter_override_sign_column_highlight=0
+nmap ]h <Plug>GitGutterNextHunk
+nmap [h <Plug>GitGutterPrevHunk
+
+" neomake
+autocmd! BufWritePost * Neomake
+
+" go
 "nmap <leader>gt :GoDef<cr>
-"nmap ]h <Plug>GitGutterNextHunk
-"nmap [h <Plug>GitGutterPrevHunk
-"map <silent> <c-e> :NERDTreeToggle %:p:h<cr>
-"map <leader>e :NERDTreeToggle %:p:h<cr>
-"map <leader>r :NERDTreeFind<cr>
 
 "
 " colours
@@ -223,10 +237,15 @@ endif
 " TODO: this function seems broken
 function! s:matching_splits()
     set foldcolumn=2
-    hi LineNr guibg=bg ctermbg=bg
-    hi CursorLineNr guibg=bg ctermbg=bg
-    hi foldcolumn guibg=bg ctermbg=bg
-    hi VertSplit guibg=bg ctermbg=bg guifg=bg ctermfg=bg
+    hi LineNr guibg=bg
+    hi CursorLineNr guibg=bg
+    hi foldcolumn guibg=bg
+    hi VertSplit guibg=bg guifg=bg
+    hi GitGutterAdd guibg=bg
+    hi GitGutterChange guibg=bg
+    hi GitGutterDelete guibg=bg
+    hi GitGutterChangeDelete guibg=bg
+    hi! link SignColumn LineNr
 endfunction
 call s:matching_splits()
 
