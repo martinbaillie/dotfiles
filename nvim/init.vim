@@ -17,6 +17,9 @@ if dein#load_state('$HOME/.config/nvim/dein')
   call dein#add('vim-airline/vim-airline-themes')
   call dein#add('qpkorr/vim-bufkill')
 
+  call dein#add('scrooloose/nerdcommenter')
+  call dein#add('scrooloose/nerdtree')
+
   call dein#add('Shougo/deoplete.nvim')
   call dein#add('Shougo/neosnippet.vim')
   call dein#add('Shougo/neosnippet-snippets')
@@ -27,9 +30,6 @@ if dein#load_state('$HOME/.config/nvim/dein')
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
   call dein#add('pbogut/fzf-mru.vim')
 
-  call dein#add('scrooloose/nerdcommenter')
-  call dein#add('scrooloose/nerdtree')
-  
   call dein#add('tpope/vim-fugitive')
   call dein#add('airblade/vim-gitgutter')
   call dein#add('neomake/neomake')
@@ -45,15 +45,15 @@ endif
 "
 " system functions
 "
-silent function! OSX()
+silent fu! OSX()
 	return has('macunix')
-endfunction
-silent function! NIX()
+endf
+silent fu! NIX()
 	return has('unix') && !has('macunix') && !has('win32unix')
-endfunction
-silent function! WIN()
+endf
+silent fu! WIN()
 	return  (has('win16') || has('win32') || has('win64'))
-endfunction
+endf
 if (OSX() || NIX())
   cmap w!! w !sudo tee % >/dev/null
 endif
@@ -82,18 +82,20 @@ set smartcase
 set scrolloff=10
 set sidescrolloff=15
 set sidescroll=1
-set encoding=utf-8
-
-scriptencoding utf-8
-
 set autoindent
 set smartindent
+set cindent
 set smarttab
 set expandtab
 set shiftwidth=4
 set softtabstop=4
 set tabstop=4
 set nofoldenable
+set noshowcmd
+set linebreak
+set encoding=utf-8
+set autoread
+scriptencoding utf-8
 
 autocmd Filetype html,ruby,yaml setlocal ts=2 sts=2 sw=2
 autocmd FileType latex,tex,md,markdown,text setlocal spell spelllang=en_au
@@ -120,6 +122,14 @@ nnoremap <BS> gg
 " combine with iterm2 profile sending esc+c upon mod+y, esc+a on mod+a
 vnoremap <M-y> "+y
 nnoremap <M-a> ggvG
+" tab between
+map <silent><TAB> <C-w>w
+map <silent><S-TAB> <C-w>p
+" smart up and down
+nnoremap <silent><Down> gj
+nnoremap <silent><Up> gk
+" remove spaces at the end of lines
+nnoremap <silent> ,<Space> :<C-u>silent! keeppatterns %substitute/\s\+$//e<CR>
 
 "
 " plugin settings
@@ -165,7 +175,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline_skip_empty_sections = 1
 let g:airline#extensions#tabline#buffer_idx_mode = 1
 let g:airline#extensions#tabline#buffer_idx_format = {}
-function! s:bubble_num(num) abort
+fu! s:bubble_num(num) abort
   let list = []
   call add(list,['➊', '➋', '➌', '➍', '➎', '➏', '➐', '➑', '➒', '➓'])
   let n = ''
@@ -174,7 +184,7 @@ function! s:bubble_num(num) abort
   catch
   endtry
   return  n
-endfunction
+endf
 for s:i in range(9)
 call extend(g:airline#extensions#tabline#buffer_idx_format,
       \ {s:i : s:bubble_num(s:i). ' '})
@@ -199,13 +209,17 @@ nmap <leader>- <Plug>AirlineSelectPrevTab
 nmap <leader>= <Plug>AirlineSelectNextTab
 
 " nerdtree
-let g:NERDShutUp=1
-let NERDTreeShowHidden=1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.\.$', '\.$']
-let NERDTreeChDirMode=0
 map <silent> <c-e> :NERDTreeToggle %:p:h<cr>
 map <leader>e :NERDTreeToggle %:p:h<cr>
 map <leader>r :NERDTreeFind<cr>
+let g:NERDTreeWinPos='right'
+let g:NERDTreeWinSize=31
+let g:NERDTreeChDirMode=1
+let g:NERDShutUp=1
+let g:NERDTreeShowHidden=1
+let g:NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.\.$', '\.$']
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
 
 " markdown/godown 
 let g:godown_autorun=1
@@ -233,9 +247,7 @@ else
     set background=dark
     colorscheme base16-default
 endif
-
-" TODO: this function seems broken
-function! s:matching_splits()
+fu! s:matching_splits()
     set foldcolumn=2
     hi LineNr guibg=bg
     hi CursorLineNr guibg=bg
@@ -246,7 +258,7 @@ function! s:matching_splits()
     hi GitGutterDelete guibg=bg
     hi GitGutterChangeDelete guibg=bg
     hi! link SignColumn LineNr
-endfunction
+endf
 call s:matching_splits()
 
 "
