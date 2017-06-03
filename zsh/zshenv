@@ -1,7 +1,8 @@
 # EXPORTS {
 export EDITOR=nvim
 export VISUAL=nvim
-export PAGER=vimpager
+export PAGER=/usr/local/share/nvim/runtime/macros/less.sh
+export MANPAGER="nvim -c 'set ft=man' -"
 
 export XDG_CONFIG_HOME=$HOME/.config
 export XDG_DATA_HOME=$HOME/.local/share
@@ -48,7 +49,7 @@ case `uname` in
     export BROWSER=chromium
     ;;
 esac
-alias less=$PAGER
+#alias less=$PAGER
 alias urxvt=urxvtc
 alias vi=vim
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"

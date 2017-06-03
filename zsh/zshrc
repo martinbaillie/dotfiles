@@ -44,7 +44,7 @@ add-zsh-hook chpwd chpwd_recent_dirs
 zstyle ':completion:*' recent-dirs-insert both
 zstyle ':chpwd:*' recent-dirs-max 500
 zstyle ':chpwd:*' recent-dirs-default true
-alias cd=cdr
+#alias cd=cdr
 
 # Dir colors
 if hash dircolors 2>/dev/null; then
@@ -63,7 +63,6 @@ export FZF_DEFAULT_COMMAND='
       rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*") 2> /dev/null'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
 export FZF_ALT_C_COMMAND="bfs -type d -nohidden"  
-alias find="noglob bfs"
 bindkey -s '\C-p' 'vim $(fzf)\n'
 bindkey '\C-g' fzf-cd-widget
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

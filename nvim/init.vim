@@ -33,6 +33,7 @@ if dein#load_state('$HOME/.config/nvim/dein')
   call dein#add('tpope/vim-fugitive')
   call dein#add('airblade/vim-gitgutter')
   call dein#add('neomake/neomake')
+  call dein#add('martinda/Jenkinsfile-vim-syntax')
 
   call dein#add('plasticboy/vim-markdown', {'on_ft' : 'markdown'})
   call dein#add('davinche/godown-vim', {'on_ft' : 'markdown'})
@@ -93,16 +94,35 @@ set tabstop=4
 set nofoldenable
 set noshowcmd
 set linebreak
-set encoding=utf-8
 set autoread
+set inccommand=split
+set hidden
+set confirm
+set cursorline
+set diffopt=filler,vertical,iwhite
+set encoding=utf-8
 scriptencoding utf-8
 
-autocmd Filetype html,ruby,yaml setlocal ts=2 sts=2 sw=2
-autocmd FileType latex,tex,md,markdown,text setlocal spell spelllang=en_au
+au Filetype html,ruby,yaml setlocal ts=2 sts=2 sw=2
+au FileType latex,tex,md,markdown,text setlocal spell spelllang=en_au
+au BufWinEnter quickfix nnoremap <silent> <buffer>
+            \   q :cclose<cr>:lclose<cr>
+au BufEnter * if (winnr('$') == 1 && &buftype ==# 'quickfix' ) |
+            \   bd|
+            \   q | endif
+au BufEnter,WinEnter,InsertLeave * setl cursorline
+au BufLeave,WinLeave,InsertEnter * setl nocursorline
+au FileType text setlocal textwidth=78
+au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
+au FileType qf setlocal wrap
+"au BufWritePost * if &diff == 1 | diffupdate | endif
 
 "
 " vim mappings
 "
+" stop accidentally recording
+nnoremap Q q
+nnoremap q <Nop>
 " saving and quitting
 noremap <leader>q :q<cr>
 nnoremap <leader>w :w<cr>
@@ -121,7 +141,7 @@ nnoremap <CR> G
 nnoremap <BS> gg
 " combine with iterm2 profile sending esc+c upon mod+y, esc+a on mod+a
 vnoremap <M-y> "+y
-nnoremap <M-a> ggvG
+nnoremap <M-a> ggVG
 " tab between
 map <silent><TAB> <C-w>w
 map <silent><S-TAB> <C-w>p
@@ -129,7 +149,16 @@ map <silent><S-TAB> <C-w>p
 nnoremap <silent><Down> gj
 nnoremap <silent><Up> gk
 " remove spaces at the end of lines
-nnoremap <silent> ,<Space> :<C-u>silent! keeppatterns %substitute/\s\+$//e<CR>
+nnoremap <silent> <C-Space> :<C-u>silent! keeppatterns %substitute/\s\+$//e<CR>
+" <Esc> to exit terminal-mode:
+:tnoremap <Esc> <C-\><C-n>
+" diffing
+map <leader>d1 :diffget 1<cr>
+map <leader>d2 :diffget 2<cr>
+map <leader>d3 :diffget 3<cr>
+" substitute word under cursor or selection
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
+vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 
 "
 " plugin settings
@@ -159,8 +188,8 @@ function! s:goyo_leave()
   call <SID>matching_splits()
 endfunction
 augroup goyo_map
-  autocmd! User GoyoEnter nested call <SID>goyo_enter()
-  autocmd! User GoyoLeave nested call <SID>goyo_leave()
+  au! User GoyoEnter nested call <SID>goyo_enter()
+  au! User GoyoLeave nested call <SID>goyo_leave()
 augroup END
 
 " fzf
@@ -218,8 +247,8 @@ let g:NERDTreeChDirMode=1
 let g:NERDShutUp=1
 let g:NERDTreeShowHidden=1
 let g:NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr', '\.\.$', '\.$']
-autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-"autocmd BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
+au BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"au BufEnter * if &modifiable | NERDTreeFind | wincmd p | endif
 
 " markdown/godown 
 let g:godown_autorun=1
@@ -233,10 +262,15 @@ nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
 
 " neomake
-autocmd! BufWritePost * Neomake
+au! BufWritePost * Neomake
+let g:neomake_open_list = 2
 
 " go
-"nmap <leader>gt :GoDef<cr>
+let g:go_list_type = "quickfix"
+let g:go_fmt_command = "goimports"
+let g:go_metalinter_autosave = 1
+let g:go_gocode_unimported_packages = 1
+nmap <leader>gt :GoDef<cr>
 
 "
 " colours
@@ -265,7 +299,7 @@ call s:matching_splits()
 " gui
 "
 if has('gui_running')
-  autocmd! GUIEnter * set vb t_vb=
+  au! GUIEnter * set vb t_vb=
   set mousehide
   set guioptions=
   set guicursor+=a:blinkon0
