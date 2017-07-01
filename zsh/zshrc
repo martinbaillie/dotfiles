@@ -1,5 +1,5 @@
 # Colour Switching
-BASE16_SWITCHER="$HOME/Code/bin/base16_switcher.sh"
+BASE16_SWITCHER="$HOME/Code/bin/base16_switcher_new.sh"
 [[ -f $BASE16_SWITCHER ]] && source $BASE16_SWITCHER
 
 # Functions
