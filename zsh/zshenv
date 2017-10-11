@@ -1,7 +1,7 @@
 # EXPORTS {
 export EDITOR=nvim
 export VISUAL=nvim
-export PAGER=/usr/local/share/nvim/runtime/macros/less.sh
+# export PAGER=/usr/local/share/nvim/runtime/macros/less.sh
 export MANPAGER="nvim -c 'set ft=man' -"
 
 export XDG_CONFIG_HOME=$HOME/.config
