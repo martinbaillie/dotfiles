@@ -17,6 +17,7 @@ call SpaceVim#layers#load('shell')
 "
 let g:spacevim_disabled_plugins=[
     \ ['mhinz/vim-signify'],
+    \ ['mhinz/vim-startify'],
     \ ['vim-chat/vim-chat'],
     \ ]
 
@@ -71,6 +72,9 @@ au FileType vimfiler nmap <buffer> <2-LeftMouse> <Plug>(vimfiler_edit_file)
 " denite / unite
 nnoremap <silent> [unite]m  :FZFMru<cr>
 "let g:_spacevim_mappings_unite.m = ['Unite fzf_mru', 'fzf_mru']
+
+" terraform formatting
+let g:terraform_fmt_on_save=1
 
 "
 " standard vim settings
