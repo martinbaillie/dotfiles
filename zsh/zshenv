@@ -12,6 +12,7 @@ export PANEL_FIFO="/tmp/panel-fifo"
 
 export HISTSIZE=60000
 export HISTFILE=~/.zsh/zsh_history
+export HISTCONTROL=ignoreboth:erasedups
 
 export IRCNICK=zslothy
 export IRCUSER=zslothy
@@ -41,7 +42,7 @@ case `uname` in
   Darwin)
     #vim () { [ -z "$(vim --serverlist)" ] && command vim "$@" || command vim --remote-silent "$@" ; }
     #vim () { [ -z "$(mvim --serverlist)" ] && command mvim "$@" || command mvim --remote-silent "$@" ; }
-    vim () { export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket; if [ -S "${NVIM_LISTEN_ADDRESS}" ]; then nvr --remote-silent "$@"; else nvim "$@"; fi }
+    #vim () { export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket; if [ -S "${NVIM_LISTEN_ADDRESS}" ]; then nvr --remote-silent "$@"; else nvim "$@"; fi }
     #vim () { export NVIM_LISTEN_ADDRESS=/tmp/nvimsocket; if ps x | grep "[n]vim" &>/dev/null; then nvr --remote-silent "$@"; else nvim "$@"; fi }
     alias ls='ls -FG'
     export BROWSER='open'
@@ -53,7 +54,7 @@ case `uname` in
 esac
 #alias less=$PAGER
 alias urxvt=urxvtc
-alias vi=vim
+alias vi=vmux
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias conky-refresh="killall -SIGUSR1 conky"
 
