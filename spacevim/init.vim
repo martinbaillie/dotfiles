@@ -8,9 +8,12 @@ let g:spacevim_max_column=80
 call SpaceVim#layers#load('lang#go')
 call SpaceVim#layers#load('lang#xml')
 call SpaceVim#layers#load('lang#markdown')
+call SpaceVim#layers#load('lang#tmux')
+call SpaceVim#layers#load('lang#sh')
 call SpaceVim#layers#load('format')
 call SpaceVim#layers#load('ui')
 call SpaceVim#layers#load('shell')
+call SpaceVim#layers#load('tmux')
 
 "
 " plugins
@@ -33,6 +36,7 @@ let g:spacevim_custom_plugins = [
     \ ['martinda/Jenkinsfile-vim-syntax'],
     \ ['vim-airline/vim-airline-themes'],
     \ ['hashivim/vim-hashicorp-tools'],
+    \ ['mbbill/undotree'],
     \ ]
 
 "
@@ -69,12 +73,11 @@ map <silent> <c-e> :VimFilerBufferDir -toggle<cr>
 let g:vimfiler_enable_auto_cd=1
 au FileType vimfiler nmap <buffer> <2-LeftMouse> <Plug>(vimfiler_edit_file)
 
-" denite / unite
-nnoremap <silent> [unite]m  :FZFMru<cr>
-"let g:_spacevim_mappings_unite.m = ['Unite fzf_mru', 'fzf_mru']
-
 " terraform formatting
 let g:terraform_fmt_on_save=1
+
+" undotree
+nmap <leader>u :UndotreeToggle<cr>
 
 "
 " standard vim settings
@@ -86,6 +89,8 @@ set inccommand=split
 set ignorecase
 set smartcase
 set scrolloff=10
+set title titlestring=
+set mouse=a
 
 "
 " standard vim mappings
@@ -151,6 +156,11 @@ au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 if filereadable(expand("$HOME/.base16_vimrc"))
     so $HOME/.base16_vimrc
 endif
+
+" fix nvim colours inside tmux
+set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 "
 " local settings
