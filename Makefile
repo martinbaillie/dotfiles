@@ -14,7 +14,7 @@ endif
 
 install: basic private x haskell mpd ncmpcpp irssi dunst conky podget crontab
 
-install-mac: basic private haskell
+install-mac: basic private haskell alacritty
 
 basic: ssh zsh tmux vim git bin
 
@@ -58,6 +58,11 @@ nvim::
 	@echo symlinked: nvim
 	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
 	@ln $(LN_FLAGS) $(DOTFILES)/nvim ${HOME}/.config/nvim
+
+alcritty::
+	@echo symlinked: alacritty
+	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
+	@ln $(LN_FLAGS) $(DOTFILES)/alacritty ${HOME}/.config/alacritty
 
 irssi::
 	@ln $(LN_FLAGS) $(DOTFILES)/irssi ${HOME}/.irssi
