@@ -24,9 +24,10 @@ let g:spacevim_disabled_plugins=[
     \ ['vim-chat/vim-chat'],
     \ ]
 
+" \ ['plasticboy/vim-markdown', {'on_ft' : 'markdown'}],
+    " \ ['davinche/godown-vim', {'on_ft' : 'markdown'}],
+
 let g:spacevim_custom_plugins = [
-    \ ['plasticboy/vim-markdown', {'on_ft' : 'markdown'}],
-    \ ['davinche/godown-vim', {'on_ft' : 'markdown'}],
     \ ['wsdjeg/GitHub.vim'],
     \ ['chriskempson/base16-vim'],
     \ ['majutsushi/tagbar'],
@@ -53,6 +54,13 @@ noremap <c-g> :Goyo<cr>
 
 " fzf
 let g:fzf_command_prefix = 'FZF'
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+  \   <bang>0 ? fzf#vim#with_preview('up:60%')
+  \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \   <bang>0)
+nnoremap <leader>rg :Rg<space>
 nnoremap <leader>n :FZFBuffers<cr>
 nnoremap <leader>m :FZFMru<cr>
 
@@ -120,6 +128,9 @@ nnoremap <M-a> ggVG
 " smart up and down
 nnoremap <silent><Down> gj
 nnoremap <silent><Up> gk
+" indenting/dedenting
+vnoremap < <gv
+vnoremap > >gv
 " remove spaces at the end of lines
 nnoremap <silent> <C-Space> :<C-u>silent! keeppatterns %substitute/\s\+$//e<CR>
 " <Esc> to exit terminal-mode:
