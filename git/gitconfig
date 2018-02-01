@@ -1,23 +1,35 @@
 [user]
     name = Martin Baillie
-	signingkey = 49363764
+    signingkey = 49363764
 [alias]
     st = status
     ci = commit
-    lastchange = log -p --follow -n 1
+    lc = log -p --follow -n 1
+    clogp = -c core.pager='less -p^commit.*$' log -p
+    d = difftool
 [url "https://github.com"]
     insteadOf = git://github.com
 [push]
     default = simple
 [credential]
-	helper = store
-[merge]
-    tool = vimdiff
-[mergetool]
-    prompt = true
-[mergetool "vimdiff"]
-    cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+    helper = store
 [commit]
-	gpgsign = true
+    gpgsign = true
 [gpg]
-	program = /usr/local/MacGPG2/bin/gpg2
+    program = /usr/local/MacGPG2/bin/gpg2
+[core]
+    editor = nvim
+    pager = less -+F -cRS
+[diff]
+    tool = nvimdiff
+    indentHeuristic = on
+[difftool "nvimdiff"]
+    cmd = nvim -f -d \"$LOCAL\" \"$REMOTE\"
+[merge]
+    tool = nvimfugitive
+[mergetool "nvimfugitive"]
+    cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
+[pager]
+    color = false
+; [pull]
+;     rebase = true
