@@ -62,6 +62,8 @@ alias docker-rm-stopped='docker rm $(docker ps -q -f status=exited)'
 alias docker-rm-dangling-images='docker rmi $(docker images -f "dangling=true" -q)'
 alias docker-rm-dangling-volumes='docker volume rm $(docker volume ls -f "dangling=true" -q)'
 alias docker-inspect-ip="docker inspect --format '{{ .NetworkSettings.IPAddress }}'"
+alias dark=base16-gruvbox-dark-medium
+alias light=base16-gruvbox-light-medium
 # }
 
 # The next line updates PATH for the Google Cloud SDK.
