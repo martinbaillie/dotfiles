@@ -17,6 +17,9 @@ let g:spacevim_colorscheme_bg='$parts[2]'
 let g:airline_theme='$parts[1]'
 EOF
     [[ -s ~/.base16_theme ]] && . ~/.base16_theme
+
+    ln -fs $HOME/.tmux/base16_$parts[2].conf $HOME/.tmux/base16.conf
+    tmux source-file ~/.tmux/tmux.conf
   }
 done;
 
