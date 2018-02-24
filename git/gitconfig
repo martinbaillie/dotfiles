@@ -1,6 +1,6 @@
 [user]
     name = Martin Baillie
-    signingkey = 49363764
+	signingkey = 0546428229B276C4
 [alias]
     st = status
     ci = commit
@@ -14,7 +14,7 @@
 [credential]
     helper = store
 [commit]
-    gpgsign = true
+	gpgsign = true
 [gpg]
     program = /usr/local/MacGPG2/bin/gpg2
 [core]
@@ -31,5 +31,5 @@
     cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
 [pager]
     color = false
-; [pull]
-;     rebase = true
+[includeIf "gitdir:~/Code/tyro/**"]
+    path = ~/Code/tyro/.gitconfig

@@ -53,6 +53,7 @@ if hash dircolors 2>/dev/null; then
 fi
 
 # VMux
+export VMUX_GLOBAL=1
 export VMUX_EDITOR=nvim
 export VMUX_REALEDITOR_NVIM=/usr/local/bin/nvim
 export VMUX_NVIM_SESSION_DIR=/tmp
@@ -76,3 +77,4 @@ bindkey '\C-g' fzf-cd-widget
 [ -f /usr/local/etc/profile.d/z.sh ] && source /usr/local/etc/profile.d/z.sh
 [ -f /usr/local/etc/profile.d/fz.sh ] && source /usr/local/etc/profile.d/fz.sh
 [ -f /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh
+[ -f /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh

@@ -48,3 +48,5 @@ xorg/wallpapers/current
 *.lock
 
 spacevim/.netrwhist
+
+tmux/base16.conf

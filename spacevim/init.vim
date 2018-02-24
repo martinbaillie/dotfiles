@@ -5,15 +5,15 @@ let mapleader=","
 " 
 let g:spacevim_max_column=80
 
-call SpaceVim#layers#load('lang#go')
-call SpaceVim#layers#load('lang#xml')
-call SpaceVim#layers#load('lang#markdown')
-call SpaceVim#layers#load('lang#tmux')
-call SpaceVim#layers#load('lang#sh')
-call SpaceVim#layers#load('format')
-call SpaceVim#layers#load('ui')
-call SpaceVim#layers#load('shell')
-call SpaceVim#layers#load('tmux')
+" call SpaceVim#layers#load('lang#go')
+" call SpaceVim#layers#load('lang#xml')
+" call SpaceVim#layers#load('lang#markdown')
+" call SpaceVim#layers#load('lang#tmux')
+" call SpaceVim#layers#load('lang#sh')
+" call SpaceVim#layers#load('format')
+" call SpaceVim#layers#load('ui')
+" call SpaceVim#layers#load('shell')
+" call SpaceVim#layers#load('tmux')
 
 "
 " plugins
@@ -38,6 +38,7 @@ let g:spacevim_custom_plugins = [
     \ ['vim-airline/vim-airline-themes'],
     \ ['hashivim/vim-hashicorp-tools'],
     \ ['mbbill/undotree'],
+    \ ['christoomey/vim-tmux-navigator'],
     \ ]
 
 "
