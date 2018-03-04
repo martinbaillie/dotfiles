@@ -53,6 +53,9 @@ noremap <c-f> :TagbarToggle<cr>
 let g:goyo_width=100
 noremap <c-g> :Goyo<cr>
 
+" golang
+autocmd FileType go nmap gt  <Plug>(go-test)
+
 " fzf
 let g:fzf_command_prefix = 'FZF'
 command! -bang -nargs=* Rg
@@ -79,6 +82,7 @@ nmap [h <Plug>GitGutterPrevHunk
 
 " vimfiler
 map <silent> <c-e> :VimFilerBufferDir -toggle<cr>
+let g:vimfiler_ignore_pattern = '^\%(\.git\|\.DS_Store\)$'
 let g:vimfiler_enable_auto_cd=1
 au FileType vimfiler nmap <buffer> <2-LeftMouse> <Plug>(vimfiler_edit_file)
 
