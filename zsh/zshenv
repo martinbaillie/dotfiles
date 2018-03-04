@@ -55,6 +55,7 @@ esac
 #alias less=$PAGER
 alias urxvt=urxvtc
 alias vi=vmux
+alias kc=kubectl
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias conky-refresh="killall -SIGUSR1 conky"
 

@@ -33,6 +33,7 @@ export ZLE_RPROMPT_INDENT=1
 
 # Editor-based inline editing - vi mode
 set -o vi
+bindkey -M vicmd v edit-command-line
 
 # Some annoying defaults
 unalias rm 2>/dev/null || true
@@ -61,9 +62,6 @@ export VMUX_NVIM_SESSION_DIR=/tmp
 # Local machine mods
 if [ -f ~/.zshrc.local ]; then source ~/.zshrc.local; fi
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Fuzzy searching and better finding
 export FZF_COMPLETION_TRIGGER='~~'
 export FZF_DEFAULT_COMMAND='
   (git ls-tree -r --name-only HEAD ||
@@ -78,3 +76,4 @@ bindkey '\C-g' fzf-cd-widget
 [ -f /usr/local/etc/profile.d/fz.sh ] && source /usr/local/etc/profile.d/fz.sh
 [ -f /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh
 [ -f /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh
+hash kubectl 2>&- && source <(kubectl completion zsh)
