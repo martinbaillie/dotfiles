@@ -77,3 +77,6 @@ bindkey '\C-g' fzf-cd-widget
 [ -f /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-interactive-cd.plugin.zsh
 [ -f /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh ] && source /usr/local/etc/profile.d/zsh-iterm-touchbar.plugin.zsh
 hash kubectl 2>&- && source <(kubectl completion zsh)
+
+# added by travis gem
+[ -f /Users/mbaillie/.travis/travis.sh ] && source /Users/mbaillie/.travis/travis.sh
