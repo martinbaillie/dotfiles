@@ -15,6 +15,8 @@ for script in $script_dir/base16*.sh; do
 let g:spacevim_colorscheme='$parts[1]'
 let g:spacevim_colorscheme_bg='$parts[2]'
 let g:airline_theme='$parts[1]'
+set background=$parts[2]
+colorscheme $parts[1]
 EOF
     [[ -s ~/.base16_theme ]] && . ~/.base16_theme
 
