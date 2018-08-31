@@ -41,10 +41,43 @@ call plug#end()
 "
 
 " vimfiler
-let g:vimfiler_ignore_pattern='^\%(\.git\|\.DS_Store\)$'
-let g:vimfiler_enable_auto_cd=1
 let g:vimfiler_as_default_explorer = 1
-map <silent> <leader>e :VimFilerExplorer -toggle<cr>
+let g:vimfiler_restore_alternate_file =1
+let g:vimfiler_tree_indentation = 1
+let g:vimfiler_tree_leaf_icon = ''
+let g:vimfiler_tree_opened_icon = '▼'
+let g:vimfiler_tree_closed_icon = '▷'
+let g:vimfiler_file_icon =''
+let g:vimfiler_readonly_file_icon ='*'
+let g:vimfiler_marked_file_icon = '√'
+let g:vimfiler_direction = 'rightbelow'
+let g:vimfiler_ignore_pattern='^\%(\.git\|\.DS_Store\)$'
+call vimfiler#custom#profile('default', 'context', {
+      \ 'explorer' : 1,
+      \ 'winwidth' : 25,
+      \ 'winminwidth' : 20,
+      \ 'toggle' : 1,
+      \ 'auto_expand': 1,
+      \ 'direction' : g:vimfiler_direction,
+      \ 'explorer_columns' : '',
+      \ 'parent': 0,
+      \ 'status' : 1,
+      \ 'safe' : 0,
+      \ 'split' : 1,
+      \ 'hidden': 1,
+      \ 'no_quit' : 1,
+      \ 'force_hide' : 0,
+      \ })
+autocmd FileType vimfiler call s:vimfilerinit()
+function! s:vimfilerinit()
+  setl nonumber
+  setl norelativenumber
+  nmap <buffer> <Tab>   <Plug>(vimfiler_switch_to_other_window)
+  nmap <buffer> <C-r>   <Plug>(vimfiler_redraw_screen)
+  nmap <buffer> <Left>  <Plug>(vimfiler_smart_h)
+  nmap <buffer> <Right> <Plug>(vimfiler_smart_l)
+endf
+map <silent> <leader>e :VimFilerBufferDir<cr>
 
 " expand region
 xmap v <Plug>(expand_region_expand)
@@ -60,7 +93,7 @@ command! -bang -nargs=* Rg
       \   <bang>0)
 nnoremap ff :Rg<cr>
 nnoremap <leader>n :FZFBuffers<cr>
-nnoremap <leader>m :FZFMru<cr>
+nnoremap <leader>m :FZFFreshMru<cr>
 nnoremap <leader><space> :FZFLines<cr>
 nnoremap <c-e> :FZF<cr>
 
@@ -138,10 +171,13 @@ let g:deoplete#enable_at_startup = 1
 let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
+let g:go_fmt_command = "goimports"
+let g:go_fmt_autosave = 1
 
 " golang
 autocmd FileType go nmap gt  <Plug>(go-test)
 autocmd FileType go nmap ga  :GoAlternate<cr>
+autocmd FileType go nmap gi  :GoInfo<cr>
 autocmd FileType go set colorcolumn=100
 
 " undotree
@@ -277,6 +313,9 @@ else
     set background=dark
     colorscheme base16-default
 endif
+hi LineNr guibg=bg
+hi foldcolumn guibg=bg
+hi VertSplit guibg=bg guifg=bg
 
 " ==============
 " local settings

@@ -14,6 +14,9 @@ vim/bundle/NeoBundle.lock
 vim/spell
 
 nvim/dein
+nvim/plugged
+nvim/autoload
+nvim/ftplugin
 nvim/.netrwhist
 
 mpd/mpd.db
