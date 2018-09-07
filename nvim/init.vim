@@ -33,7 +33,13 @@ Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-fugitive'
 Plug 'scrooloose/nerdcommenter'
 Plug 'neomake/neomake'
-Plug 'sbdchd/neoformat'
+Plug 'martinbaillie/vim-remarkjs'
+Plug 'idbrii/vim-gogo'
+Plug 'dbakker/vim-projectroot'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-indent'
+Plug 'kana/vim-textobj-line'
+Plug 'kana/vim-textobj-entire'
 call plug#end()
 
 "
@@ -82,6 +88,19 @@ map <silent> <leader>e :VimFilerBufferDir<cr>
 " expand region
 xmap v <Plug>(expand_region_expand)
 xmap V <Plug>(expand_region_shrink)
+let g:expand_region_text_objects = {
+      \ 'iw'  :0,
+      \ 'iW'  :0,
+      \ 'i"'  :0,
+      \ 'i''' :0,
+      \ 'i]'  :1,
+      \ 'ib'  :1,
+      \ 'iB'  :1,
+      \ 'il'  :1,
+      \ 'ii'  :1,
+      \ 'ip'  :0,
+      \ 'ie'  :1,
+      \ }
 
 " fzf
 let g:fzf_command_prefix = 'FZF'
@@ -113,6 +132,8 @@ map <leader>vl :VimuxRunLastCommand<CR>
 " goyo and limelight
 let g:goyo_width=100
 noremap <c-g> :Goyo<cr>
+autocmd! User GoyoEnter Limelight
+autocmd! User GoyoLeave Limelight!
 
 " gitgutter
 let g:gitgutter_override_sign_column_highlight=1
@@ -171,14 +192,17 @@ let g:deoplete#enable_at_startup = 1
 let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
 let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
 let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
-let g:go_fmt_command = "goimports"
-let g:go_fmt_autosave = 1
 
 " golang
 autocmd FileType go nmap gt  <Plug>(go-test)
 autocmd FileType go nmap ga  :GoAlternate<cr>
 autocmd FileType go nmap gi  :GoInfo<cr>
 autocmd FileType go set colorcolumn=100
+let g:go_fmt_autosave = 1
+let g:go_fmt_options = {
+            \ 'gofmt': '-s',
+            \ }
+autocmd BufWritePre *.go :GoImports
 
 " undotree
 nmap <leader>u :UndotreeToggle<cr>
@@ -297,7 +321,8 @@ au FileType text setlocal textwidth=78
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
 " autochdir doesn't work with some plugins
-au BufEnter * silent! lcd %:p:h
+"au BufEnter * silent! lcd %:p:h
+au BufEnter * silent! ProjectRootLCD()
 
 " autoreload vim settings upon save
 augroup vimrc 
