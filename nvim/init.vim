@@ -8,7 +8,7 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/deoplete.nvim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
@@ -196,21 +196,39 @@ let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
 " golang
 autocmd FileType go nmap gt  <Plug>(go-test)
 autocmd FileType go nmap ga  :GoAlternate<cr>
+autocmd FileType go nmap gc  :GoCoverage<cr>
 autocmd FileType go nmap gi  :GoInfo<cr>
+autocmd FileType go nmap gm  :GoMetaLinter<cr>
 autocmd FileType go set colorcolumn=100
+
 let g:go_fmt_autosave = 1
-let g:go_fmt_options = {
-            \ 'gofmt': '-s',
-            \ }
-autocmd BufWritePre *.go :GoImports
+let g:go_fmt_command = "goimports"
+let g:go_snippet_engine = "neosnippet"
+let g:go_metalinter_deadline = "60s"
+"let g:go_metalinter_autosave_enabled = ['vet', 'golint']
+let g:go_metalinter_autosave = 0
+let g:go_test_show_name = 1
+let g:go_list_type = "quickfix"
+let g:go_echo_command_info = 1
+
+" neomake
+call neomake#configure#automake('w')
+
+let g:neomake_open_list = 2
+"let g:neomake_highlight_columns = 1
+let g:neomake_highlight_lines = 1
+let g:neomake_go_enabled_makers = [ 'go', 'golint', 'govet' ]
+let g:neomake_proto_enabled_makers = [ 'prototool' ]
+
+" protobuffers
+function! PrototoolFormat() abort
+    silent! execute '!prototool format -f -w %'
+    silent! edit
+endfunction
+autocmd BufEnter,BufWritePost *.proto :call PrototoolFormat()
 
 " undotree
 nmap <leader>u :UndotreeToggle<cr>
-
-" neomake
-" when writing a buffer (no delay), and on normal mode changes (after 750ms)
-call neomake#configure#automake('nw', 750)
-let g:neomake_open_list = 2
 
 " ================
 " system functions
@@ -257,7 +275,6 @@ set noshowcmd
 set noswapfile
 set relativenumber
 set scrolloff=10
-set shell=bash\ -i
 set shiftwidth=4
 set shortmess+=T
 set sidescroll=1
