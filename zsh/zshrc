@@ -63,10 +63,14 @@ export VMUX_NVIM_SESSION_DIR=/tmp
 if [ -f ~/.zshrc.local ]; then source ~/.zshrc.local; fi
 
 export FZF_COMPLETION_TRIGGER='~~'
-export FZF_DEFAULT_COMMAND='
-  (git ls-tree -r --name-only HEAD ||
-      rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*") 2> /dev/null'
+#export FZF_DEFAULT_COMMAND='
+  #(git ls-tree -r --name-only HEAD ||
+      #rg --files --no-ignore --hidden --follow -g "!{.git,node_modules}/*") 2> /dev/null'
+#export FZF_DEFAULT_COMMAND='fd --type f'
 export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+#export FZF_CTRL_T_OPTS="--height 98% --reverse --border --preview-window right:65% --preview '[[ \$(file --mime {}) =~ binary ]] \
+            #&& echo {} is a binary file || bat --color always {} | head -100 2> /dev/null'"
 export FZF_ALT_C_COMMAND="bfs -type d -nohidden"
 export FZF_DEFAULT_OPTS="--multi"
 bindkey -s '\C-p' 'vi $(fzf)\n'

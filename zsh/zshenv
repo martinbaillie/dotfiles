@@ -58,14 +58,14 @@ alias urxvt=urxvtc
 alias vi=vmux
 alias kc=kubectl
 alias tf=terraform
+alias tree="tree -a -I '.git'"
 
 alias dark=base16-gruvbox-dark-medium
 alias light=base16-gruvbox-light-medium
 
 alias ping='prettyping --nolegend'
-alias cat=bat
 alias top=gtop
-
+alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder && echo cache flushed'
 alias update-pacman-mirrors="sudo reflector --verbose --country Australia -l 10 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias conky-refresh="killall -SIGUSR1 conky"
 
