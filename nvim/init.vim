@@ -31,6 +31,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-fugitive'
+Plug 'jreybert/vimagit'
 Plug 'scrooloose/nerdcommenter'
 Plug 'neomake/neomake'
 Plug 'martinbaillie/vim-remarkjs'
@@ -134,12 +135,17 @@ let g:goyo_width=100
 noremap <c-g> :Goyo<cr>
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+nnoremap <silent><leader>l :Limelight!<cr>
 
 " gitgutter
 let g:gitgutter_override_sign_column_highlight=1
 let g:gitgutter_enabled=1
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
+
+" vimagit
+nnoremap <silent><leader>g :Magit<cr>
+
 
 " airline
 let g:airline_powerline_fonts = 1
@@ -216,13 +222,13 @@ call neomake#configure#automake('w')
 
 let g:neomake_open_list = 2
 "let g:neomake_highlight_columns = 1
-let g:neomake_highlight_lines = 1
+"let g:neomake_highlight_lines = 1
 let g:neomake_go_enabled_makers = [ 'go', 'golint', 'govet' ]
 let g:neomake_proto_enabled_makers = [ 'prototool' ]
 
 " protobuffers
 function! PrototoolFormat() abort
-    silent! execute '!prototool format -f -w %'
+    silent! execute '!prototool format -w %'
     silent! edit
 endfunction
 autocmd BufEnter,BufWritePost *.proto :call PrototoolFormat()
