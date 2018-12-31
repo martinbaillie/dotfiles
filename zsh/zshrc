@@ -84,3 +84,5 @@ hash kubectl 2>&- && source <(kubectl completion zsh)
 
 # added by travis gem
 [ -f /Users/mbaillie/.travis/travis.sh ] && source /Users/mbaillie/.travis/travis.sh
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

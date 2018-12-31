@@ -24,7 +24,7 @@ export GOROOT=/usr/local/opt/go/libexec
 
 export CLICOLOR=true
 
-export PATH="/usr/local/bin:$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin:$GOPATH/bin:$GOROOT/bin"
+export PATH="/usr/local/bin:$PATH:/sbin:/opt/Citrix/ICAClient:$HOME/Code/bin:$HOME/.cabal/bin:$HOME/.local/bin:$GOPATH/bin:$GOROOT/bin:/Users/mbaillie/Library/Python/3.7/bin:$HOME/.krew/bin"
 
 # xmonad is not a reparenting window manager, tell java
 export _JAVA_AWT_WM_NONREPARENTING=1

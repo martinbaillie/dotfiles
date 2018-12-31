@@ -8,8 +8,10 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
@@ -23,6 +25,10 @@ Plug 'mbbill/undotree'
 Plug 'terryma/vim-expand-region'
 Plug 'qpkorr/vim-bufkill'
 Plug 'szw/vim-smartclose'
+Plug 'blueyed/vim-diminactive'
+Plug 'sjl/vitality.vim'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'mtth/cursorcross.vim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 Plug 'machakann/vim-highlightedyank'
@@ -34,6 +40,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'jreybert/vimagit'
 Plug 'scrooloose/nerdcommenter'
 Plug 'neomake/neomake'
+Plug 'leafgarland/typescript-vim'
 Plug 'martinbaillie/vim-remarkjs'
 Plug 'idbrii/vim-gogo'
 Plug 'dbakker/vim-projectroot'
@@ -130,6 +137,9 @@ let g:highlightedyank_highlight_duration=200
 map <leader>vp :VimuxPromptCommand<CR>
 map <leader>vl :VimuxRunLastCommand<CR>
 
+" tmux/vim focus
+let g:diminactive_enable_focus=1
+
 " goyo and limelight
 let g:goyo_width=100
 noremap <c-g> :Goyo<cr>
@@ -146,6 +156,9 @@ nmap [h <Plug>GitGutterPrevHunk
 " vimagit
 nnoremap <silent><leader>g :Magit<cr>
 
+" cursorcross
+let g:cursorcross_dynamic='clw'
+let g:cursorcross_mappings=1
 
 " airline
 let g:airline_powerline_fonts = 1
@@ -192,12 +205,17 @@ noremap <c-f> :TagbarToggle<cr>
 " terraform formatting
 let g:terraform_fmt_on_save=1
 
+" markdown previews
+"let g:mkdp_auto_start = 1
+
 " deoplete
-let g:deoplete#enable_at_startup = 1
-" deoplete-go 
-let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
+"let g:deoplete#enable_at_startup = 1
+"" deoplete-go 
+"let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+"let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+"let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
+
+" :CocInstall coc-json coc-html coc-css coc-gocode coc-neosnippet coc-yaml
 
 " golang
 autocmd FileType go nmap gt  <Plug>(go-test)
