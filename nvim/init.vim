@@ -6,6 +6,11 @@ let g:mapleader  = ','
 call plug#begin('~/.config/nvim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+Plug 'chaoren/vim-wordmotion'
+Plug 'easymotion/vim-easymotion'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
@@ -14,6 +19,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 "Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
 Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
+Plug 'rust-lang/rust.vim'
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/limelight.vim'
@@ -25,7 +31,6 @@ Plug 'mbbill/undotree'
 Plug 'terryma/vim-expand-region'
 Plug 'qpkorr/vim-bufkill'
 Plug 'szw/vim-smartclose'
-Plug 'blueyed/vim-diminactive'
 Plug 'sjl/vitality.vim'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'mtth/cursorcross.vim'
@@ -35,19 +40,20 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'morhetz/gruvbox'
 Plug 'vim-airline/vim-airline'
 Plug 'airblade/vim-gitgutter'
+Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'tpope/vim-fugitive'
-Plug 'jreybert/vimagit'
+"Plug 'jreybert/vimagit'
 Plug 'scrooloose/nerdcommenter'
 Plug 'neomake/neomake'
 Plug 'leafgarland/typescript-vim'
 Plug 'martinbaillie/vim-remarkjs'
 Plug 'idbrii/vim-gogo'
-Plug 'dbakker/vim-projectroot'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-indent'
 Plug 'kana/vim-textobj-line'
 Plug 'kana/vim-textobj-entire'
+Plug 'ryanoasis/vim-devicons'
 call plug#end()
 
 "
@@ -137,8 +143,20 @@ let g:highlightedyank_highlight_duration=200
 map <leader>vp :VimuxPromptCommand<CR>
 map <leader>vl :VimuxRunLastCommand<CR>
 
-" tmux/vim focus
-let g:diminactive_enable_focus=1
+" incsearch
+function! s:config_easyfuzzymotion(...) abort
+  return extend(copy({
+  \   'converters': [incsearch#config#fuzzyword#converter()],
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+  \   'is_expr': 0,
+  \   'is_stay': 1
+  \ }), get(a:, 1, {}))
+endfunction
+
+map / <Plug>(incsearch-easymotion-/)
+map ? <Plug>(incsearch-easymotion-?)
+map g/ <Plug>(incsearch-easymotion-stay)
 
 " goyo and limelight
 let g:goyo_width=100
@@ -224,6 +242,9 @@ autocmd FileType go nmap gc  :GoCoverage<cr>
 autocmd FileType go nmap gi  :GoInfo<cr>
 autocmd FileType go nmap gm  :GoMetaLinter<cr>
 autocmd FileType go set colorcolumn=100
+
+" rust
+let g:rustfmt_autosave = 1
 
 let g:go_fmt_autosave = 1
 let g:go_fmt_command = "goimports"
@@ -354,6 +375,9 @@ map <leader>d3 :diffget 3<cr>
 " substitute word under cursor or selection
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
+" buffer next and prev
+nmap <silent><tab> :bn<cr>
+nmap <silent><S-tab> :bp<cr>
   
 " filetype specific settings
 au Filetype html,ruby,yaml setlocal ts=2 sts=2 sw=2
@@ -361,9 +385,8 @@ au FileType latex,tex,md,markdown,text setlocal spell spelllang=en_au
 au FileType text setlocal textwidth=78
 au FileType gitcommit au! BufEnter COMMIT_EDITMSG call setpos('.', [0, 1, 1, 0])
 
-" autochdir doesn't work with some plugins
-"au BufEnter * silent! lcd %:p:h
-au BufEnter * silent! ProjectRootLCD()
+let g:rooter_patterns = ['Dockerfile', 'Makefile', 'go.mod', 'Cargo.toml', 'Rakefile', '.git/']
+let g:rooter_silent_chdir = 1
 
 " autoreload vim settings upon save
 augroup vimrc 
