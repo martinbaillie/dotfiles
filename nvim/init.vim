@@ -1,9 +1,9 @@
 let g:mapleader  = ','
 
-"
 " plugins (requires vim-plug to be installed)
 "
 call plug#begin('~/.config/nvim/plugged')
+Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'chaoren/vim-wordmotion'
@@ -11,6 +11,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
 Plug 'haya14busa/incsearch-easymotion.vim'
+Plug 'haya14busa/vim-easyoperator-line'
 Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
@@ -143,7 +144,7 @@ let g:highlightedyank_highlight_duration=200
 map <leader>vp :VimuxPromptCommand<CR>
 map <leader>vl :VimuxRunLastCommand<CR>
 
-" incsearch
+" incsearch and easymotion
 function! s:config_easyfuzzymotion(...) abort
   return extend(copy({
   \   'converters': [incsearch#config#fuzzyword#converter()],
@@ -153,10 +154,10 @@ function! s:config_easyfuzzymotion(...) abort
   \   'is_stay': 1
   \ }), get(a:, 1, {}))
 endfunction
-
 map / <Plug>(incsearch-easymotion-/)
 map ? <Plug>(incsearch-easymotion-?)
 map g/ <Plug>(incsearch-easymotion-stay)
+map <c-w> <Plug>(easymotion-prefix)
 
 " goyo and limelight
 let g:goyo_width=100
@@ -165,14 +166,19 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 nnoremap <silent><leader>l :Limelight!<cr>
 
+" hardtime
+let g:hardtime_default_on = 1
+let g:hardtime_ignore_quickfix = 1
+let g:hardtime_timeout = 1000
+let g:hardtime_allow_different_key = 1
+let g:hardtime_maxcount = 5
+map <silent><leader>h :HardTimeToggle<cr>
+
 " gitgutter
 let g:gitgutter_override_sign_column_highlight=1
 let g:gitgutter_enabled=1
 nmap ]h <Plug>GitGutterNextHunk
 nmap [h <Plug>GitGutterPrevHunk
-
-" vimagit
-nnoremap <silent><leader>g :Magit<cr>
 
 " cursorcross
 let g:cursorcross_dynamic='clw'
