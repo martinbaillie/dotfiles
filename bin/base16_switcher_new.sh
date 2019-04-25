@@ -1,6 +1,7 @@
 script_dir="$HOME/.config/base16-shell/scripts"
 
-for script in $script_dir/base16*.sh; do
+#for script in $script_dir/base16*.sh; do
+for script in $script_dir/base16-gruvbox-*-medium.sh; do
   script_name="$(basename $script .sh)"
   theme=${script_name#*-}
   variation=${theme#*.}

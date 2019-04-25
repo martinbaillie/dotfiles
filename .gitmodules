@@ -4,7 +4,7 @@
     branch = master
 [submodule "zsh/zprezto"]
     path = zsh/zprezto
-    url = git@github.com:martinbaillie/prezto.git
+    url = git@github.com:sorin-ionescu/prezto.git
     branch = master
 [submodule "zsh/base16-shell"]
     path = zsh/base16-shell

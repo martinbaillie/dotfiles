@@ -16,10 +16,7 @@ Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
-Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 Plug 'rust-lang/rust.vim'
 Plug 'junegunn/fzf', { 'do': 'yes \| ./install' }
 Plug 'junegunn/fzf.vim'
@@ -157,7 +154,8 @@ endfunction
 map / <Plug>(incsearch-easymotion-/)
 map ? <Plug>(incsearch-easymotion-?)
 map g/ <Plug>(incsearch-easymotion-stay)
-map <c-w> <Plug>(easymotion-prefix)
+"map <c-w> <Plug>(easymotion-prefix)
+map f <Plug>(easymotion-prefix)
 
 " goyo and limelight
 let g:goyo_width=100
@@ -232,16 +230,23 @@ let g:terraform_fmt_on_save=1
 " markdown previews
 "let g:mkdp_auto_start = 1
 
-" deoplete
-"let g:deoplete#enable_at_startup = 1
-"" deoplete-go 
-"let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-"let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-"let g:deoplete#sources#go#gocode_binary=$GOPATH.'/bin/gocode'
-
 " :CocInstall coc-json coc-html coc-css coc-gocode coc-neosnippet coc-yaml
+" Use tab for trigger completion with characters ahead and navigate.
+" Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 " golang
+let g:go_metalinter_command="golangci-lint"
+
 autocmd FileType go nmap gt  <Plug>(go-test)
 autocmd FileType go nmap ga  :GoAlternate<cr>
 autocmd FileType go nmap gc  :GoCoverage<cr>
@@ -382,8 +387,8 @@ map <leader>d3 :diffget 3<cr>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>//g<Left><Left>
 vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 " buffer next and prev
-nmap <silent><tab> :bn<cr>
-nmap <silent><S-tab> :bp<cr>
+"nmap <silent><tab> :bn<cr>
+"nmap <silent><S-tab> :bp<cr>
   
 " filetype specific settings
 au Filetype html,ruby,yaml setlocal ts=2 sts=2 sw=2
