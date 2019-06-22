@@ -3,9 +3,11 @@ let g:mapleader  = ','
 " plugins (requires vim-plug to be installed)
 "
 call plug#begin('~/.config/nvim/plugged')
+Plug 'editorconfig/editorconfig-vim'
 Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+Plug 'luochen1990/rainbow'
 Plug 'chaoren/vim-wordmotion'
 Plug 'easymotion/vim-easymotion'
 Plug 'haya14busa/incsearch.vim'
@@ -26,6 +28,7 @@ Plug 'pbogut/fzf-mru.vim'
 Plug 'majutsushi/tagbar'
 Plug 'hashivim/vim-hashicorp-tools'
 Plug 'mbbill/undotree'
+Plug 'ap/vim-css-color'
 Plug 'terryma/vim-expand-region'
 Plug 'qpkorr/vim-bufkill'
 Plug 'szw/vim-smartclose'
@@ -128,6 +131,9 @@ nnoremap <leader>m :FZFFreshMru<cr>
 nnoremap <leader><space> :FZFLines<cr>
 nnoremap <c-e> :FZF<cr>
 
+" rainbow
+let g:rainbow_active=1 
+
 " bufkill
 nmap <leader>x :BD<cr>
 
@@ -153,9 +159,8 @@ function! s:config_easyfuzzymotion(...) abort
 endfunction
 map / <Plug>(incsearch-easymotion-/)
 map ? <Plug>(incsearch-easymotion-?)
-map g/ <Plug>(incsearch-easymotion-stay)
-"map <c-w> <Plug>(easymotion-prefix)
-map f <Plug>(easymotion-prefix)
+map g/ <plug>(incsearch-easymotion-stay)
+map s <plug>(easymotion-prefix)
 
 " goyo and limelight
 let g:goyo_width=100
@@ -175,8 +180,13 @@ map <silent><leader>h :HardTimeToggle<cr>
 " gitgutter
 let g:gitgutter_override_sign_column_highlight=1
 let g:gitgutter_enabled=1
-nmap ]h <Plug>GitGutterNextHunk
-nmap [h <Plug>GitGutterPrevHunk
+nmap ]h <plug>GitGutterNextHunk
+nmap [h <plug>GitGutterPrevHunk
+omap ih <Plug>GitGutterTextObjectInnerPending
+omap ah <Plug>GitGutterTextObjectOuterPending
+xmap ih <Plug>GitGutterTextObjectInnerVisual
+xmap ah <Plug>GitGutterTextObjectOuterVisual
+nmap <Leader>hz <Plug>GitGutterFold
 
 " cursorcross
 let g:cursorcross_dynamic='clw'
@@ -246,6 +256,7 @@ endfunction
 
 " golang
 let g:go_metalinter_command="golangci-lint"
+let g:go_def_mode = 'godef'
 
 autocmd FileType go nmap gt  <Plug>(go-test)
 autocmd FileType go nmap ga  :GoAlternate<cr>
