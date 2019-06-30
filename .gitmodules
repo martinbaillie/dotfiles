@@ -29,3 +29,9 @@
 	path = tmux/plugins/tmux-fingers
 	url = https://github.com/Morantron/tmux-fingers
     branch = master
+[submodule "zsh/zprezto-contrib"]
+	path = zsh/zprezto-contrib
+	url = https://github.com/belak/prezto-contrib
+[submodule "zsh/powerlevel10k"]
+	path = zsh/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k.git

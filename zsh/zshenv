@@ -62,6 +62,10 @@ alias kcn=kubens
 alias tf=terraform
 alias tree="tree -a -I '.git'"
 
+alias zb=fbranch
+alias zk=fkill
+alias zc=fshow
+
 alias dark=base16-gruvbox-dark-medium
 alias light=base16-gruvbox-light-medium
 

@@ -14,6 +14,7 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/vim-easyoperator-line'
+Plug 'justinmk/vim-sneak'
 Plug 'Shougo/vimfiler.vim'
 Plug 'Shougo/unite.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
@@ -125,7 +126,7 @@ command! -bang -nargs=* Rg
       \   <bang>0 ? fzf#vim#with_preview('up:60%')
       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
       \   <bang>0)
-nnoremap ff :Rg<cr>
+nnoremap <leader>f :Rg<cr>
 nnoremap <leader>n :FZFBuffers<cr>
 nnoremap <leader>m :FZFFreshMru<cr>
 nnoremap <leader><space> :FZFLines<cr>
@@ -157,10 +158,15 @@ function! s:config_easyfuzzymotion(...) abort
   \   'is_stay': 1
   \ }), get(a:, 1, {}))
 endfunction
-map / <Plug>(incsearch-easymotion-/)
-map ? <Plug>(incsearch-easymotion-?)
+map / <plug>(incsearch-easymotion-/)
+map ? <plug>(incsearch-easymotion-?)
 map g/ <plug>(incsearch-easymotion-stay)
 map s <plug>(easymotion-prefix)
+map f <Plug>Sneak_s
+map F <Plug>Sneak_S
+"map f <Plug>Sneak_f
+"map F <Plug>Sneak_F
+let g:sneak#label = 1
 
 " goyo and limelight
 let g:goyo_width=100
