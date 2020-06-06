@@ -1,55 +1,24 @@
-ncmpcpp/error.log
+# Machines
+machines/*
+!machines/tyro
+!machines/betsy
+!machines/aero
+!machines/ci
 
-ssh/id_rsa
-ssh/id_ed25519
-ssh/known_hosts
-ssh/putty
-ssh/config
+# Machine-local secrets.
+.secrets
 
-vim/bundle/
-!vim/bundle/neobundle.git/
-vim/backup/
-vim/tmp/
-vim/bundle/NeoBundle.lock
-vim/spell
+# Machine-local OS theme.
+theme.nix
 
-nvim/dein
-nvim/plugged
-nvim/autoload
-nvim/ftplugin
-nvim/.netrwhist
+# Machine-local Emacs theme.
+config/emacs/+theme.el
 
-mpd/mpd.db
-mpd/mpd.log
-mpd/mpd.pid
-mpd/mpdstate
+# Machine-local Emacs config tangled from `config.org`.
+config/emacs/config.el
 
-zsh/zsh_history
+# NixOS build results.
+**/result
 
-.DS_Store
-
-gnupg/*~
-
-colors/current
-
-bin/prompts/current
-
-wallpapers/current
-
-fonts/*
-
-.vagrant
-.docker
-
-xdg/share/gvfs-metadata
-xdg/share/*.xbel
-xdg/share/applications/*.cache
-xdg/share/applications/*-Default.desktop
-
-xorg/wallpapers/current
-
-*.lock
-
-spacevim/.netrwhist
-
-tmux/base16.conf
+# QEMU VMs.
+**/*.qcow*

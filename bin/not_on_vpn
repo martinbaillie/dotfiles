@@ -1,2 +1,0 @@
-#!/bin/sh
-! ifconfig utun1 2>/dev/null

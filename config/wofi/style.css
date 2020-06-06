@@ -1,0 +1,40 @@
+window {
+  background-color: @bg@;
+  transition: 1s ease-in-out;
+}
+#input image {
+  color: rgba(0, 0, 0, 0);
+}
+#input {
+  color: @fg@;
+  margin-bottom: 20px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 10px;
+  box-shadow: none;
+  background-color: @bg@;
+  border: 3px solid @orange@;
+  border-radius: 0px;
+  transition: 0.5s ease-in-out;
+}
+#input:focus {
+  color: @fg@;
+  background-color: @bg@;
+  margin-left: 10px;
+  margin-right: 10px;
+  transition: 0.5s ease-in-out;
+}
+#entry:selected {
+  background-color: @blue@;
+}
+#text:selected {
+  background-color: @blue@;
+}
+label {
+  color: @fg@;
+  transition: 0.5s ease-in-out;
+}
+#outer-box {
+  border: 3px solid @blue@;
+  transition: 0.5s ease-in-out;
+}

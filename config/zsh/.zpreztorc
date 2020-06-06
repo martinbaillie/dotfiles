@@ -1,0 +1,33 @@
+zstyle ':prezto:*:*' color 'yes'
+zstyle ':prezto:environment:termcap' color 'no'
+zstyle ':prezto:load' zmodule 'attr' 'stat'
+zstyle ':prezto:load' pmodule \
+  'environment' \
+  'terminal' \
+  'editor' \
+  'history' \
+  'directory' \
+  'spectrum' \
+  'utility' \
+  'completion' \
+  'git' \
+  'osx' \
+  'history-substring-search' \
+  'syntax-highlighting' \
+  'prompt'
+zstyle ':prezto:module:editor' key-bindings 'vi'
+zstyle ':prezto:module:editor' dot-expansion 'yes'
+zstyle ':prezto:module:git:status:ignore' submodules 'all'
+zstyle ':prezto:module:prompt' theme 'martin'
+zstyle ':prezto:module:syntax-highlighting' highlighters \
+   'main' \
+   'brackets' \
+   'pattern' \
+   'cursor' \
+   'root'
+zstyle ':prezto:module:syntax-highlighting' styles \
+   'builtin' 'fg=green' \
+   'command' 'fg=green' \
+   'function' 'fg=green'
+zstyle ':prezto:module:terminal' auto-title 'yes'
+zstyle ':prezto:module:utility' safe-ops 'no'.

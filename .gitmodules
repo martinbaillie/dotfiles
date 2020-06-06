@@ -1,37 +1,4 @@
-[submodule "private"]
-    path = private
-    url = git@bitbucket.org:martinbaillie/dotfiles.private.git
-    branch = master
-[submodule "zsh/zprezto"]
-    path = zsh/zprezto
-    url = git@github.com:sorin-ionescu/prezto.git
-    branch = master
-[submodule "zsh/base16-shell"]
-    path = zsh/base16-shell
-    url = https://github.com/chriskempson/base16-shell.git
-    branch = master
-[submodule "xorg/base16-xresources"]
-    path = xorg/base16-xresources
-    url = https://github.com/chriskempson/base16-xresources.git
-    branch = master
-[submodule "vim/bundle/neobundle.vim"]
-    path = vim/bundle/neobundle.vim
-    url = https://github.com/Shougo/neobundle.vim.git
-    branch = master
-[submodule "zsh/git-commands"]
-	path = zsh/git-commands
-	url = git@github.com:hankchanocd/git-commands.git
-[submodule "tmux/plugins/tmux-yank"]
-	path = tmux/plugins/tmux-yank
-	url = https://github.com/tmux-plugins/tmux-yank
-    branch = master
-[submodule "tmux/plugins/tmux-fingers"]
-	path = tmux/plugins/tmux-fingers
-	url = https://github.com/Morantron/tmux-fingers
-    branch = master
-[submodule "zsh/zprezto-contrib"]
-	path = zsh/zprezto-contrib
-	url = https://github.com/belak/prezto-contrib
-[submodule "zsh/powerlevel10k"]
-	path = zsh/powerlevel10k
-	url = https://github.com/romkatv/powerlevel10k.git
+[submodule ".private"]
+	path = .private
+	url = git@github.com:martinbaillie/dotfiles-private.git
+	branch = master

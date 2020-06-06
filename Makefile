@@ -1,191 +1,196 @@
-DOTFILES 			:= $(shell pwd)
-EUID				:= $(shell id -u -r)
-UNAME 				:= $(shell uname -s)
-GIT					:= $(shell which git)
-
-PRIVATE_REPO		= $(DOTFILES)/private
-LN_FLAGS			= -sfn
-
-ifeq ($(UNAME),Darwin)
-else
+SHELL 			:=bash
+.SHELLFLAGS 	:=-euo pipefail -c
+.ONESHELL: ;
+.EXPORT_ALL_VARIABLES: ;
+ifndef DEBUG
+.SILENT: ;
 endif
+.DEFAULT_GOAL	:=switch
 
-.PHONY: install
+WORKDIR 	:=$(patsubst %/,%,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
+HOSTNAME	:=$(shell hostname -s)
+SYSTEM 		:=$(shell uname -s)
 
-install: basic private x haskell mpd ncmpcpp irssi dunst conky podget crontab
+# General dependencies.
+DARWIN_REBUILD ?=$(if $(shell which darwin-rebuild 2>/dev/null),\
+	$(shell which darwin-rebuild),/run/current-system/sw/bin/darwin-rebuild)
+$(DARWIN_REBUILD): URL=https://github.com/LnL7/nix-darwin/archive/master.tar.gz
+$(DARWIN_REBUILD):
+	nix-build $(URL) -A installer
+	yes | ./result/bin/darwin-installer
 
-install-mac: basic private haskell alacritty
+BREW ?=$(if $(shell which brew 2>/dev/null),\
+	$(shell which brew),/usr/local/bin/brew)
+$(BREW): URL=https://raw.githubusercontent.com/Homebrew/install/master/install
+$(BREW): ; ruby -e "$$(curl -fsSL $(URL))"
 
-basic: ssh zsh tmux vim git bin
-
-x: xorg xmonad xdg
-
-dep::
-	@makepkg -fsi --noconfirm
-	@rm -rf pkg/ src/ *.xz
-
-bin::
-	@test -d ${HOME}/Code || mkdir -p ${HOME}/Code
-	@ln $(LN_FLAGS) $(DOTFILES)/bin ${HOME}/Code/bin
-	@echo symlinked: bin 
-
-zsh::
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/dircolors ${HOME}/.dircolors
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zshrc ${HOME}/.zshrc
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zshenv ${HOME}/.zshenv
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zlogin ${HOME}/.zlogin
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zfuncs ${HOME}/.zfuncs
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zprezto ${HOME}/.zprezto
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/zpreztorc ${HOME}/.zpreztorc
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh ${HOME}/.zsh
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/zsh/base16-shell ${HOME}/.config/base16-shell
-	@echo symlinked: zsh
-
-tmux::
-	@ln $(LN_FLAGS) $(DOTFILES)/tmux/tmux.conf ${HOME}/.tmux.conf
-	@ln $(LN_FLAGS) $(DOTFILES)/tmux ${HOME}/.tmux
-	@echo symlinked: tmux
-
-vim::
-	@echo symlinked: vim
-	@ln $(LN_FLAGS) $(DOTFILES)/vim/vimrc ${HOME}/.vimrc
-	@ln $(LN_FLAGS) $(DOTFILES)/vim/vimrc ${HOME}/.gvimrc
-	@ln $(LN_FLAGS) $(DOTFILES)/vim ${HOME}/.vim
-	@vim +NeoBundleInstall +qall
-
-nvim::
-	@echo symlinked: nvim
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/nvim ${HOME}/.config/nvim
-
-alcritty::
-	@echo symlinked: alacritty
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/alacritty ${HOME}/.config/alacritty
-
-irssi::
-	@ln $(LN_FLAGS) $(DOTFILES)/irssi ${HOME}/.irssi
-	@echo symlinked: irssi
-
-conky::
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/conky ${HOME}/.config/conky
-	@echo symlinked: conky
-
-git::
-	@ln $(LN_FLAGS) $(DOTFILES)/git/gitconfig ${HOME}/.gitconfig
-	@echo symlinked: git
-
-xdg::
-	@test -d ${HOME}/.local/share || mkdir -p ${HOME}/.local/share
-	@ln $(LN_FLAGS) $(DOTFILES)/xdg/share/applications ${HOME}/.local/share
-	@update-desktop-database ${HOME}/.local/share/applications
-	@echo symlinked: xdg
-
-dunst::
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/dunst/dunstrc ${HOME}/.config/dunstrc
-	@echo symlinked: dunst
-
-xorg::
-	@ln $(LN_FLAGS) $(DOTFILES)/xorg/xsession ${HOME}/.xsession
-	@ln $(LN_FLAGS) $(DOTFILES)/xorg/xsession ${HOME}/.xinitrc
-	@ln $(LN_FLAGS) $(DOTFILES)/xorg/Xresources ${HOME}/.Xresources
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/xorg/base16-xresources ${HOME}/.config/base16-xresources
-	@ln $(LN_FLAGS) $(DOTFILES)/xorg/wallpapers ${HOME}/.wallpapers
-	@ln $(LN_FLAGS) ${HOME}/.wallpapers/Mountain.png ${HOME}/.wallpapers/current
-	@if ! test -z "$$DISPLAY"; then \
-		xrdb -load ${HOME}/.Xresources; \
-		fi
-	@echo symlinked: xorg
-
-xmonad::
-	@ln $(LN_FLAGS) $(DOTFILES)/xmonad ${HOME}/.xmonad
-	@echo symlinked: xmonad
-	@xmonad --recompile
-	@echo compiled: xmonad
-
-mpd::
-	@test -d ${HOME}/.config || mkdir -p ${HOME}/.config
-	@ln $(LN_FLAGS) $(DOTFILES)/mpd ${HOME}/.config/mpd
-	@test -d ${HOME}/Music || mkdir -p ${HOME}/Music
-	@echo symlinked: mpd
-
-ncmpcpp::
-	@ln $(LN_FLAGS) $(DOTFILES)/ncmpcpp ${HOME}/.ncmpcpp
-	@echo symlinked: ncmpcpp
-
-podget::
-	@ln $(LN_FLAGS) $(DOTFILES)/podget ${HOME}/.podget
-	@echo symlinked: podget
-
-haskell::
-	@ln $(LN_FLAGS) $(DOTFILES)/haskell/haskeline ${HOME}/.haskeline
-	@ln $(LN_FLAGS) $(DOTFILES)/haskell/ghci ${HOME}/.ghci
-ifneq (, $(shell which xmonad))
-	@xmonad --recompile
+ifeq ($(SYSTEM),Darwin)
+dep: $(DARWIN_REBUILD) $(BREW)
 endif
-	@echo symlinked: haskell
+.PHONY: dep
 
-ssh::
-	@ln $(LN_FLAGS) $(DOTFILES)/ssh ${HOME}/.ssh
-	@chmod 700 ${HOME}/.ssh
-	@chmod 600 ${HOME}/.ssh/authorized_keys
-	@echo symlinked: ssh
+# Nix specialisation.
+FLAGS   		+=-I "config=$(WORKDIR)/config"
+FLAGS 			+=-I "modules=$(WORKDIR)/modules"
+FLAGS			+=-I "bin=$(WORKDIR)/bin"
+ifdef DEBUG
+FLAGS			+=--verbose
+FLAGS			+=--show-trace
+endif
+ifeq ($(SYSTEM),Linux)
+NIXOS_VERSION 	:=20.03
+NIXOS_PREFIX  	:=$(PREFIX)/etc/nixos
+NIXOS_INSTALL	:=nixos-install --root "$(PREFIX)" $(FLAGS)
+
+NIX_REBUILD		:=sudo -E nixos-rebuild $(FLAGS)
+endif
+ifeq ($(SYSTEM),Darwin)
+FLAGS			+=-I darwin-config=$(WORKDIR)/machines/$(HOSTNAME)/default.nix
+NIX_REBUILD		:=$(DARWIN_REBUILD) $(FLAGS)
+endif
+NIX_BUILD 		:=nix-build $(FLAGS)
+
+# Nix channels.
+CH_NIXOS 			?="https://nixos.org/channels"
+CH_NIXOS_HARDWARE 	?="https://github.com/NixOS/nixos-hardware/archive"
+CH_NIX_DARWIN 	 	?="https://github.com/LnL7/nix-darwin/archive"
+CH_HOME_MANAGER 	?="https://github.com/rycee/home-manager/archive"
+
+channels:
+ifeq ($(SYSTEM),Darwin)
+	nix-channel --add "$(CH_NIXOS)/nixpkgs-unstable" nixpkgs
+	nix-channel --add "$(CH_NIX_DARWIN)/master.tar.gz" darwin
+	nix-channel --add "$(CH_HOME_MANAGER)/master.tar.gz" home-manager
+endif
+ifeq ($(SYSTEM),Linux)
+	nix-channel --add "$(CH_NIXOS)/nixos-${NIXOS_VERSION}" nixos
+	nix-channel --add "$(CH_NIXOS_HARDWARE)/master.tar.gz" nixos-hardware
+	nix-channel --add \
+		"$(CH_HOME_MANAGER)/release-${NIXOS_VERSION}.tar.gz" home-manager
+endif
+	nix-channel --add "$(CH_NIXOS)/nixpkgs-unstable" nixpkgs-unstable
+.PHONY: channels
 
 update:
-	$(GIT) pull && $(GIT) submodule foreach git checkout master && $(GIT) submodule foreach git pull && cabal update
+ifeq ($(SYSTEM),Darwin)
+	$(BREW) update --quiet
+endif
+	nix-channel --update
+.PHONY: update
 
-private::
-ifneq "$(wildcard $(PRIVATE_REPO) )" ""
-	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_rsa ${HOME}/.ssh/id_rsa
-	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/id_ed25519 ${HOME}/.ssh/id_ed25519
-	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/config ${HOME}/.ssh/config
-	@ln $(LN_FLAGS) $(DOTFILES)/private/ssh/putty ${HOME}/.ssh/putty
-	@chmod 600 ${HOME}/.ssh/id_rsa
-	@ln $(LN_FLAGS) $(DOTFILES)/private/gnupg ${HOME}/.gnupg
-	@ln $(LN_FLAGS) $(DOTFILES)/private/keybase ${HOME}/.keybase
-	@echo symlinked: private
+# Configuration.
+$(NIXOS_PREFIX)/configuration.nix:
+	sudo nixos-generate-config --root "$(PREFIX)"
+	echo "import $(WORKDIR)/machines/$(HOSTNAME)" | \
+		sudo tee "$(NIXOS_PREFIX)/configuration.nix" >/dev/null
+
+$(HOME)/.emacs.d: ; git clone https://github.com/hlissner/doom-emacs $@
+$(XDG_CONFIG_HOME)/doom: ; ln -sf $(WORKDIR)/config/emacs $@
+
+config: $(NIXOS_PREFIX)/configuration.nix
+config-emacs: $(XDG_CONFIG_HOME)/doom $(HOME)/.emacs.d ; doom install
+.PHONY: config config-emacs
+
+# Runtime targets.
+gc:
+ifeq ($(SYSTEM),Darwin)
+	$(BREW) bundle cleanup --zap
+endif
+	nix-collect-garbage -d
+.PHONY:	gc
+
+test: ACTION=$(if $(filter-out Linux,$(SYSTEM)),check,test)
+test: ; $(NIX_REBUILD) $(ACTION)
+.PHONY: test
+
+switch: 	; $(NIX_REBUILD) switch
+rollback: 	; $(NIX_REBUILD) switch --rollback
+boot: 		; $(NIX_REBUILD) boot
+dry: 		; $(NIX_REBUILD) dry-build
+.PHONY:		switch rollback boot dry
+
+install: channels update config ; $(NIXOS_INSTALL)
+.PHONY: install
+
+# CI targets.
+# $(GITHUB_ACTIONS) == true
+# $(TRAVIS) == true
+ci: dep channels update
+ifeq ($(SYSTEM),Linux)
+	NIX_PATH=$(HOME)/.nix-defexpr/channels$${NIX_PATH:+:}$(NIX_PATH)
+	$(NIX_BUILD) '<nixpkgs/nixos>' -A vm -k \
+		-I nixos-config=$(WORKDIR)/machines/ci/vm.nix
 else
-	@echo private repo not found 
-	@exit 1
+	if test -e /etc/static/bashrc; then . /etc/static/bashrc; fi && \
+	sudo rm -rf /etc/nix/nix.conf /etc/shells /etc/zprofile /etc/zshrc && \
+	$(MAKE) test HOSTNAME=ci
 endif
+.PHONY: ci
 
-crontab::
-	@crontab ${DOTFILES}/private/etc/crontab
-	@echo installed: crontab
-
-etc::
-ifneq ($(EUID),0)
-	@echo "Please run as root user"
-	@exit 1
+# Theme targets.
+$(WORKDIR)/theme.nix:
+ifndef NIX_THEME
+	$(error ERROR: NIX_THEME missing)
 endif
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slim.conf /etc/
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/slimlock.conf /etc/
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/ntp.conf /etc/ntp.conf
-	@echo symlinked: etc \(as root\)
+	echo "<modules/themes/$(NIX_THEME)>" > $@
 
-etc-home-net::
-ifneq ($(EUID),0)
-	@echo "Please run as root user"
-	@exit 1
+nix-switch-theme: $(WORKDIR)/theme.nix switch
+.PHONY: nix-switch-theme
+
+# Below are the leftover imperative commands needed after a Nix theme switch.
+
+# It is surprisingly difficult to programmatically change a macOS background
+# across all spaces!
+darwin-wallpaper: WALLPAPER ?=$(XDG_CONFIG_HOME)/wallpaper
+darwin-wallpaper:
+	osascript \
+		-e 'tell application "System Events"' \
+		-e 'set picture of every desktop to POSIX file "'$(WALLPAPER)'"' \
+		-e 'end tell' &
+	sqlite3  ~/Library/Application\ Support/Dock/desktoppicture.db \
+		"update data set value = '$(WALLPAPER)'"
+	killall Dock
+.PHONY: darwin-wallpaper
+
+light: EMACS_THEME ?=doom-one-light
+light: TERM_THEME ?=base16-one-light.sh
+light:
+ifeq ($(SYSTEM),Darwin)
+light: darwin-wallpaper
+	osascript \
+		-e 'tell application "System Events"' \
+		-e 'tell appearance preferences' \
+		-e 'set dark mode to false' \
+		-e 'end tell' \
+		-e 'end tell' &
 endif
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/hosts /etc/hosts
-	@ln $(LN_FLAGS) $(DOTFILES)/private/etc/auto.patience /etc/autofs/auto.patience
-	@echo symlinked: etc-home-net \(as root\)
+	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
+	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
+		-e "(doom/reload-theme)" &>/dev/null
+	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
+		$(ZDOTDIR)/theme.zsh
+.PHONY: light
 
-check-dead:
-	find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -print
-
-clean-dead:
-	find ~ -maxdepth 1 -name '.*' -type l -exec test ! -e {} \; -delete
-
-clean-packages:
-ifneq ($(EUID),0)
-	@echo "Please run as root user"
-	@exit 1
+dark: EMACS_THEME ?=doom-one
+dark: TERM_THEME ?=base16-onedark.sh
+dark:
+ifeq ($(SYSTEM),Darwin)
+dark: darwin-wallpaper
+	osascript \
+		-e 'tell application "System Events"' \
+		-e 'tell appearance preferences' \
+		-e 'set dark mode to true' \
+		-e 'end tell' \
+		-e 'end tell' &
 endif
-	@pacman -Scc --noconfirm
+	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
+	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
+		-e "(doom/reload-theme)" &>/dev/null
+	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
+		$(ZDOTDIR)/theme.zsh
+.PHONY: dark
+
+# Make defaults.
+all: switch
+clean: ; rm -f result
+.PHONY: all clean

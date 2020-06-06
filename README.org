@@ -1,0 +1,270 @@
+#+BEGIN_html
+<img align="right" src="xkcd.png"/>
+#+END_html
+* :house_with_garden: [[https://builtwithnix.org][https://img.shields.io/badge/built_with-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]  [[https://github.com/martinbaillie/dotfiles/actions?query=workflow%3AmacOS][https://github.com/martinbaillie/dotfiles/workflows/macOS/badge.svg]] :TOC_2:noexport:
+- [[#about][About]]
+- [[#installation-notes][Installation Notes]]
+  - [[#nixos][NixOS]]
+  - [[#macos][macOS]]
+- [[#references][References]]
+
+* About
+Welcome to the [[https://en.wiktionary.org/wiki/bikeshedding][bikeshed]]!
+
+This repository houses all my [[machines][machine configurations]] expressed declaratively using [[https://nixos.org/nix][Nix]]. It covers both my personal and work devices that are running either NixOS or macOS.
+
+The expressions are organised into platform-agnostic [[modules][modules]] that leverage the likes of the [[https://github.com/NixOS/nixpkgs][nixpkgs]], [[https://github.com/rycee/home-manager][home-manager]] and [[https://github.com/LnL7/nix-darwin][nix-darwin]] channels to fully configure the OS and userspace from scratch.
+
+These days I am spending the majority of time in either Firefox or Emacs (+[[https://github.com/akermu/emacs-libvterm][vterm]]). On NixOS I am using the [[https://github.com/swaywm/sway][Sway]] Wayland compositor and on macOS I am usually just running native fullscreen, ⌘↹ing between the two previously mentioned apps. Additionally, a simple [[modules/themes][theming]] system is used to switch various things between light and dark versions, and a [[options.nix#L22][secrets]] attribute set (kept encrypted in a private repository) is referenced throughout.
+
+#+BEGIN_QUOTE
+NOTE: Some twisted souls found value in all the ricing of the previous incarnation of this repository. I'll keep archived on this [[/tree/archive][branch]] for reference.
+#+END_QUOTE
+
+CI (Travis for NixOS, GitHub Actions for macOS) runs on push. The jobs generating a special [[machines/ci/default.nix][CI machine]] that imports every module, and derives either a NixOS VM (via QEMU) or simply builds on a fresh Darwin agent VM (in the case of macOS). The resultant binaries are pushed to [[https://cachix.org/][Cachix]] and subsequently become available for any of my other machines, saving a lot of wasted battery!
+
+The [[Makefile][Makefile]] (in conjunction with some helpful [[modules/term/zsh.nix#L24][aliases]]) is used to drive most actions, abstracting away NixOS/macOS differences where necessary.
+
+* Installation Notes
+Below are some rough platform specific installation notes I use to go from fresh installs to fully configured machine.
+** NixOS
+**** Media
+[[https://nixos.org/nixos/download.html][Download]] and verify latest NixOS minimal ISO:
+
+#+NAME: nixos-ver
+#+BEGIN_SRC emacs-lisp :cache yes
+"19.09"
+#+END_SRC
+
+#+RESULTS[13b0b58868c32fc283fe08bd6c617fa4d58d6984]: nixos-ver
+: 19.09
+
+#+NAME: nixos-rel
+#+BEGIN_SRC emacs-lisp :cache yes :var nixos-ver=nixos-ver
+(format "%s.1685.e9ef090eb54" nixos-ver)
+#+END_SRC
+
+#+RESULTS[bdc5fd96e1751d6f7b31bf0435c24d27bbb4c02c]: nixos-rel
+: 19.09.1685.e9ef090eb54
+
+#+NAME: nixos-url
+#+BEGIN_SRC emacs-lisp :cache yes :var nixos-ver=nixos-ver
+(format "https://releases.nixos.org/nixos/%s" nixos-ver)
+#+END_SRC
+
+#+RESULTS[6ea8b95b40577283983b31f1862093ba872ded97]: nixos-url
+: https://releases.nixos.org/nixos/19.09
+
+#+BEGIN_SRC shell :exports code :var NIXOS_REL=nixos-rel NIXOS_URL=nixos-url
+curl -O ${NIXOS_URL}/nixos-${NIXOS_REL}/nixos-minimal-${NIXOS_REL}-x86_64-linux.iso
+curl -O ${NIXOS_URL}/nixos-${NIXOS_REL}/nixos-minimal-${NIXOS_REL}-x86_64-linux.iso.sha256
+sha256sum -c nixos-minimal-${NIXOS_REL}-x86_64-linux.iso.sha256
+#+END_SRC
+
+Create a bootable NixOS USB (macOS example):
+#+BEGIN_SRC shell :exports code :var NIXOS_REL=nixos-rel NIXOS_URL=nixos-url
+diskutil list # Find USB
+diskutil unmountDisk /dev/disk2
+dd if=nixos-minimal-${NIXOS_REL}-x86_64-linux.iso of=/dev/rdisk2 bs=4m
+diskutil unmountDisk /dev/disk2
+#+END_SRC
+
+**** BIOS Tweaks (ThinkPad)
+- [X] Disable Secure Boot
+- [X] Enable CSM Support
+
+**** Boot
+Setup networking:
+#+BEGIN_SRC shell
+wpa_passhrase SSID PASSWORD > /etc/wpa_supplicant.conf
+systemctl start wpa_supplicant
+ip addr
+#+END_SRC
+
+Enable SSHd for remote (LAN) install and ssh-agent forwarding:
+#+BEGIN_SRC shell
+systemctl start sshd
+passwd # So we can login via SSH
+#+END_SRC
+
+Conduct rest of install from other laptop for convenience:
+#+BEGIN_SRC shell
+ssh nixos@<addr>
+#+END_SRC
+
+**** Partition
+Create a =500M= boot partition:
+#+BEGIN_SRC shell
+gdisk /dev/nvme0n1
+#  o (create new empty partition table)
+#  n (add partition, 500M, type ef00 EFI)
+#  n (add partition, remaining space, type 8301 Linux Reserved - in the absence of a LUKS code)
+#  w (write partition table and exit)
+#+END_SRC
+
+Setup the encrypted LUKS partition and open it:
+#+BEGIN_SRC shell
+cryptsetup luksFormat /dev/nvme0n1p2
+cryptsetup luksOpen /dev/nvme0n1p2 enc-pv
+#+END_SRC
+
+Create two logical volumes (swap and root):
+#+BEGIN_SRC shell
+pvcreate /dev/mapper/enc-pv
+vgcreate vg /dev/mapper/enc-pv
+lvcreate -L 8G -n swap vg
+lvcreate -l '100%FREE' -n root vg
+#+END_SRC
+
+Format the partitions:
+#+BEGIN_SRC shell
+mkfs.fat -F 32 /dev/nvme0n1p1
+mkfs.ext4 -L root /dev/vg/root
+mkswap -L swap /dev/vg/swap
+#+END_SRC
+
+**** Install
+Mount the partitions just created under /mnt:
+#+BEGIN_SRC shell
+mount /dev/vg/root /mnt
+mkdir /mnt/boot
+mount /dev/nvme0n1p1 /mnt/boot
+swapon /dev/vg/swap
+#+END_SRC
+
+Install:
+#+BEGIN_SRC shell
+useradd -m -G wheel martin
+sudo su - martin
+nix-shell -p git --run \
+    git clone --recursive git@github.com:martinbaillie/dotfiles.git \
+    /mnt/etc/dotfiles
+make -C /mnt/etc/dotfiles install
+#+END_SRC
+
+**** Iterative Troubleshooting
+
+If system doesn't boot:
+#+BEGIN_SRC shell
+cryptsetup luksOpen /dev/nvme0n1p2 enc-pv
+lvchange -a y /dev/vg/swap
+lvchange -a y /dev/vg/root
+mount /dev/vg/root /mnt
+mount /dev/nvme0n1p1 /mnt/boot
+swapon /dev/vg/swap
+wpa_passhrase SSID PASSWORD > /etc/wpa_supplicant.conf
+systemctl start wpa_supplicant
+#+END_SRC
+
+Try again.
+
+**** Import GPG key
+#+BEGIN_SRC shell
+gpg --import ~/.gnupg/gpg.asc
+#+END_SRC
+
+**** Configure Emacs
+#+BEGIN_SRC shell
+make config-emacs
+#+END_SRC
+** macOS
+From a fresh macOS install.
+**** Enable SSHd
+#+BEGIN_SRC shell
+sudo systemsetup -setremotelogin on
+#+END_SRC
+
+**** Install XCode
+#+BEGIN_SRC shell
+sudo xcodebuild -license
+#+END_SRC
+
+**** Install Nix (multi-user)
+#+BEGIN_SRC shell
+# curl https://nixos.org/nix/install | sh
+sh <(curl https://nixos.org/nix/install) --daemon
+#+END_SRC
+
+**** Add Nix path to default shell
+#+BEGIN_SRC shell
+echo 'export PATH=$PATH:/nix/var/nix/profiles/default/bin' > .bashrc
+chmod +x .bashrc
+#+END_SRC
+
+**** Confirm remotely accessible
+#+BEGIN_SRC shell
+ssh $REMOTE nix-daemon --version
+#+END_SRC
+
+**** Add regular user to Nix
+#+BEGIN_SRC shell
+cat << EOF | sudo tee -a /etc/nix/nix.conf
+trusted-users = $USER @admin
+allowed-users = *
+EOF
+sudo killall nix-daemon
+#+END_SRC
+
+**** Optionally seed contents from an existing Nix Darwin machine
+#+BEGIN_SRC shell
+nix copy --no-check-sigs --keep-going --to ssh-ng://$REMOTE ~/.nix-profile
+#+END_SRC
+
+**** Install Nix Darwin
+#+BEGIN_SRC shell
+nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+./result/bin/darwin-installer
+#+END_SRC
+
+**** Add Home Manager
+#+BEGIN_SRC shell
+nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+#+END_SRC
+
+**** Install Homebrew for those macOS GUI apps unmanageable through Nix
+#+BEGIN_SRC shell
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+#+END_SRC
+
+**** Grab dotfiles
+#+BEGIN_SRC shell
+sudo git clone --recursive git@github.com:martinbaillie/dotfiles.git /etc/dotfiles
+sudo chown -R $USER: /etc/dotfiles
+#+END_SRC
+
+**** Backup macOS default shell RCs
+#+BEGIN_SRC shell
+sudo mv /etc/shells /etc/shells.before-nix-darwin
+sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
+sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
+sudo mv /etc/zprofile /etc/zprofile.before-nix-darwin
+#+END_SRC
+
+**** Switch to Nix Darwin
+#+BEGIN_SRC shell
+make switch
+#+END_SRC
+
+**** Switch login shell to zsh
+#+BEGIN_SRC shell
+chsh -s /run/current-system/sw/bin/zsh $USER
+#+END_SRC
+
+**** Import GPG key
+#+BEGIN_QUOTE
+NOTE: macOS gpg has a default interactive pinentry so don't be remote.
+#+END_QUOTE
+
+#+BEGIN_SRC shell
+gpg --import ~/.gnupg/gpg.asc
+#+END_SRC
+
+**** Configure Emacs
+#+BEGIN_SRC shell
+make config-emacs
+#+END_SRC
+* References
+- [[https://github.com/hlissner][@hlissner]]
+- [[https://github.com/jwiegley][@jwiegley]]
+- [[https://github.com/cmacrae][@cmacrae]]

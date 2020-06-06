@@ -1,0 +1,53 @@
+# Emacs
+*~
+*.*~
+\#*
+.\#*
+
+# Vim
+*.swp
+.*.sw[a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# Other Code
+.swp
+.idea
+.*.swp
+*~
+.tags
+tags
+.sass-cache
+tmp
+.codekit-cache
+config.codekit
+
+# Compiled
+*.class
+*.exe
+*.o
+*.so
+*.dll
+*.pyc
+
+# Tags (from etags and ctags)
+TAGS
+!TAGS/
+tags
+!tags/
+
+# General
+*.log
+*.cache
+.DS_Store?
+.DS_Store
+.CFUserTextEncoding
+.Trash
+.Xauthority
+thumbs.db
+Icon?
+Thumbs.db
+.cache
+.pid
+.sock

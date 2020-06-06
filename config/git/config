@@ -1,0 +1,46 @@
+[user]
+	name = Martin Baillie
+	signingkey = 2A56EA64591E15E4
+	email = martin@baillie.email
+[alias]
+	st = status
+[push]
+	default = simple
+[credential]
+	helper = store
+[commit]
+	gpgsign = true
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[merge]
+	tool = ediff
+[mergetool "ediff"]
+	cmd = emacsclient -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
+[mergetool "nvimfugitive"]
+	cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
+[includeIf "gitdir:~/Code/work/**"]
+### Should contain:
+### [user]
+###	   email = me@$WORK.com
+	path = ~/Code/work/.gitconfig
+[color]
+	ui = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = yellow
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[diff-so-fancy]
+	stripLeadingSymbols = false
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
