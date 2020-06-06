@@ -1,27 +1,33 @@
 * Inbox
-** TODO Figure out why this doesn't change on NixOS until we restart
+** [ ] TODO Allow wallpaper to be configurable per-machine
+
+[[file:/etc/dotfiles/modules/themes/default.nix::my.home.xdg.configFile."wallpaper".source = config.theme.wallpaper;]]
+** [X] DONE Figure out why this doesn't change on NixOS until we restart
+CLOSED: [2020-06-06 Sat 18:14]
 
 [[file:/etc/dotfiles/modules/themes/light/default.nix::env.BAT_THEME = "OneHalfLight";]]
-** TODO Fix the systemd errors during boot
+** [ ] TODO Fix the systemd errors during boot
 
 [[file:/etc/dotfiles/nixos-configuration.nix::plymouth.enable = true;]]
-** TODO Move to NetworkManager for more flexibility
+** [ ] TODO Move to NetworkManager for more flexibility
 
 [[file:/etc/dotfiles/machines/betsy/default.nix::networking.wireless.enable = true;]]
-** TODO Fix permissions
+** [ ] TODO Fix permissions
 
 [[file:/etc/dotfiles/modules/term/default.nix::".ssh/authorized_keys".text = with builtins;]]
-** TODO Finish theming
+** [X] DONE Finish theming
+CLOSED: [2020-06-06 Sat 18:14]
 Including ditching the old theme.sh in lieu of Makefile
 [[file:/etc/dotfiles/Makefile::ifeq ($(SYSTEM),Darwin)]]
-** DONE Fix infinite recursion in CI
-CLOSED: [2020-05-31 Sun 20:12]
+
+** [X] DONE Fix infinite recursion in CI
+CLOSED: [2020-06-06 Sat 18:14]
 
 [[file:/etc/dotfiles/machines/ci/default.nix::imports = \[]]
-** DONE Ditch old uses of GNU Stow from before Nix time
-CLOSED: [2020-05-31 Sun 16:08]
+** [X] DONE Ditch old uses of GNU Stow from before Nix time
+CLOSED: [2020-06-06 Sat 18:14]
 
 [[file:/etc/dotfiles/Makefile::$(HOME)/.config/doom: ; cd config && stow --target $(HOME) --verbose emacs]]
-** TODO NixOS immutable root, erased every boot
+** [ ] TODO NixOS immutable root, erased every boot
 Copy @grahamc. Might need to switch to ZFS.
 https://grahamc.com/blog/erase-your-darlings
