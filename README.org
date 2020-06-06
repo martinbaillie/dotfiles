@@ -1,7 +1,7 @@
 #+BEGIN_html
 <img align="right" src="xkcd.png"/>
 #+END_html
-* :house_with_garden: [[https://builtwithnix.org][https://img.shields.io/badge/built_with-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5]]  [[https://github.com/martinbaillie/dotfiles/actions?query=workflow%3AmacOS][https://github.com/martinbaillie/dotfiles/workflows/macOS/badge.svg]] :TOC_2:noexport:
+* :house_with_garden: [[https://builtwithnix.org][https://img.shields.io/badge/built_with-Nix-5277C3.svg?logo=nixos&labelColor=24292E]]  [[https://travis-ci.org/martinbaillie/dotfiles][https://img.shields.io/travis/martinbaillie/dotfiles/master.svg?label=NixOS&logo=travis&labelColor=24292E]]  [[https://github.com/martinbaillie/dotfiles/actions?query=workflow%3AmacOS][https://github.com/martinbaillie/dotfiles/workflows/macOS/badge.svg]] :TOC_2:noexport:
 - [[#about][About]]
 - [[#installation-notes][Installation Notes]]
   - [[#nixos][NixOS]]
@@ -18,7 +18,7 @@ The expressions are organised into platform-agnostic [[modules][modules]] that l
 These days I am spending the majority of time in either Firefox or Emacs (+[[https://github.com/akermu/emacs-libvterm][vterm]]). On NixOS I am using the [[https://github.com/swaywm/sway][Sway]] Wayland compositor and on macOS I am usually just running native fullscreen, ⌘↹ing between the two previously mentioned apps. Additionally, a simple [[modules/themes][theming]] system is used to switch various things between light and dark versions, and a [[options.nix#L22][secrets]] attribute set (kept encrypted in a private repository) is referenced throughout.
 
 #+BEGIN_QUOTE
-NOTE: Some twisted souls found value in all the ricing of the previous incarnation of this repository. I'll keep archived on this [[/tree/archive][branch]] for reference.
+NOTE: Some twisted souls found value in all the ricing of the previous incarnation of this repository. I'll keep archived on this [[../../tree/archive][branch]] for reference.
 #+END_QUOTE
 
 CI (Travis for NixOS, GitHub Actions for macOS) runs on push. The jobs generating a special [[machines/ci/default.nix][CI machine]] that imports every module, and derives either a NixOS VM (via QEMU) or simply builds on a fresh Darwin agent VM (in the case of macOS). The resultant binaries are pushed to [[https://cachix.org/][Cachix]] and subsequently become available for any of my other machines, saving a lot of wasted battery!
