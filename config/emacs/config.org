@@ -33,7 +33,7 @@
   - [[#buffer-expose][buffer-expose]]
   - [[#vterm][vterm]]
 
-* [6/10] Tasks :noexport:
+* [7/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
 - [X] A binding for org-insert-todo-heading
 - [X] A binding for quick comment toggles
@@ -41,7 +41,7 @@
 - [X] Still need to solve emacsclient issue for mac
 - [X] Using pipe and filter in vterm causes deletions ;2u
 - [ ] Turn off auto-fill-mode and format-all-mode for HTML
-- [ ] Finish motion trainer code
+- [X] Finish motion trainer code
 - [ ] Use 'y' for copy in vterm mouse select mode
 - [ ] Make Ivy swiper work in vterm buffers
 - [ ] Finish vterm buffer expose
@@ -218,28 +218,17 @@ Evil frame movements.
 
 Motion training.
 #+BEGIN_SRC emacs-lisp
-;; (defvar ratelimited-commands nil)
-;; (defvar ratelimit-delay 1)
-;; (defvar ratelimit--timer nil)
-;; (defun ratelimit-command (orig-fn &rest args)
-;;  (let ((command this-command))
-;;    (when (memq command ratelimited-commands)
-;;      (user-error "Delay penalty for '%s'. Use a better motion!" command))
-;;    (apply orig-fn args)
-;;    (when (not (memq command ratelimited-commands))
-;;     (push command ratelimited-commands))
-;;    (when (timerp ratelimit--timer)
-;;      (cancel-timer ratelimit--timer))
-;;    (setq ratelimit--timer
-;;          (run-at-time
-;;           ratelimit-delay nil
-;;           (lambda (cmd) (delq! cmd ratelimited-commands))
-;;           command))))
+(use-package! evil-motion-trainer
+  :init
+  (global-evil-motion-trainer-mode 1)
+  :config
+  (setq evil-motion-trainer-threshold 6)
+  )
 
-;; (advice-add #'evil-next-line :around #'ratelimit-command)
-;; (advice-add #'evil-previous-line :around #'ratelimit-command)
-;; (advice-add #'evil-backward-char :around #'ratelimit-command)
-;; (advice-add #'evil-forward-char :around #'ratelimit-command)
+(map!
+ :leader
+ (:prefix-map ("t" . "toggle")
+  :desc "Evil motion trainer" "t" #'evil-motion-trainer-mode))
 #+END_SRC
 
 * Keys/Linux
