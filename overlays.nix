@@ -15,9 +15,11 @@
   # }))
 
   # Build Emacs from bleeding-edge source.
-  (import (builtins.fetchTarball {
+  (import (builtins.fetchTarball
     # But pin to a particular commit so I can opt-in for upgrades.
-    url =
-      "https://github.com/nix-community/emacs-overlay/archive/05258fa4fedf87c1f7eee7686838f8bee3ee5cf6.tar.gz";
-  }))
+    "https://github.com/nix-community/emacs-overlay/archive/05258fa4fedf87c1f7eee7686838f8bee3ee5cf6.tar.gz"))
+
+  # Mozilla overlay for Rust.
+  (import (builtins.fetchTarball
+    "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz"))
 ]
