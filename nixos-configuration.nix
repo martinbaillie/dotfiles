@@ -77,6 +77,7 @@
     ];
   };
 
+  # Keyboard.
   services.interception-tools = {
     enable = true;
 

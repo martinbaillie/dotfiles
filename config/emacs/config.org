@@ -222,7 +222,7 @@ Motion training.
   :init
   (global-evil-motion-trainer-mode 1)
   :config
-  (setq evil-motion-trainer-threshold 6)
+  (setq evil-motion-trainer-threshold 5)
   )
 
 (map!

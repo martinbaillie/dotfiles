@@ -1,3 +1,7 @@
 { pkgs, ... }: {
-  my.packages = with pkgs; [ direnv (import <nixpkgs-unstable> { }).lorri ];
+  my = {
+    packages = [ pkgs.direnv ];
+    home.xdg.configFile."zsh/rc.d/rc.direnv.zsh".text =
+      ''eval "$(direnv hook zsh)"'';
+  };
 }

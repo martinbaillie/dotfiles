@@ -71,11 +71,8 @@ case ${TERM} in
 esac
 
 ########################################################################
-# Aliases.
-if [[ -f "${ZDOTDIR}/aliases.zsh" ]]; then
-  source ${ZDOTDIR}/aliases.zsh
-fi
-for file in ${ZDOTDIR}/rc.d/aliases.*.zsh(N); do
+# Tool-specific RCs.
+for file in ${ZDOTDIR}/rc.d/rc.*.zsh(N); do
   source ${file}
 done
 

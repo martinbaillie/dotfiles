@@ -265,7 +265,7 @@ in {
         #
         # Basics:
         #
-        bindsym $mod+w kill
+        bindsym $mod+q kill
         bindsym $mod+Space exec $menu
         bindsym $mod+Return exec $editor
         bindsym $mod+Shift+Return exec $browser

@@ -17,7 +17,7 @@ in {
     ] ++ optionals isLinux [ pinentry_emacs wkhtmltopdf ];
 
     home.xdg.configFile = {
-      "zsh/rc.d/aliases.emacs.zsh".source = <config/emacs/aliases.zsh>;
+      "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;
       "zsh/rc.d/env.emacs.zsh".source = <config/emacs/env.zsh>;
     };
   };

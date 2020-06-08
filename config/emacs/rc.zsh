@@ -10,3 +10,6 @@ if [ -n "${INSIDE_EMACS}" ]; then
   alias diff=ediff
   alias man=eman
 fi
+
+alias e=${EDITOR}
+alias v=${VISUAL}

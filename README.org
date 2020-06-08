@@ -23,7 +23,7 @@ NOTE: Some twisted souls found value in all the ricing of the previous incarnati
 
 CI (Travis for NixOS, GitHub Actions for macOS) runs on push. The jobs generating a special [[machines/ci/default.nix][CI machine]] that imports every module, and derives either a NixOS VM (via QEMU) or simply builds on a fresh Darwin agent VM (in the case of macOS). The resultant binaries are pushed to [[https://cachix.org/][Cachix]] and subsequently become available for any of my other machines, saving a lot of wasted battery!
 
-The [[Makefile][Makefile]] (in conjunction with some helpful [[modules/term/zsh.nix#L24][aliases]]) is used to drive most actions, abstracting away NixOS/macOS differences where necessary.
+The [[Makefile][Makefile]] (in conjunction with some helpful [[default.nix#58][aliases]]) is used to drive most actions, abstracting away NixOS/macOS differences where necessary.
 
 * Installation Notes
 Below are some rough platform specific installation notes I use to go from fresh installs to fully configured machine.

@@ -54,7 +54,7 @@ in {
     home = {
       xdg = {
         enable = true;
-        configFile."zsh/rc.d/aliases.nix.zsh".text = ''
+        configFile."zsh/rc.d/rc.nix.zsh".text = ''
           alias nix-env="NIXPKGS_ALLOW_UNFREE=1 nix-env"
           alias nix-shell="NIXPKGS_ALLOW_UNFREE=1 nix-shell"
           alias nix-test="make -C ${pwd} test"
@@ -85,6 +85,12 @@ in {
       XDG_BIN_HOME = "$HOME/.local/bin";
       XDG_RUNTIME_DIR = "/run/user/$UID";
       PATH = "$XDG_BIN_HOME:$PATH";
+
+      # Location, timezone and internationalisation.
+      TZ = "Australia/Sydney";
+      LC_ALL = "en_AU.UTF-8";
+      LANG = "en_AU.UTF-8";
+      LANGUAGE = "en_AU.UTF-8";
     };
   };
 }
