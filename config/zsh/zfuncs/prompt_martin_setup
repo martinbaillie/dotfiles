@@ -17,7 +17,7 @@ function prompt_martin_setup {
   prompt off
   setopt LOCAL_OPTIONS
   unsetopt XTRACE KSH_ARRAYS
-  prompt_opts=(cr percent subst)
+  prompt_opts=(cr percent sp subst)
 
   # Load required functions.
   autoload -Uz add-zsh-hook
