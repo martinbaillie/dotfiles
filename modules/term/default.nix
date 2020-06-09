@@ -19,7 +19,7 @@ in {
             ]);
         };
         xdg.configFile = {
-          "zsh/rc.d/env.fzf.zsh".source = <config/fzf/env.zsh>;
+          "zsh/rc.d/rc.fzy.zsh".source = <config/fzy/rc.zsh>;
           "zsh/rc.d/rc.fzf.zsh".source = <config/fzf/rc.zsh>;
           "zsh/rc.d/rc.term.zsh".text = ''
             alias mkdir='mkdir -p'
@@ -56,6 +56,7 @@ in {
         file
         findutils
         fzf
+        fzy
         gawk
         htop
         inetutils

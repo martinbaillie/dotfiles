@@ -1,9 +1,4 @@
 #!/usr/bin/env zsh
-fzf-file-open-widget() {
-  eval "${FZF_CTRL_T_COMMAND}" | $(__fzfcmd) -1 | read file
-  [ -n "${file}" ] && v "${file}"
-}
-
 fzf-jq() {
   local input=${1:-}
   if [[ -p /dev/stdin ]]; then
@@ -16,7 +11,3 @@ fzf-jq() {
     jq -C {q}" --preview-window 'down:70%' --height '80%' --print-query
   [[ -e "$tmpfile" ]] && rm -f "$tmpfile"
 }
-
-zle -N fzf-file-open-widget
-bindkey '\C-f' fzf-file-open-widget
-bindkey '\C-p' fzf-cd-widget

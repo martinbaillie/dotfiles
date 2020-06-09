@@ -17,6 +17,7 @@ if ! zgen saved; then
   zgen load junegunn/fzf shell
   zgen load chisui/zsh-nix-shell nix-shell.plugin.zsh
   zgen load chriskempson/base16-shell
+  zgen load aperezdc/zsh-fzy
   zgen load changyuheng/fz
   zgen load rupa/z
   zgen save
