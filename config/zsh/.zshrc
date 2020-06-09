@@ -4,9 +4,6 @@ fpath=( ${ZDOTDIR}/zfuncs "${fpath[@]}" )
 autoload -Uz fkill fshow fbranch
 typeset -g cdpath fpath mailpath path
 
-# Try to prevent failed commands landing in history.
-zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
-
 ########################################################################
 # Plugins.
 

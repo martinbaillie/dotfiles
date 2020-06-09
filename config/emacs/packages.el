@@ -15,7 +15,7 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 
-(package! evil-motion-trainer :pin nil :recipe
+(package! evil-motion-trainer :recipe
   (:host github :repo "martinbaillie/evil-motion-trainer"))
   ;; :recipe (:local-repo "/home/martin/Code/personal/evil-motion-trainer"
            ;; :files ("*.el")))
@@ -25,7 +25,7 @@
   (:host github :repo "martinbaillie/evil-easymotion"))
 
 ;; Use my fork of kubectx-mode.
-(package! kubectx-mode :pin nil :recipe
+(package! kubectx-mode :recipe
   (:host github :repo "martinbaillie/emacs-kubectx-mode"))
 
 ;; Use bleeding edge vterm

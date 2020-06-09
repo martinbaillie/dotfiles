@@ -4,11 +4,20 @@
       "zsh/rc.d/env.rust.zsh".source = <config/rust/env.zsh>;
     };
     packages = with pkgs;
-      [
-        (pkgs.latest.rustChannels.nightly.rust.override {
-          extensions =
-            [ "rust-src" "rls-preview" "rust-analysis" "rustfmt-preview" ];
-        })
-      ];
+      let
+        rustChannel = pkgs.rustChannelOf {
+          date = "2020-06-08";
+          channel = "nightly";
+        };
+
+        rust = rustChannel.rust.override {
+          extensions = [
+            "clippy-preview"
+            "rust-analysis"
+            "rls-preview"
+            "rustfmt-preview"
+          ];
+        };
+      in [ rust ];
   };
 }
