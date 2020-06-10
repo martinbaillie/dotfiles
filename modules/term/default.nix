@@ -58,6 +58,7 @@ in {
         fzf
         fzy
         gawk
+        gnuplot
         htop
         inetutils
         jq

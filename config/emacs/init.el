@@ -65,7 +65,7 @@
        data              ; config/data formats
        emacs-lisp        ; drown in parentheses
        (go +lsp)         ; the hipster dialect
-       json              ; At least it ain't XML
+       (json +lsp)       ; At least it ain't XML
        (javascript +lsp) ; all(hope(abandon(ye(who(enter(here))))))
        markdown          ; writing docs for people to ignore
        nix               ; I hereby declare "nix geht mehr!"
@@ -75,11 +75,10 @@
         +jupyter
         +pandoc
         +present)
-       purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
+       (python +lsp)     ; beautiful is better than ugly
        (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       sh                ; she sells {ba,z,fi}sh shells on the C xor
-       yaml              ; JSON, but readable
+       (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor
+       (yaml +lsp)       ; JSON, but readable
 
        :config
        literate
