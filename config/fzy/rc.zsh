@@ -22,7 +22,8 @@ zstyle :fzy:proc    command      fzy-proc-default-command
 fzy-edit-widget() {
     emulate -L zsh
     zle -I
-    emacs.bash -n $(__fzy_fsel)
+    echo "$(__fzy_fsel)" | read file
+    [ -n "${file}" ] && v "${file}"
     zle reset-prompt
 }
 zle -N fzy-edit-widget
@@ -37,5 +38,4 @@ zle -N fzy-kill-widget
 
 bindkey             '^T'         fzy-cd-widget
 bindkey             '^F'         fzy-edit-widget
-bindkey             '^R'         fzy-history-widget
 bindkey             '^P'         fzy-kill-widget
