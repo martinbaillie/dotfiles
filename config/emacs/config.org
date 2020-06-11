@@ -24,6 +24,7 @@
   - [[#avy][avy]]
   - [[#magit][magit]]
   - [[#kubectx][kubectx]]
+  - [[#yaml][yaml]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
@@ -527,6 +528,25 @@ Switch kubectl context and namespace and display current settings in Emacs model
   ;;  (setq kubectx-mode-map "")
   ;; (kubectx-mode 1)
   ;;)
+#+END_SRC
+
+** yaml
+Get the YAML language server to validate Kubernetes resources.
+#+BEGIN_SRC emacs-lisp
+(setq lsp-yaml-schemas (make-hash-table))
+(puthash "kubernetes" ["resources.yaml"
+                       "resources/*"
+                       "pod.yaml"
+                       "deployment.yaml"
+                       "serviceaccount.yaml"
+                       "clusterrole.yaml"
+                       "role.yaml"
+                       "clusterrolebinding.yaml"
+                       "rolebinding.yaml"
+                       "configmap.yaml"
+                       "service.yaml"]
+         lsp-yaml-schemas)
+(puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+END_SRC
 
 ** pinentry
