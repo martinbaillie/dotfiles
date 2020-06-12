@@ -3,7 +3,8 @@
 https://www.hashicorp.com/blog/announcing-the-terraform-visual-studio-code-extension-v2-0-0/
 
 [[file:/etc/dotfiles/config/emacs/config.org::*terraform][terraform]]
-** [ ] TODO Allow wallpaper to be configurable per-machine
+** [X] TODO Allow wallpaper to be configurable per-machine
+CLOSED: [2020-06-12 Fri 22:27]
 
 [[file:/etc/dotfiles/modules/themes/default.nix::my.home.xdg.configFile."wallpaper".source = config.theme.wallpaper;]]
 ** [X] DONE Figure out why this doesn't change on NixOS until we restart

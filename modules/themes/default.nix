@@ -33,6 +33,8 @@ with lib; {
   };
 
   config = {
-    my.home.xdg.configFile."wallpaper".source = config.theme.wallpaper;
+    my.home.xdg.configFile."wallpaper".source =
+      let local = "${(builtins.getEnv "XDG_DATA_HOME")}/.wallpaper";
+      in if builtins.pathExists local then local else config.theme.wallpaper;
   };
 }

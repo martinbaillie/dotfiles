@@ -10,7 +10,6 @@
     <modules/dev/python.nix>
 
     <modules/editors/emacs.nix>
-    <modules/editors/vim.nix>
 
     <modules/media>
 
