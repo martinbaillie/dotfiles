@@ -24,7 +24,7 @@
   - [[#avy][avy]]
   - [[#magit][magit]]
   - [[#kubectx][kubectx]]
-  - [[#yaml][yaml]]
+  - [[#lsp][lsp]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
@@ -530,7 +530,8 @@ Switch kubectl context and namespace and display current settings in Emacs model
   ;;)
 #+END_SRC
 
-** yaml
+** lsp
+*** yaml
 Get the YAML language server to validate Kubernetes resources.
 #+BEGIN_SRC emacs-lisp
 (setq lsp-yaml-schemas (make-hash-table))
@@ -547,6 +548,18 @@ Get the YAML language server to validate Kubernetes resources.
                        "service.yaml"]
          lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
+#+END_SRC
+
+*** terraform
+Enable LSP for Terraform.
+#+BEGIN_SRC emacs-lisp
+(after! lsp-mode
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-lsp" "serve"))
+                    :major-modes '(terraform-mode)
+                    :server-id 'terraform-lsp))
+  )
+(add-hook 'terraform-mode-hook #'lsp-deferred)
 #+END_SRC
 
 ** pinentry
@@ -783,13 +796,6 @@ Copy mode entering and exiting.
 *** Prompt Outlines
 #+BEGIN_SRC emacs-lisp
 (setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
-(map!
- (:map vterm-copy-mode-map
-  :m "[[" #'outline-previous-heading
-  :m "]]" #'outline-next-heading
-  :vnm "<tab>" #'outline-toggle-children
-  )
- )
 #+END_SRC
 
 *** Scroll
@@ -807,70 +813,6 @@ Allow stop scroll term sequence.
   (vterm-send-key "s" nil nil t))
 #+END_SRC
 
-*** Popups
-#+BEGIN_SRC emacs-lisp
-(set-popup-rule! "^vterm" :size 0.30 :vslot -4 :select t :quit nil :ttl 0)
-(defun +vterm/toggle (arg)
-  "Toggles a terminal popup window at project root.
-If prefix ARG is non-nil, recreate vterm buffer in the current project's root."
-  (interactive "P")
-  (unless (fboundp 'module-load)
-    (user-error "Your build of Emacs lacks dynamic modules support and cannot load vterm"))
-  (let ((buffer-name
-         (format "vterm:%s"
-                 (if (bound-and-true-p persp-mode)
-                     (safe-persp-name (get-current-persp))
-                   "main")))
-        confirm-kill-processes
-        current-prefix-arg)
-    (when arg
-      (let ((buffer (get-buffer buffer-name))
-            (window (get-buffer-window buffer-name)))
-        (when (buffer-live-p buffer)
-          (kill-buffer buffer))
-        (when (window-live-p window)
-          (delete-window window))))
-    (if-let (win (get-buffer-window buffer-name))
-        (if (eq (selected-window) win)
-            (delete-window win)
-          (select-window win)
-          (when (bound-and-true-p evil-local-mode)
-            (evil-change-to-initial-state))
-          (goto-char (point-max)))
-      (require 'vterm)
-      (setenv "PROOT" (or (doom-project-root) default-directory))
-      (let ((buffer (get-buffer-create buffer-name)))
-        (with-current-buffer buffer
-          (doom-mark-buffer-as-real-h)
-          (hide-mode-line-mode)
-          (remove-hook 'doom-escape-hook #'+popup-close-on-escape-h)
-          (unless (eq major-mode 'vterm-mode)
-            (vterm-mode)))
-        (pop-to-buffer buffer)))))
-#+END_SRC
-
-Toggling vterms.
-#+BEGIN_SRC emacs-lisp
-(defun +vterm/herealways (arg)
-  "Open a terminal buffer in the current window at project root.
-If prefix ARG is non-nil, cd into `default-directory' instead of project root."
-  (interactive "P")
-  (require 'vterm)
-  ;; This hack forces vterm to redraw, fixing strange artefacting in the tty.
-  (save-window-excursion
-    (pop-to-buffer "*scratch*"))
-  (let ((default-directory
-          (if arg
-              default-directory
-            (or (doom-project-root) default-directory))))
-    (vterm)))
-
-(map!
- :vgni "s-;" #'+vterm/here
- :vgni "s-:" #'+vterm/toggle
- )
-#+END_SRC
-
 *** Titles
 #+BEGIN_SRC emacs-lisp
 (setq vterm-buffer-name-string "vterm: %s")
@@ -880,7 +822,9 @@ If prefix ARG is non-nil, cd into `default-directory' instead of project root."
 Miscellaneous vterm bindings.
 #+BEGIN_SRC emacs-lisp
 (map!
+ :vgni "s-;" #'+vterm/here
  (:map vterm-mode-map
+
   ;; Evil yank when selecting.
   :mnv "y" #'evil-yank
 
@@ -899,6 +843,11 @@ Miscellaneous vterm bindings.
   ;; Term sequences.
   :i "C-c" #'vterm-send-C-c
   :i "C-z" #'vterm-send-C-z
+  )
+ (:map vterm-copy-mode-map
+  :m "[[" #'outline-previous-heading
+  :m "]]" #'outline-next-heading
+  :vnm "<tab>" #'outline-toggle-children
   )
  )
 #+END_SRC
