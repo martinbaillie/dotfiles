@@ -67,13 +67,14 @@
   # Default low-level system packages.
   environment = {
     systemPackages = with pkgs; [
-      sshfs
       exfat
-      ntfs3g
       hfsprogs
-      zlib
+      ntfs3g
       openssl
       patchelf
+      protonvpn-cli-ng
+      sshfs
+      zlib
     ];
   };
 
@@ -117,6 +118,9 @@
   programs.dconf.enable = true;
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
   services.fwupd.enable = true;
+
+  # Automounting and virtual filesystem.
+  services.gvfs.enable = true;
 
   my = {
     # Homedir.

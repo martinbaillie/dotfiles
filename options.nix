@@ -28,6 +28,8 @@ in {
     password = mkSecret "Local user password." "";
     cachix_signing_key = mkSecret "Cachix signing key." "";
     work_overlay_url = mkSecret "Work overlay repository URL." "";
+    protonvpn_username = mkSecret "ProtonVPN OpenVPN username." "";
+    protonvpn_password = mkSecret "ProtonVPN OpenVPN password." "";
   };
 
   # Convenience aliases.

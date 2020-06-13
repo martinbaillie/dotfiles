@@ -1,4 +1,8 @@
 * Inbox
+** [ ] TODO Move to home-manager session variables
+https://rycee.gitlab.io/home-manager/index.html#_why_are_the_session_variables_not_set
+
+[[file:/etc/dotfiles/options.nix::Shell and environment.]]
 ** [ ] TODO Move to official Terraform language server
 https://www.hashicorp.com/blog/announcing-the-terraform-visual-studio-code-extension-v2-0-0/
 
