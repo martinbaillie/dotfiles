@@ -31,6 +31,8 @@ in rec {
     stdenv = clangStdenv;
   };
 
+  EmacsPDFTools = callPackage ./emacs/pdf-tools { stdenv = clangStdenv; };
+
   Spectacle = installApplication rec {
     name = "Spectacle";
     version = "1.2";

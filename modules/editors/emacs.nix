@@ -9,6 +9,7 @@ in {
     packages = let myEmacs = if isDarwin then my.Emacs else emacsGit;
     in [
       ((emacsPackagesNgGen myEmacs).emacsWithPackages (epkgs: [ epkgs.vterm ]))
+      my.EmacsPDFTools
       libvterm-neovim
       zstd
       editorconfig-core-c
