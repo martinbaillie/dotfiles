@@ -8,7 +8,6 @@
       python37Packages.setuptools
       python37Packages.pylint
       python37Packages.python-language-server
-      python37Packages.pyls-isort
     ];
 
     env.IPYTHONDIR = "$XDG_CONFIG_HOME/ipython";
