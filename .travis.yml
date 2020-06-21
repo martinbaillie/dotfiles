@@ -25,6 +25,6 @@ script:
   - nix path-info --all | grep -v '.drv$' > store-path-pre-build
   # Run the CI.
   - make ci
-after_success:
+after_script:
   # Push resultant CI binaries to my Cachix cache.
   - nix path-info --all | grep -v '.drv$' | cat - store-path-pre-build | sort | uniq -u | cachix push "${CACHIX_CACHE}"
