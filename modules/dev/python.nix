@@ -7,7 +7,7 @@
       python37Packages.black
       python37Packages.setuptools
       python37Packages.pylint
-      python37Packages.python-language-server
+      unstable.python-language-server
     ];
 
     env.IPYTHONDIR = "$XDG_CONFIG_HOME/ipython";

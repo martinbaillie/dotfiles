@@ -1,3 +1,6 @@
+(when (and noninteractive IS-LINUX)
+  (add-to-list 'doom-env-blacklist "SWAYSOCK"))
+
 (doom! :input
        :completion
        (company +tng)    ; the ultimate code completion backend
