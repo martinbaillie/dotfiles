@@ -1,6 +1,7 @@
 { pkgs, lib, ... }:
 let
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; }) isDarwin;
+  inherit (lib) mkIf;
+  inherit (lib.systems.elaborate { system = builtins.currentSystem; }) isLinux;
 in {
   my = {
     packages = with pkgs; [
@@ -10,10 +11,11 @@ in {
       python37Packages.black
       python37Packages.setuptools
       python37Packages.pylint
-      (if isDarwin then
-        python37Packages.python-language-server
-      else
-        unstable.python-language-server)
+      (mkIf isLinux (unstable.python-language-server))
+      # (if isDarwin then
+      #   # python37Packages.python-language-server
+      # else
+      #   unstable.python-language-server)
     ];
 
     env.IPYTHONDIR = "$XDG_CONFIG_HOME/ipython";
