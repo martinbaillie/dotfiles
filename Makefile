@@ -26,6 +26,10 @@ $(BREW): ; ruby -e "$$(curl -fsSL $(URL))"
 
 ifeq ($(SYSTEM),Darwin)
 dep: $(DARWIN_REBUILD) $(BREW)
+	sudo rm -rf /etc/shells /etc/zprofile /etc/zshrc
+	echo "trusted-users = root $(USER)" | sudo tee -a /etc/nix/nix.conf
+	sudo launchctl stop org.nixos.nix-daemon
+	sudo launchctl start org.nixos.nix-daemon
 endif
 .PHONY: dep
 
@@ -117,13 +121,12 @@ install: channels update config ; $(NIXOS_INSTALL)
 # $(TRAVIS) == true
 ci: dep channels update
 ifeq ($(SYSTEM),Linux)
-	NIX_PATH=$(HOME)/.nix-defexpr/channels$${NIX_PATH:+:}$(NIX_PATH)
-	$(NIX_BUILD) '<nixpkgs/nixos>' -A vm -k \
+	NIX_PATH=$(HOME)/.nix-defexpr/channels$${NIX_PATH:+:}$(NIX_PATH) \
+	&& $(NIX_BUILD) '<nixpkgs/nixos>' -A vm -k \
 		-I nixos-config=$(WORKDIR)/machines/ci/vm.nix
 else
-	if test -e /etc/static/bashrc; then . /etc/static/bashrc; fi && \
-	sudo rm -rf /etc/nix/nix.conf /etc/shells /etc/zprofile /etc/zshrc && \
-	$(MAKE) test HOSTNAME=ci
+	if test -e /etc/static/bashrc; then . /etc/static/bashrc; fi \
+	&& $(MAKE) test HOSTNAME=ci
 endif
 .PHONY: ci
 
