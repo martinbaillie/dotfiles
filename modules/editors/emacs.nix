@@ -4,7 +4,7 @@ let
   inherit (lib) optionalString optionals mkMerge mkIf;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
-  myEmacs = if isDarwin then my.Emacs else emacsGit;
+  myEmacs = if isDarwin then my.EmacsMac else emacsGit; # my.EmacsWayland;
   myEmacsClient = writeShellScriptBin "emacs.bash" (''
     ${myEmacs}/bin/emacsclient --no-wait --eval "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
     if [[ "$?" -eq 1 ]]; then
@@ -51,7 +51,7 @@ in mkMerge [
 
   (mkIf isLinux {
     my = {
-      packages = [ gcc wkhtmltopdf ];
+      packages = [ wkhtmltopdf ];
       home.xdg = {
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]

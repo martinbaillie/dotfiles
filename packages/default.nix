@@ -26,10 +26,30 @@ let
       };
     };
 in rec {
-  Emacs = callPackage ./emacs {
+  EmacsMac = callPackage ./emacs {
     inherit (darwin.apple_sdk.frameworks) AppKit GSS ImageIO;
     stdenv = clangStdenv;
   };
+
+  EmacsWayland = enableDebugging (emacs.overrideAttrs ({ buildInputs
+    , nativeBuildInputs ? [ ], postPatch ? "", configureFlags ? [ ], ... }:
+    let
+      pname = "emacs-pgtk";
+      version = "28.0.50";
+    in {
+      name = "${pname}-${version}";
+      src = fetchFromGitHub {
+        owner = "masm11";
+        repo = "emacs";
+        rev = "c6ff556f390e5e573d5d0c4fb3a2da54a0a433dc"; # 26/05/20.
+        sha256 = "10m40qpvnbxy98h84lvlp1f5zpqqarbxihjn7x1v4072hf2fhj3q";
+      };
+      patches = [ ];
+      buildInputs = buildInputs ++ [ wayland wayland-protocols ];
+      nativeBuildInputs = nativeBuildInputs ++ [ autoreconfHook texinfo ];
+      configureFlags = configureFlags
+        ++ [ "--without-x" "--with-cairo" "--with-modules" ];
+    }));
 
   EmacsPDFTools = callPackage ./emacs/pdf-tools { stdenv = clangStdenv; };
 
