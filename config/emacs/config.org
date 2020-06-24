@@ -51,7 +51,9 @@
 * Personal
 #+BEGIN_SRC emacs-lisp
 (setq user-full-name "Martin Baillie"
-      user-mail-address "martin@baillie.email")
+      user-mail-address "martin@baillie.email"
+      auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg"))
+    )
 #+END_SRC
 
 * UI/General
@@ -513,6 +515,11 @@ Oh gees.
 #+END_SRC
 
 ** magit
+*** Avatars
+#+BEGIN_SRC emacs-lisp
+(setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+#+END_SRC
+
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
 #+BEGIN_SRC emacs-lisp

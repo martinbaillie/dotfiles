@@ -58,7 +58,7 @@
        (eval +overlay)   ; run code, run (also, repls)
        lookup            ; navigate your code and its documentation
        lsp
-       magit             ; a git porcelain for Emacs
+       (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        pdf               ; pdf enhancements
        rgb               ; creating color strings
@@ -76,6 +76,8 @@
         +gnuplot
         +hugo
         +jupyter
+        +noter
+        +roam
         +pandoc
         +present)
        (python +lsp)     ; beautiful is better than ugly
