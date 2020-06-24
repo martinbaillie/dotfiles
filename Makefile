@@ -24,10 +24,13 @@ BREW ?=$(if $(shell which brew 2>/dev/null),\
 $(BREW): URL=https://raw.githubusercontent.com/Homebrew/install/master/install
 $(BREW): ; ruby -e "$$(curl -fsSL $(URL))"
 
+dep:
 ifeq ($(SYSTEM),Darwin)
 dep: $(DARWIN_REBUILD) $(BREW)
-	sudo rm -rf /etc/shells /etc/zprofile /etc/zshrc
+endif
 	echo "trusted-users = root $(USER)" | sudo tee -a /etc/nix/nix.conf
+ifeq ($(SYSTEM),Darwin)
+	sudo rm -rf /etc/shells /etc/zprofile /etc/zshrc
 	sudo launchctl stop org.nixos.nix-daemon
 	sudo launchctl start org.nixos.nix-daemon
 endif
