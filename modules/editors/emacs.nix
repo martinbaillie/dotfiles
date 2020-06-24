@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 with pkgs;
 let
-  inherit (lib) optionalString optionals;
+  inherit (lib) optionalString optionals mkMerge mkIf;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
   myEmacs = if isDarwin then my.Emacs else emacsGit;
@@ -21,76 +21,84 @@ let
         windows where title contains "Emacs"
         if result is not {} then perform action "AXRaise" of item 1 of result
     end tell' &> /dev/null || exit 0'');
-in {
-  my = {
-    packages = [
-      ((emacsPackagesNgGen myEmacs).emacsWithPackages (epkgs:
-        (with epkgs; [ vterm ])
-        ++ (with epkgs.melpaStablePackages; [ emacsql emacsql-sqlite ])))
-      my.EmacsPDFTools
-      myEmacsClient
+in mkMerge [
+  {
+    my = {
+      packages = [
+        ((emacsPackagesNgGen myEmacs).emacsWithPackages (epkgs:
+          (with epkgs; [ vterm ])
+          ++ (with epkgs.melpaStablePackages; [ emacsql emacsql-sqlite ])))
+        my.EmacsPDFTools
+        myEmacsClient
 
-      # Dependencies.
-      discount
-      editorconfig-core-c
-      languagetool
-      libvterm-neovim
-      pandoc
-      zstd
-    ] ++ optionals isLinux [ gcc wkhtmltopdf ];
+        # Dependencies.
+        discount
+        editorconfig-core-c
+        languagetool
+        libvterm-neovim
+        pandoc
+        zstd
+      ];
 
-    home.xdg = {
-      configFile = {
+      home.xdg.configFile = {
         "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;
         "zsh/rc.d/env.emacs.zsh".source = <config/emacs/env.zsh>;
       };
-      dataFile."applications/emacsclient.desktop".text = ''
-        [Desktop Entry]
-        Categories=Development;TextEditor;
-        Exec=emacs.bash %F
-        GenericName=Text Editor
-        Icon=emacs
-        Keywords=Text;Editor;
-        Name=Emacs
-        StartupWMClass=Emacs
-        Terminal=false
-        Type=Application
-      '';
+    };
 
-      mimeApps.defaultApplications = {
-        # Prefer to use Emacs for file and directory operations.
-        "application/octet-stream" = "emacsclient.desktop";
-        "application/pdf" = "emacsclient.desktop";
-        "application/x-directory" = "emacsclient.desktop";
-        "application/x-ruby" = "emacsclient.desktop";
-        "application/x-shellscript" = "emacsclient.desktop";
-        "image/jpeg" = "emacsclient.desktop";
-        "image/png" = "emacsclient.desktop";
-        "image/vnd.djvu" = "emacsclient.desktop";
-        "inode/directory" = "emacsclient.desktop";
-        "inode/mount-point" = "emacsclient.desktop";
-        "inode/x-empty" = "emacsclient.desktop";
-        "text/plain" = "emacsclient.desktop";
-        "text/rhtml" = "emacsclient.desktop";
-        "text/x-c" = "emacsclient.desktop";
-        "text/x-c++" = "emacsclient.desktop";
-        "text/x-c++hdr" = "emacsclient.desktop";
-        "text/x-chdr" = "emacsclient.desktop";
-        "text/x-c++src" = "emacsclient.desktop";
-        "text/x-csrc" = "emacsclient.desktop";
-        "text/x-java" = "emacsclient.desktop";
-        "text/x-makefile" = "emacsclient.desktop";
-        "text/x-markdown" = "emacsclient.desktop";
-        "text/x-moc" = "emacsclient.desktop";
-        "text/x-pascal" = "emacsclient.desktop";
-        "text/x-python" = "emacsclient.desktop";
-        "text/x-readme" = "emacsclient.desktop";
-        "text/x-ruby" = "emacsclient.desktop";
-        "text/x-tcl" = "emacsclient.desktop";
-        "text/x-tex" = "emacsclient.desktop";
+    fonts.fonts = [ emacs-all-the-icons-fonts ];
+  }
+
+  (mkIf isLinux {
+    my = {
+      packages = [ gcc wkhtmltopdf ];
+      home.xdg = {
+        dataFile."applications/emacsclient.desktop".text = ''
+          [Desktop Entry]
+          Categories=Development;TextEditor;
+          Exec=emacs.bash %F
+          GenericName=Text Editor
+          Icon=emacs
+          Keywords=Text;Editor;
+          Name=Emacs
+          StartupWMClass=Emacs
+          Terminal=false
+          Type=Application
+        '';
+
+        mimeApps.defaultApplications = {
+          # Prefer to use Emacs for file and directory operations.
+          "application/octet-stream" = "emacsclient.desktop";
+          "application/pdf" = "emacsclient.desktop";
+          "application/x-directory" = "emacsclient.desktop";
+          "application/x-ruby" = "emacsclient.desktop";
+          "application/x-shellscript" = "emacsclient.desktop";
+          "image/jpeg" = "emacsclient.desktop";
+          "image/png" = "emacsclient.desktop";
+          "image/vnd.djvu" = "emacsclient.desktop";
+          "inode/directory" = "emacsclient.desktop";
+          "inode/mount-point" = "emacsclient.desktop";
+          "inode/x-empty" = "emacsclient.desktop";
+          "text/plain" = "emacsclient.desktop";
+          "text/rhtml" = "emacsclient.desktop";
+          "text/x-c" = "emacsclient.desktop";
+          "text/x-c++" = "emacsclient.desktop";
+          "text/x-c++hdr" = "emacsclient.desktop";
+          "text/x-chdr" = "emacsclient.desktop";
+          "text/x-c++src" = "emacsclient.desktop";
+          "text/x-csrc" = "emacsclient.desktop";
+          "text/x-java" = "emacsclient.desktop";
+          "text/x-makefile" = "emacsclient.desktop";
+          "text/x-markdown" = "emacsclient.desktop";
+          "text/x-moc" = "emacsclient.desktop";
+          "text/x-pascal" = "emacsclient.desktop";
+          "text/x-python" = "emacsclient.desktop";
+          "text/x-readme" = "emacsclient.desktop";
+          "text/x-ruby" = "emacsclient.desktop";
+          "text/x-tcl" = "emacsclient.desktop";
+          "text/x-tex" = "emacsclient.desktop";
+        };
       };
     };
-  };
-
-  fonts.fonts = [ emacs-all-the-icons-fonts ];
-}
+  })
+]
