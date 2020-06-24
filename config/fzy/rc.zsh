@@ -23,7 +23,7 @@ fzy-edit-widget() {
     emulate -L zsh
     zle -I
     echo "$(__fzy_fsel)" | read file
-    [ -n "${file}" ] && v "${file}"
+    [ -n "${file}" ] && emacs.bash "${file}"
     zle reset-prompt
 }
 zle -N fzy-edit-widget

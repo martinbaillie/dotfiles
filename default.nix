@@ -51,24 +51,17 @@ in {
     in if pathExists path then import path else { };
 
     # Homedir.
-    home = {
-      xdg = {
-        enable = true;
-        configFile."zsh/rc.d/rc.nix.zsh".text = ''
-          alias nix-env="NIXPKGS_ALLOW_UNFREE=1 nix-env"
-          alias nix-shell="NIXPKGS_ALLOW_UNFREE=1 nix-shell"
-          alias nix-test="make -C ${pwd} test"
-          alias nix-switch="make -C ${pwd} switch"
-          alias nix-rollback="make -C ${pwd} switch --rollback"
-          alias dark="make -B -C ${pwd} nix-switch-theme NIX_THEME=dark"
-          alias light="make -B -C ${pwd} nix-switch-theme NIX_THEME=light"
-        '';
-      };
-
-      home.file.".local/bin" = {
-        source = ./bin;
-        recursive = true;
-      };
+    home.xdg = {
+      enable = true;
+      configFile."zsh/rc.d/rc.nix.zsh".text = ''
+        alias nix-env="NIXPKGS_ALLOW_UNFREE=1 nix-env"
+        alias nix-shell="NIXPKGS_ALLOW_UNFREE=1 nix-shell"
+        alias nix-test="make -C ${pwd} test"
+        alias nix-switch="make -C ${pwd} switch"
+        alias nix-rollback="make -C ${pwd} switch --rollback"
+        alias dark="make -B -C ${pwd} nix-switch-theme NIX_THEME=dark"
+        alias light="make -B -C ${pwd} nix-switch-theme NIX_THEME=light"
+      '';
     };
   };
 
