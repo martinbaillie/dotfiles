@@ -21,6 +21,7 @@ jobs:
 script:
   # Install Cachix.
   - nix-env --quiet -iA cachix -f https://cachix.org/api/v1/install
+  - make dep
   - cachix use "${CACHIX_CACHE}"
   - nix path-info --all | grep -v '.drv$' > store-path-pre-build
   # Run the CI.

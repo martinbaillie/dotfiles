@@ -34,6 +34,9 @@ ifeq ($(SYSTEM),Darwin)
 	sudo launchctl stop org.nixos.nix-daemon
 	sudo launchctl start org.nixos.nix-daemon
 endif
+ifeq ($(SYSTEM),Linux)
+	sudo pkill nix-daemon
+endif
 .PHONY: dep
 
 # Nix specialisation.
