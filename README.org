@@ -180,15 +180,11 @@ sudo xcodebuild -license
 #+END_SRC
 
 **** Install Nix (multi-user)
+NOTE: Do not use =sudo= here.
 #+BEGIN_SRC shell
 # curl https://nixos.org/nix/install | sh
 sh <(curl https://nixos.org/nix/install) --daemon
-#+END_SRC
-
-**** Add Nix path to default shell
-#+BEGIN_SRC shell
-echo 'export PATH=$PATH:/nix/var/nix/profiles/default/bin' > .bashrc
-chmod +x .bashrc
+. /etc/bashrc
 #+END_SRC
 
 **** Confirm remotely accessible
@@ -214,6 +210,7 @@ nix copy --no-check-sigs --keep-going --to ssh-ng://$REMOTE ~/.nix-profile
 #+BEGIN_SRC shell
 nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
 ./result/bin/darwin-installer
+. /etc/static/bashrc
 #+END_SRC
 
 **** Add Home Manager
@@ -224,13 +221,34 @@ nix-channel --update
 
 **** Install Homebrew for those macOS GUI apps unmanageable through Nix
 #+BEGIN_SRC shell
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+#+END_SRC
+
+**** Optionally set up temp SSH key out-of-band
+If not forwarding an agent socket.
+#+BEGIN_SRC shell
+mkdir -m 700 ~/.ssh
+<download ssh key> > ~/.ssh/id_ed25519
+ssh-add
+rm -r ~/.ssh
 #+END_SRC
 
 **** Grab dotfiles
 #+BEGIN_SRC shell
 sudo git clone --recursive git@github.com:martinbaillie/dotfiles.git /etc/dotfiles
 sudo chown -R $USER: /etc/dotfiles
+#+END_SRC
+
+**** Optionally decrypt secrets one-off
+If not forwarding.
+#+BEGIN_SRC shell
+nix-shell -p gpg
+mkdir -m 700 ~/.gnupg-temp
+<download gpg key>  > ~/.gnupg-temp/temporary.asc
+gpg --homedir ~/.gnupg-temp --import temporary.asc
+gpg --homedir ~/.gnupg-temp -d secrets.nix.gpg > secrets.nix
+gpg-connect-agent --homedir ~/.gnupg-temp KILLAGENT /bye
+rm -r ~/.gnupg-temp
 #+END_SRC
 
 **** Backup macOS default shell RCs
@@ -241,9 +259,16 @@ sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
 sudo mv /etc/zprofile /etc/zprofile.before-nix-darwin
 #+END_SRC
 
-**** Switch to Nix Darwin
+**** Set up Cachix one-off
 #+BEGIN_SRC shell
-make switch
+nix-shell -p cachix
+cachix use martinbaillie
+#+END_SRC
+
+**** Switch to Nix Darwin
+NOTE: Before running, make a new/link existing machine.
+#+BEGIN_SRC shell
+make channels update switch
 #+END_SRC
 
 **** Switch login shell to zsh
@@ -264,6 +289,10 @@ gpg --import ~/.gnupg/gpg.asc
 #+BEGIN_SRC shell
 make config-emacs
 #+END_SRC
+
+**** Configure Casks
+Flux, Karabiner, Spectacle etc.
+
 * References
 - [[https://github.com/hlissner][@hlissner]]
 - [[https://github.com/jwiegley][@jwiegley]]
