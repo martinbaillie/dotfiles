@@ -77,7 +77,6 @@
         +hugo
         +jupyter
         +noter
-        +roam
         +pandoc
         +present)
        (python +lsp)     ; beautiful is better than ugly
