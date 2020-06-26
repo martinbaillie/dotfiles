@@ -572,25 +572,24 @@ Enable LSP for Terraform.
 ** pinentry
 *** Use Emacs pinentry on Linux
 #+BEGIN_SRC emacs-lisp
-(when IS-LINUX
-    (use-package pinentry
-    :demand t
-    :after epg
+(use-package pinentry
+  :demand t
+  :after epg
 
-    :config
-    ;; Allow gpg-connect-agent in ssh-agent mode to forward pinentry to Emacs
-    ;; since the ssh-agent protocol has no way to pass the TTY to gpg-agent.
-    ;;
-    ;; Also this hook has a nice effect of auto-starting gpg-agent when
-    ;; needed by ssh.
-    (setenv "INSIDE_EMACS" emacs-version)
+  :config
+  ;; Allow gpg-connect-agent in ssh-agent mode to forward pinentry to Emacs
+  ;; since the ssh-agent protocol has no way to pass the TTY to gpg-agent.
+  ;;
+  ;; Also this hook has a nice effect of auto-starting gpg-agent when
+  ;; needed by ssh.
+  (setenv "INSIDE_EMACS" emacs-version)
 
-    (shell-command
-    "gpg-connect-agent updatestartuptty /bye"
-    " *gpg-update-tty*")
+  (shell-command
+   "gpg-connect-agent updatestartuptty /bye"
+   " *gpg-update-tty*")
 
-    (pinentry-start))
-)
+  (pinentry-start)
+  )
 #+END_SRC
 
 ** treemacs

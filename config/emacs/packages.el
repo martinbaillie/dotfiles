@@ -1,6 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; ~/.doom.d/packages.el
 
+;; Custom packages.
 (package! dap-mode)
 (package! nyan-mode)
 (package! org-fancy-priorities)
@@ -15,18 +16,13 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 
+;; Use bleeding edge vterm.
+(unpin! vterm)
+
+;; My packages.
 (package! evil-motion-trainer :recipe
   (:host github :repo "martinbaillie/evil-motion-trainer"))
-  ;; :recipe (:local-repo "/home/martin/Code/personal/evil-motion-trainer"
-           ;; :files ("*.el")))
-
-;; Use my fork of evil-easymotion.
-(package! evil-easymotion :pin nil :recipe
+(package! evil-easymotion :pin "e6051245c06354ccd4a57e054cdff80a34f18376" :recipe
   (:host github :repo "martinbaillie/evil-easymotion"))
-
-;; Use my fork of kubectx-mode.
 (package! kubectx-mode :recipe
   (:host github :repo "martinbaillie/emacs-kubectx-mode"))
-
-;; Use bleeding edge vterm
-(unpin! vterm)
