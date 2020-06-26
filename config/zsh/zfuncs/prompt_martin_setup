@@ -25,7 +25,10 @@ function prompt_martin_setup {
   # Add hook for calling git-info before each command.
   add-zsh-hook precmd prompt_martin_precmd
 
-  # Tell prezto we can manage this prompt
+  # Set prompt titles.
+  add-zsh-hook -Uz chpwd (){ print -Pn "\e]2;%2~\a" }
+
+  # Tell prezto we can manage this prompt.
   zstyle ':prezto:module:prompt' managed 'yes'
 
   # Set editor-info parameters.
@@ -57,16 +60,9 @@ function prompt_martin_setup {
     zstyle ':prezto:module:git:info:keys' format \
         'prompt' ' $(coalesce "%b" "%p" "%c")%s' \
         'rprompt' '%A%B%S%a%d%m%r%U%u'
-
-    RPROMPT=' ${git_info:+${(e)git_info[prompt]}}${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}%F{cyan}%f'
-    PROMPT='%F{cyan}%c%f %(!. %B%F{red}#%f%b.)${prompt_host}${editor_info[keymap]} '
-  else
-    vterm_prompt_end() {
-        printf "\e]51;A$(whoami)@$(hostname):$(pwd)\e\\";
-    }
-    PROMPT='%F{cyan}%c%f %(!. %B%F{red}#%f%b.)${prompt_host}${editor_info[keymap]} '
-    PROMPT=$PROMPT'%{$(vterm_prompt_end)%}'
   fi
+  RPROMPT=' ${git_info:+${(e)git_info[prompt]}}${editor_info[overwrite]}${VIM:+" %B%F{green}V%f%b"}${git_info[rprompt]}%F{cyan}%f'
+  PROMPT='%F{cyan}%c%f %(!. %B%F{red}#%f%b.)${prompt_host}${editor_info[keymap]} '
   SPROMPT='zsh: %F{green}%r%f [nyae]? '
 }
 prompt_martin_setup "$@"

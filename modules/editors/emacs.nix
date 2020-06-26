@@ -25,9 +25,8 @@ in mkMerge [
   {
     my = {
       packages = [
-        ((emacsPackagesNgGen myEmacs).emacsWithPackages (epkgs:
-          (with epkgs; [ vterm ])
-          ++ (with epkgs.melpaStablePackages; [ emacsql emacsql-sqlite ])))
+        ((unstable.emacsPackagesNgGen myEmacs).emacsWithPackages
+          (epkgs: with epkgs.melpaPackages; [ vterm emacsql emacsql-sqlite ]))
         my.EmacsPDFTools
         myEmacsClient
 
@@ -35,7 +34,6 @@ in mkMerge [
         discount
         editorconfig-core-c
         languagetool
-        libvterm-neovim
         pandoc
         zstd
       ];
