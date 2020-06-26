@@ -6,6 +6,19 @@
 
       # My own packages.
       my = import ./packages { inherit (super) lib pkgs; };
+
+      # Fix Go clang path on Darwin.
+      # REVIEW: https://github.com/NixOS/nixpkgs/pull/91347
+      go = super.go.overrideAttrs (oldAttrs: {
+        buildInputs = oldAttrs.buildInputs ++ [ self.makeWrapper ];
+        postInstall = with self.darwin.apple_sdk.frameworks;
+          with self.stdenv;
+          lib.optionalString isDarwin ''
+            wrapProgram $out/share/go/bin/go \
+              --suffix CGO_CFLAGS  ' ' '-iframework ${CoreFoundation}/Library/Frameworks -iframework ${Security}/Library/Frameworks' \
+              --suffix CGO_LDFLAGS ' ' '-F${CoreFoundation}/Library/Frameworks -F${Security}/Library/Frameworks'
+          '';
+      });
     })
 
   # Wayland overlay.

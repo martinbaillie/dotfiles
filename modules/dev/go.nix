@@ -13,7 +13,7 @@
       gotestsum
       gotools
       protobuf
-      unstable.go
+      go
       unstable.gomodifytags
     ];
     home.xdg.configFile = {

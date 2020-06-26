@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 with pkgs;
 let
-  inherit (lib) optionalString optionals mkMerge mkIf;
+  inherit (lib) optionalString mkMerge mkIf;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
   myEmacs = if isDarwin then my.EmacsMac else emacsGit; # my.EmacsWayland;
