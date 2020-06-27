@@ -2,7 +2,8 @@
 with pkgs;
 let
   inherit (lib) mkMerge mkIf;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; }) isLinux;
+  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
+    isDarwin isLinux;
 in {
   my = mkMerge [
     {
@@ -71,17 +72,19 @@ in {
         stunnel
         tmux
         tree
-        unstable.age
         unzip
         wget
         xar
         yq-go
         zip
 
+        unstable.age
+
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
         (ripgrep.override { withPCRE2 = true; })
       ];
     }
     (mkIf isLinux { packages = [ psmisc ]; })
+    (mkIf isDarwin { packages = [ unixtools.watch ]; })
   ];
 }

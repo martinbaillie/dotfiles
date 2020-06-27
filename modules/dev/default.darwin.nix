@@ -1,5 +1,5 @@
 { config, pkgs, ... }: {
-  my.packages = with pkgs; [ lorri ];
+  my.packages = with pkgs; [ lorri gnumake ];
 
   launchd.user.agents = {
     "lorri" = {

@@ -291,7 +291,7 @@ make config-emacs
 #+END_SRC
 
 **** Configure Casks
-Flux, Karabiner, Spectacle etc.
+Flux, Karabiner, Spectacle, Cursorcerer etc.
 
 * References
 - [[https://github.com/hlissner][@hlissner]]

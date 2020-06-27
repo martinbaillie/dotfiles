@@ -9,4 +9,7 @@ if [ -n "${INSIDE_EMACS}" ]; then
   # Use Emacs for diff and man.
   alias diff=ediff
   alias man=eman
+
+  # Add a visual alias.
+  alias v=${VISUAL}
 fi
