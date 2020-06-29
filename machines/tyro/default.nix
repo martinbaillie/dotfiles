@@ -17,7 +17,7 @@
     <modules/ops>
     <modules/ops/kafka.nix>
     <modules/ops/kubernetes.nix>
-    # <modules/ops/docker.nix>
+    <modules/ops/docker.nix>
 
     <modules/term>
     <modules/term/direnv.nix>

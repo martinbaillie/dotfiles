@@ -1,5 +1,9 @@
 { lib, ... }: {
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+  };
+
   my = {
     env.ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
     env.ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
