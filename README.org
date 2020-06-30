@@ -291,7 +291,10 @@ make config-emacs
 #+END_SRC
 
 **** Configure Casks
-Flux, Karabiner, Spectacle, Cursorcerer etc.
+Set Flux, Karabiner, Spectacle, Cursorcerer to start at boot, install kernel
+extensions and so on.
+
+**** Bump Kernel / User Limits
 
 * References
 - [[https://github.com/hlissner][@hlissner]]
