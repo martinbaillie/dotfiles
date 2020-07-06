@@ -163,7 +163,6 @@ darwin-wallpaper:
 .PHONY: darwin-wallpaper
 
 light: EMACS_THEME ?=doom-one-light
-light: TERM_THEME ?=base16-one-light.sh
 light:
 ifeq ($(SYSTEM),Darwin)
 light: darwin-wallpaper
@@ -177,12 +176,9 @@ endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
 		-e "(doom/reload-theme)" &>/dev/null
-	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
-		$(ZDOTDIR)/theme.zsh
 .PHONY: light
 
 dark: EMACS_THEME ?=doom-one
-dark: TERM_THEME ?=base16-onedark.sh
 dark:
 ifeq ($(SYSTEM),Darwin)
 dark: darwin-wallpaper
@@ -196,8 +192,6 @@ endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
 		-e "(doom/reload-theme)" &>/dev/null
-	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
-		$(ZDOTDIR)/theme.zsh
 .PHONY: dark
 
 # Make defaults.

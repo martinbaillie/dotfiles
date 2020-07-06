@@ -76,7 +76,8 @@ in {
       XDG_CACHE_HOME = "$HOME/.cache";
       XDG_DATA_HOME = "$HOME/.local/share";
       XDG_BIN_HOME = "$HOME/.local/bin";
-      XDG_RUNTIME_DIR = "/run/user/$UID";
+      XDG_RUNTIME_DIR = if isLinux then "/run/user/$UID" else "$HOME/.cache";
+
       PATH = "$XDG_BIN_HOME:$PATH";
 
       # Location, timezone and internationalisation.
