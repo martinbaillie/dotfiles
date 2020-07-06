@@ -21,16 +21,13 @@ let
       meta = with stdenv.lib; {
         description = description;
         homepage = homepage;
-        maintainers = with maintainers; [ eqyiel ];
+        maintainers = with maintainers; [ mbaillie ];
         platforms = platforms.darwin;
       };
     };
 in rec {
-  EmacsMac = callPackage ./emacs {
-    inherit (darwin.apple_sdk.frameworks) AppKit GSS ImageIO;
-    stdenv = clangStdenv;
-  };
-
+  # My custom Emacs 28 builds for macOS and NixOS (+Wayland).
+  Emacs = callPackage ./emacs { };
   EmacsWayland = enableDebugging (emacs.overrideAttrs ({ buildInputs
     , nativeBuildInputs ? [ ], postPatch ? "", configureFlags ? [ ], ... }:
     let
@@ -51,8 +48,7 @@ in rec {
         ++ [ "--without-x" "--with-cairo" "--with-modules" ];
     }));
 
-  EmacsPDFTools = callPackage ./emacs/pdf-tools { stdenv = clangStdenv; };
-
+  # Simplistic window snapping in lieu of a proper tiling WM like Yabai.
   Spectacle = installApplication rec {
     name = "Spectacle";
     version = "1.2";

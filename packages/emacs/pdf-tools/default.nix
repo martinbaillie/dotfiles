@@ -1,9 +1,9 @@
 { stdenv, lib, fetchFromGitHub, clang, gnumake, automake, autoconf, pkgconfig
 , libpng, zlib, poppler }:
 
-# MELPA packages like this do not move the binary onto the Nix path.
+# THis packages does not move the binary onto the Nix path.
 # This is the only reason for this derivation.
-# TODO: Is there a better way to do this with Nix?
+# REVIEW: Is there a better way to do this with Nix?
 stdenv.mkDerivation rec {
   pname = "emacs-pdf-tools-server";
   version = "0.90";

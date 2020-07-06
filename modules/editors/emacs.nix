@@ -1,10 +1,14 @@
 { lib, pkgs, ... }:
 with pkgs;
 let
-  inherit (lib) optionalString mkMerge mkIf;
+  inherit (lib) optionalString mkMerge mkIf makeBinPath;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
-  myEmacs = if isDarwin then my.EmacsMac else emacsGit; # my.EmacsWayland;
+  myEmacs = if isDarwin then
+    my.Emacs
+  else
+    my.Emacs; # my.EmacsWayland (slow rendering on Sway...);
+
   myEmacsClient = writeShellScriptBin "emacs.bash" (''
     ${myEmacs}/bin/emacsclient --no-wait --eval "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
     if [[ "$?" -eq 1 ]]; then
@@ -24,19 +28,7 @@ let
 in mkMerge [
   {
     my = {
-      packages = [
-        ((unstable.emacsPackagesNgGen myEmacs).emacsWithPackages
-          (epkgs: with epkgs.melpaPackages; [ vterm emacsql emacsql-sqlite ]))
-        my.EmacsPDFTools
-        myEmacsClient
-
-        # Dependencies.
-        discount
-        editorconfig-core-c
-        languagetool
-        pandoc
-        zstd
-      ];
+      packages = [ myEmacsClient myEmacs ];
 
       home.xdg.configFile = {
         "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;
@@ -49,7 +41,6 @@ in mkMerge [
 
   (mkIf isLinux {
     my = {
-      packages = [ wkhtmltopdf ];
       home.xdg = {
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]
