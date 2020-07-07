@@ -95,11 +95,11 @@ $(NIXOS_PREFIX)/configuration.nix:
 	echo "import $(WORKDIR)/machines/$(HOSTNAME)" | \
 		sudo tee "$(NIXOS_PREFIX)/configuration.nix" >/dev/null
 
-$(HOME)/.emacs.d: ; git clone https://github.com/hlissner/doom-emacs $@
+$(XDG_CONFIG_HOME)/emacs: ; git clone https://github.com/hlissner/doom-emacs $@
 $(XDG_CONFIG_HOME)/doom: ; ln -sf $(WORKDIR)/config/emacs $@
 
 config: $(NIXOS_PREFIX)/configuration.nix
-config-emacs: $(XDG_CONFIG_HOME)/doom $(HOME)/.emacs.d ; doom install
+config-emacs: $(XDG_CONFIG_HOME)/doom $(XDG_CONFIG_HOME)/emacs ; doom install
 .PHONY: config config-emacs
 
 # Runtime targets.
@@ -163,6 +163,7 @@ darwin-wallpaper:
 .PHONY: darwin-wallpaper
 
 light: EMACS_THEME ?=doom-one-light
+light: TERM_THEME ?=base16-one-light.sh
 light:
 ifeq ($(SYSTEM),Darwin)
 light: darwin-wallpaper
@@ -173,12 +174,17 @@ light: darwin-wallpaper
 		-e 'end tell' \
 		-e 'end tell' &
 endif
+ifeq ($(SYSTEM),Linux)
+	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
+		$(ZDOTDIR)/theme.zsh
+endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
 		-e "(doom/reload-theme)" &>/dev/null
 .PHONY: light
 
 dark: EMACS_THEME ?=doom-one
+dark: TERM_THEME ?=base16-onedark.sh
 dark:
 ifeq ($(SYSTEM),Darwin)
 dark: darwin-wallpaper
@@ -188,6 +194,10 @@ dark: darwin-wallpaper
 		-e 'set dark mode to true' \
 		-e 'end tell' \
 		-e 'end tell' &
+endif
+ifeq ($(SYSTEM),Linux)
+	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
+		$(ZDOTDIR)/theme.zsh
 endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \

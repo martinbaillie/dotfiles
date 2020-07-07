@@ -16,6 +16,7 @@ if ! zgen saved; then
   zgen load hlissner/zsh-autopair 'autopair.zsh'
   zgen load junegunn/fzf shell
   zgen load chisui/zsh-nix-shell nix-shell.plugin.zsh
+  zgen load chriskempson/base16-shell
   zgen load aperezdc/zsh-fzy
   zgen load changyuheng/fz
   zgen load rupa/z
@@ -33,6 +34,11 @@ setopt interactivecomments
 
 ########################################################################
 # Look and feel.
+THEME="${ZDOTDIR}/theme.zsh"
+if [[ -f "${THEME}" ]]; then
+  source "${THEME}"
+fi
+
 # Dir colours.
 if [[ -f "${XDG_CONFIG_HOME}/dircolors/current" ]]; then
     if hash dircolors 2>/dev/null
