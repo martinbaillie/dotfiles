@@ -105,7 +105,7 @@ config-emacs: $(XDG_CONFIG_HOME)/doom $(HOME)/.emacs.d ; doom install
 # Runtime targets.
 gc:
 ifeq ($(SYSTEM),Darwin)
-	$(BREW) bundle cleanup --zap
+	$(BREW) bundle cleanup --zap -f
 endif
 	nix-collect-garbage -d
 .PHONY:	gc

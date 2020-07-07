@@ -792,11 +792,15 @@ Copy mode entering and exiting.
   "Save active region to kill ring, insert and exit `vterm-copy-mode'."
   (interactive)
   (if (region-active-p)
-    (kill-ring-save (region-beginning) (region-end)))
+      (kill-ring-save (region-beginning) (region-end)))
   (vterm-exit-visual-insert)
   (vterm-copy-mode -1))
 (advice-add 'vterm-copy-mode-done :override #'vterm-copy-mode-done-ins)
-(add-hook 'vterm-copy-mode-hook (lambda () (if vterm-copy-mode (evil-escape))))
+(add-hook 'vterm-copy-mode-hook (lambda ()
+    (if vterm-copy-mode (progn (evil-escape)
+                                (setq display-line-numbers 'relative))
+    (setq display-line-numbers nil)))
+)
 #+END_SRC
 
 *** Prompt Outlines
