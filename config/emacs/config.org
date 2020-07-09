@@ -123,9 +123,9 @@ Load current theme.
 
 *** Brighter region highlights
 #+BEGIN_SRC emacs-lisp
-(custom-set-faces
- '(region ((t (:background "#51afef" :foreground "black"))))
- )
+;; (custom-set-faces
+;;  '(region ((t (:background "#51afef" :foreground "black"))))
+;;  )
 #+END_SRC
 
 * UI/macOS
@@ -597,8 +597,8 @@ Enable LSP for Terraform.
 Toggling.
 #+BEGIN_SRC emacs-lisp
 (map!
- :n "C-e" #'+treemacs/toggle
- (:map evil-treemacs-state-map "C-e" #'+treemacs/toggle)
+ :n "C-S-e" #'+treemacs/toggle
+ (:map evil-treemacs-state-map "C-S-e" #'+treemacs/toggle)
  )
 #+END_SRC
 

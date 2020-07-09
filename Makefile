@@ -95,7 +95,10 @@ $(NIXOS_PREFIX)/configuration.nix:
 	echo "import $(WORKDIR)/machines/$(HOSTNAME)" | \
 		sudo tee "$(NIXOS_PREFIX)/configuration.nix" >/dev/null
 
-$(XDG_CONFIG_HOME)/emacs: ; git clone https://github.com/hlissner/doom-emacs $@
+$(XDG_CONFIG_HOME)/emacs:
+	git clone https://github.com/hlissner/doom-emacs $@
+# Sadly not everything in the Emacs world is supporting XDG yet.
+	ln -sf $@ $(HOME)/.emacs.d
 $(XDG_CONFIG_HOME)/doom: ; ln -sf $(WORKDIR)/config/emacs $@
 
 config: $(NIXOS_PREFIX)/configuration.nix
@@ -162,8 +165,8 @@ darwin-wallpaper:
 	killall Dock
 .PHONY: darwin-wallpaper
 
-light: EMACS_THEME ?=doom-one-light
-light: TERM_THEME ?=base16-one-light.sh
+light: EMACS_THEME ?=doom-solarized-light
+light: TERM_THEME ?=base16-solarized-light.sh
 light:
 ifeq ($(SYSTEM),Darwin)
 light: darwin-wallpaper
@@ -183,8 +186,8 @@ endif
 		-e "(doom/reload-theme)" &>/dev/null
 .PHONY: light
 
-dark: EMACS_THEME ?=doom-one
-dark: TERM_THEME ?=base16-onedark.sh
+dark: EMACS_THEME ?=doom-dracula
+dark: TERM_THEME ?=base16-dracula.sh
 dark:
 ifeq ($(SYSTEM),Darwin)
 dark: darwin-wallpaper

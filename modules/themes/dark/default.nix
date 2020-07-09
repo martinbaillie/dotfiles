@@ -48,7 +48,7 @@ in {
 
   my = mkMerge [
     {
-      home.xdg.configFile."bat/config".text = ''--theme="OneHalfDark"'';
+      home.xdg.configFile."bat/config".text = ''--theme="Dracula"'';
 
       # Piggyback wallpaper change trigger to perform imperative theme updates.
       home.xdg.configFile."wallpaper".onChange = "make -B -C ${root} dark";

@@ -46,7 +46,7 @@ in {
 
   my = mkMerge [
     {
-      home.xdg.configFile."bat/config".text = ''--theme="OneHalfLight"'';
+      home.xdg.configFile."bat/config".text = ''--theme="Solarized (light)"'';
 
       # Piggyback wallpaper change trigger to perform imperative theme updates.
       home.xdg.configFile."wallpaper".onChange = "make -B -C ${root} light";

@@ -13,3 +13,10 @@ if [ -n "${INSIDE_EMACS}" ]; then
   # Add a visual alias.
   alias v=${VISUAL}
 fi
+
+# Make the prompt somewhat evil.
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+bindkey "^K" kill-line
+bindkey "^U" kill-whole-line
+bindkey "^Y" yank
