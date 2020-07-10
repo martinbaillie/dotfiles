@@ -3,6 +3,9 @@
 with pkgs;
 
 let
+  inherit (stdenv) isDarwin;
+  inherit (lib) optionals;
+
   # installApplication pilfered from @jwiegley's dots.
   installApplication = { name, appname ? name, version, src, description
     , homepage, postInstall ? "", sourceRoot ? ".", ... }:
@@ -27,7 +30,29 @@ let
     };
 in rec {
   # My custom Emacs 28 builds for macOS and NixOS (+Wayland).
-  Emacs = callPackage ./emacs { };
+  Emacs = emacsGit.overrideAttrs (_: rec {
+    name = "emacs-git-${version}";
+    version = "20200706.0";
+
+    src = fetchFromGitHub {
+      owner = "emacs-mirror";
+      repo = "emacs";
+      rev = "10a0941f4dcc85d95279ae67032ec04463a44d59";
+      sha256 = "1gwczswxsv7jkqbgdsiyx3ad629gi9l28ywa7fga85fbia9gy998";
+    };
+
+    patches = [
+      ./emacs/patches/clean-env.patch
+      ./emacs/patches/optional-org-gnus.patch
+    ] ++ (optionals isDarwin [
+      ./emacs/patches/at-fdcwd.patch
+      ./emacs/patches/fix-window-role.patch
+      ./emacs/patches/no-frame-refocus.patch
+      # I'm not using Yabai anymore.
+      # ./emacs/patches/no-titlebar.patch
+    ]);
+  });
+
   EmacsWayland = enableDebugging (emacs.overrideAttrs ({ buildInputs
     , nativeBuildInputs ? [ ], postPatch ? "", configureFlags ? [ ], ... }:
     let

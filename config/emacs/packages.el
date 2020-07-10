@@ -16,9 +16,6 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 
-;; Use bleeding edge vterm.
-(unpin! vterm)
-
 ;; My packages.
 (package! evil-motion-trainer :recipe
   (:host github :repo "martinbaillie/evil-motion-trainer"))

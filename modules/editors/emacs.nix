@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 with pkgs;
 let
-  inherit (lib) optionalString mkMerge mkIf makeBinPath;
+  inherit (lib) optionals optionalString mkMerge mkIf makeBinPath;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
   myEmacs = if isDarwin then
@@ -28,7 +28,21 @@ let
 in mkMerge [
   {
     my = {
-      packages = [ myEmacsClient myEmacs ];
+      packages = [
+        myEmacsClient
+        ((emacsPackagesNgGen myEmacs).emacsWithPackages
+          (epkgs: (with epkgs.melpaPackages; [ vterm emacsql emacsql-sqlite ])))
+
+        # Emacs external dependencies.
+        discount
+        editorconfig-core-c
+        emacs-pdf-tools
+        languagetool
+        pandoc
+        zstd
+
+        (hiPrio clang)
+      ] ++ optionals isLinux [ wkhtmltopdf ];
 
       home.xdg.configFile = {
         "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;

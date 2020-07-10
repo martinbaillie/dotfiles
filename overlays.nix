@@ -4,8 +4,13 @@
       # Allow unstable.
       unstable = import <nixpkgs-unstable> { inherit config; };
 
-      # My own packages.
+      # My own "packages" - mostly desktop apps.
       my = import ./packages { inherit (super) lib pkgs; };
+
+      # TODO: Fix upstream
+      # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/emacs-modes/melpa-packages.nix#L151
+      emacs-pdf-tools =
+        callPackage ./packages/emacs/pdf-tools { stdenv = clangStdenv; };
 
       # Fix Go clang path on Darwin.
       # REVIEW: https://github.com/NixOS/nixpkgs/pull/91347
@@ -27,10 +32,9 @@
   #     "https://github.com/colemickens/nixpkgs-wayland/archive/master.tar.gz";
   # }))
 
-  # Build Emacs from bleeding-edge source.
+  # Emacs overlay.
   (import (builtins.fetchTarball
-    # But pin to a particular commit so I can opt-in for upgrades.
-    "https://github.com/nix-community/emacs-overlay/archive/05258fa4fedf87c1f7eee7686838f8bee3ee5cf6.tar.gz"))
+    "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz"))
 
   # Mozilla overlay for Rust.
   (import (builtins.fetchTarball

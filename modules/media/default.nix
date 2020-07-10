@@ -4,7 +4,7 @@ let
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
 in mkMerge [
-  (mkIf isDarwin { my.casks = [ "vlc" "transmission-remote-gui" ]; })
+  (mkIf isDarwin { my.casks = [ "vlc" "transmission-remote-gui" "gimp" ]; })
   (mkIf isLinux {
     my.packages = with pkgs; [
       alsaUtils
