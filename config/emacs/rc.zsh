@@ -10,8 +10,8 @@ if [ -n "${INSIDE_EMACS}" ]; then
   alias diff=ediff
   alias man=eman
 
-  # Add a visual alias.
-  alias v=${VISUAL}
+  # Add an editor alias.
+  alias v=${EDITOR}
 fi
 
 # Make the prompt somewhat evil.

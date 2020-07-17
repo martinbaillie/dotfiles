@@ -77,9 +77,7 @@ done
 ########################################################################
 # Input.
 set -o vi
-emacs-command-line() { VISUAL=${EDITOR} edit-command-line }
-zle -N emacs-command-line
-bindkey -M vicmd v emacs-command-line
+bindkey -M vicmd v edit-command-line
 
 ########################################################################
 # Local.

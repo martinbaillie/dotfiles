@@ -10,11 +10,13 @@ let
     my.Emacs; # my.EmacsWayland (slow rendering on Sway...);
 
   myEmacsClient = writeShellScriptBin "emacs.bash" (''
-    ${myEmacs}/bin/emacsclient --no-wait --eval "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
+    ${myEmacs}/bin/emacsclient --no-wait --eval \
+      "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
     if [[ "$?" -eq 1 ]]; then
-      ${myEmacs}/bin/emacsclient --no-wait --quiet --create-frame "$@" --alternate-editor=""
+      ${myEmacs}/bin/emacsclient \
+        --quiet --create-frame --alternate-editor="" "$@"
     else
-      ${myEmacs}/bin/emacsclient --no-wait --quiet "$@"
+      ${myEmacs}/bin/emacsclient --quiet "$@"
     fi
   '' + optionalString isDarwin ''
     command -v osascript > /dev/null 2>&1 && \
@@ -59,7 +61,7 @@ in mkMerge [
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]
           Categories=Development;TextEditor;
-          Exec=emacs.bash %F
+          Exec=emacs.bash --no-wait %F
           GenericName=Text Editor
           Icon=emacs
           Keywords=Text;Editor;

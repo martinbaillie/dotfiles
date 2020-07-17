@@ -33,10 +33,10 @@
   # }))
 
   # Emacs overlay.
-  (import (builtins.fetchTarball
-    "https://github.com/nix-community/emacs-overlay/archive/master.tar.gz"))
+  (import (builtins.fetchTarball # 17/07/20
+    "https://github.com/nix-community/emacs-overlay/archive/096983e7207c4d76f3d68cf62b1d85e47cbb3b8b.tar.gz"))
 
   # Mozilla overlay for Rust.
-  (import (builtins.fetchTarball
-    "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz"))
+  (import (builtins.fetchTarball # 17/07/20
+    "https://github.com/mozilla/nixpkgs-mozilla/archive/efda5b357451dbb0431f983cca679ae3cd9b9829.tar.gz"))
 ]
