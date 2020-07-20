@@ -111,6 +111,7 @@ ifeq ($(SYSTEM),Darwin)
 	$(BREW) bundle cleanup --zap -f
 endif
 	nix-collect-garbage -d
+	sudo nix-collect-garbage -d
 .PHONY:	gc
 
 test: ACTION=$(if $(filter-out Linux,$(SYSTEM)),check,test)

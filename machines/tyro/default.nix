@@ -48,8 +48,8 @@
   ];
 
   my = {
-    username = "mbaillie";
-    email = "mbaillie@tyro.com";
+    username = config.my.secrets.work_username;
+    email = config.my.secrets.work_email;
     packages = [ pkgs.corectl ];
     casks = [ "anki" ];
   };

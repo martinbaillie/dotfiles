@@ -21,9 +21,6 @@
 [mergetool "nvimfugitive"]
 	cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
 [includeIf "gitdir:~/Code/work/**"]
-### Should contain:
-### [user]
-###	   email = me@$WORK.com
 	path = ~/Code/work/.gitconfig
 [color]
 	ui = true

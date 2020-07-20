@@ -27,7 +27,11 @@ in {
     gpg = mkSecret "GPG key." "";
     password = mkSecret "Local user password." "";
     cachix_signing_key = mkSecret "Cachix signing key." "";
-    work_overlay_url = mkSecret "Work overlay repository URL." "";
+    work_overlay_url = mkSecret "$WORK Nix packages overlay URL." "";
+    work_username = mkSecret "$WORK username." "";
+    work_vcs_host = mkSecret "$WORK VCS host." "";
+    work_vcs_path = mkSecret "$WORK VCS path." "";
+    work_email = mkSecret "$WORK email." "";
     protonvpn_username = mkSecret "ProtonVPN OpenVPN username." "";
     protonvpn_password = mkSecret "ProtonVPN OpenVPN password." "";
   };
