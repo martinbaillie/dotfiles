@@ -128,6 +128,18 @@ Load current theme.
 ;;  )
 #+END_SRC
 
+*** Move to splits after creating
+#+BEGIN_SRC emacs-lisp
+(setq evil-split-window-below t
+      evil-vsplit-window-right t)
+#+END_SRC
+
+*** Simpler modeline
+#+BEGIN_SRC emacs-lisp
+(after! doom-modeline
+  (setq doom-modeline-buffer-encoding nil)
+  )
+#+END_SRC
 * UI/macOS
 *** Source a clean shell environment
 #+BEGIN_SRC emacs-lisp
@@ -628,6 +640,12 @@ Evil frame movements.
 #+END_SRC
 
 ** undotree
+*** Finer Undo
+#+BEGIN_SRC emacs-lisp
+(setq undo-limit 80000000
+      evil-want-fine-undo t)
+#+END_SRC
+
 *** Keys
 Add common Vimisms to undotree mode.
 #+BEGIN_SRC emacs-lisp
@@ -786,23 +804,6 @@ also uses `evil-mode'. This version sends a `vterm' INS when in `emacs'."
 (add-hook 'evil-insert-state-entry-hook #'evil-collection-vterm-send-escape-vterm)
 #+END_SRC
 
-Copy mode entering and exiting.
-#+BEGIN_SRC emacs-lisp
-(defun vterm-copy-mode-done-ins ()
-  "Save active region to kill ring, insert and exit `vterm-copy-mode'."
-  (interactive)
-  (if (region-active-p)
-      (kill-ring-save (region-beginning) (region-end)))
-  (vterm-exit-visual-insert)
-  (vterm-copy-mode -1))
-(advice-add 'vterm-copy-mode-done :override #'vterm-copy-mode-done-ins)
-(add-hook 'vterm-copy-mode-hook (lambda ()
-    (if vterm-copy-mode (progn (evil-escape)
-                                (setq display-line-numbers 'relative))
-    (setq display-line-numbers nil)))
-)
-#+END_SRC
-
 *** Prompt Outlines
 #+BEGIN_SRC emacs-lisp
 (setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
@@ -828,6 +829,31 @@ Allow stop scroll term sequence.
 (setq vterm-buffer-name-string "vterm: %s")
 #+END_SRC
 
+*** Copy mode
+Exclude prompts when exiting copy mode.
+#+BEGIN_SRC emacs-lisp
+(setq vterm-copy-exclude-prompt t)
+#+END_SRC
+
+Detect prompts using the vterm prompt tracking technique when exiting copy mode.
+#+BEGIN_SRC emacs-lisp
+(setq vterm-use-vterm-prompt-detection-method t)
+#+END_SRC
+
+Jump back into insert mode when exiting copy mode.
+#+BEGIN_SRC emacs-lisp
+(advice-add 'vterm-copy-mode-done :after (lambda (&rest _) (funcall #'vterm-exit-visual-insert)))
+#+END_SRC
+
+Display line numbers in copy mode.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'vterm-copy-mode-hook (lambda ()
+    (if vterm-copy-mode (progn (evil-escape)
+                                (setq display-line-numbers 'relative))
+    (setq display-line-numbers nil)))
+)
+#+END_SRC
+
 *** Keys
 Miscellaneous vterm bindings.
 #+BEGIN_SRC emacs-lisp
@@ -836,12 +862,13 @@ Miscellaneous vterm bindings.
  (:map vterm-mode-map
 
   ;; Evil yank when selecting.
-  :mnv "y" #'evil-yank
+  ;; :mnv "y" #'evil-yank
+  ;; :mnv "y" #'vterm-copy-mode-done
 
   ;; Entering/exiting modes.
   :vn "o" #'evil-insert
   :vn "a" #'evil-insert
-  :vn "<return>" #'vterm-exit-visual-insert
+  ;; :vn "<return>" #'vterm-exit-visual-insert
   :vni "C-SPC" #'vterm-copy-mode
 
   ;; Stop scrolling.
@@ -855,8 +882,8 @@ Miscellaneous vterm bindings.
   :i "C-z" #'vterm-send-C-z
   )
  (:map vterm-copy-mode-map
-  :m "[[" #'outline-previous-heading
-  :m "]]" #'outline-next-heading
+  :m "[[" #'vterm-previous-prompt
+  :m "]]" #'vterm-next-prompt
   :vnm "<tab>" #'outline-toggle-children
   )
  )
