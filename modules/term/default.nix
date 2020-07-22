@@ -73,6 +73,7 @@ in {
         fzf
         fzy
         gawk
+        gettext
         gnuplot
         htop
         inetutils
