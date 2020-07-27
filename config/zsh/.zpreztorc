@@ -14,6 +14,7 @@ zstyle ':prezto:load' pmodule \
   'osx' \
   'history-substring-search' \
   'syntax-highlighting' \
+  'autosuggestions' \
   'prompt'
 zstyle ':prezto:module:editor' key-bindings 'vi'
 zstyle ':prezto:module:editor' dot-expansion 'yes'
@@ -29,5 +30,6 @@ zstyle ':prezto:module:syntax-highlighting' styles \
    'builtin' 'fg=green' \
    'command' 'fg=green' \
    'function' 'fg=green'
+zstyle ':prezto:module:autosuggestions' color 'yes'
 zstyle ':prezto:module:terminal' auto-title 'yes'
 zstyle ':prezto:module:utility' safe-ops 'no'.
