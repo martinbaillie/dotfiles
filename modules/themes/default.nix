@@ -33,8 +33,14 @@ with lib; {
   };
 
   config = {
-    my.home.xdg.configFile."wallpaper".source =
-      let local = "${(builtins.getEnv "XDG_DATA_HOME")}/.wallpaper";
-      in if builtins.pathExists local then local else config.theme.wallpaper;
+
+    my = {
+      env.ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE =
+        "fg=${config.theme.colours.fg},bg=${config.theme.colours.base4}";
+
+      home.xdg.configFile."wallpaper".source =
+        let local = "${(builtins.getEnv "XDG_DATA_HOME")}/.wallpaper";
+        in if builtins.pathExists local then local else config.theme.wallpaper;
+    };
   };
 }

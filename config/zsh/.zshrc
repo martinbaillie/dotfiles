@@ -10,7 +10,15 @@ typeset -g cdpath fpath mailpath path
 # Defer init of autopair until after zprezto.
 AUTOPAIR_INHIBIT_INIT=1
 
+# Async fish-like autosuggestion.
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_USE_ASYNC=true
+
+# Load zgen plugin manager.
+ZGEN_RESET_ON_CHANGE=(${ZDOTDIR}/.zshrc)
 source "${ZGEN_SRC}/zgen.zsh"
+
+# Load various plugins.
 if ! zgen saved; then
   zgen prezto
   zgen load hlissner/zsh-autopair 'autopair.zsh'
@@ -20,6 +28,7 @@ if ! zgen saved; then
   zgen load aperezdc/zsh-fzy
   zgen load changyuheng/fz
   zgen load rupa/z
+  zgen load Aloxaf/fzf-tab
   zgen save
 fi
 

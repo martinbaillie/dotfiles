@@ -32,4 +32,4 @@ zstyle ':prezto:module:syntax-highlighting' styles \
    'function' 'fg=green'
 zstyle ':prezto:module:autosuggestions' color 'yes'
 zstyle ':prezto:module:terminal' auto-title 'yes'
-zstyle ':prezto:module:utility' safe-ops 'no'.
+zstyle ':prezto:module:utility' safe-ops 'no'

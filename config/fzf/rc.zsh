@@ -11,3 +11,6 @@ fzf-jq() {
     jq -C {q}" --preview-window 'down:70%' --height '80%' --print-query
   [[ -e "$tmpfile" ]] && rm -f "$tmpfile"
 }
+
+# Don't group completions.
+zstyle ':completion:*' format ''
