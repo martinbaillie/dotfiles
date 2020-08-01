@@ -892,6 +892,10 @@ Miscellaneous vterm bindings.
   ;; Term sequences.
   :i "C-c" #'vterm-send-C-c
   :i "C-z" #'vterm-send-C-z
+
+  ;; Fix C-backspace.
+  :i "<C-backspace>" (lambda () (interactive) (vterm-send-key (kbd "C-w")))
+  :i "<s-backspace>" (lambda () (interactive) (vterm-send-key (kbd "C-w")))
   )
 
  (:map vterm-copy-mode-map
