@@ -26,7 +26,7 @@ in {
       #   };
       # })
       (python37.withPackages (ps: with ps; [ black pip pylint setuptools ]))
-      (mkIf isLinux (unstable.python-language-server))
+      (mkIf isLinux (python-language-server))
       # REVIEW: Language server is currently bust on Darwin.
       # (if isDarwin then
       #   # python37Packages.python-language-server

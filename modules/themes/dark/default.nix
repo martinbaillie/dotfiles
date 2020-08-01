@@ -28,13 +28,18 @@ in {
 
     (mkIf isLinux {
       env.GTK_THEME = "Arc-Darker";
-      packages = with pkgs; [ arc-theme paper-gtk-theme paper-icon-theme ];
+      packages = with pkgs; [
+        arc-theme
+        arc-icon-theme
+        paper-gtk-theme
+        paper-icon-theme
+      ];
       home.xdg.configFile = {
         # GTK
         "gtk-3.0/settings.ini".text = ''
           [Settings]
           gtk-theme-name=Arc-Darker
-          gtk-icon-theme-name=Paper-Mono-Dark
+          gtk-icon-theme-name=Arc
           gtk-fallback-icon-theme=gnome
           gtk-application-prefer-dark-theme=true
           gtk-xft-hinting=1
@@ -44,8 +49,9 @@ in {
         # GTK2 global theme (widget and icon theme)
         "gtk-2.0/gtkrc".text = ''
           gtk-theme-name="Arc-Darker"
-          gtk-icon-theme-name="Paper-Mono-Dark"
-          gtk-font-name="Sans 10"
+          gtk-cursor-theme-name="Paper"
+          gtk-icon-theme-name="Arc"
+          gtk-fallback-icon-theme="gnome"
         '';
         # QT4/5 global theme
         "Trolltech.conf".text = ''

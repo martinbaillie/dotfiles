@@ -57,6 +57,7 @@ in {
       };
 
       packages = [
+        age
         bat
         bc
         bfs
@@ -92,8 +93,6 @@ in {
         xar
         yq-go
         zip
-
-        unstable.age
 
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
         (ripgrep.override { withPCRE2 = true; })

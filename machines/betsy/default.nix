@@ -159,7 +159,7 @@
   # NOTE: Currently broken upstream for Betsy.
   services.fprintd = {
     enable = true;
-    package = pkgs.fprintd-thinkpad;
+    # package = pkgs.fprintd-thinkpad;
   };
 
   security.pam.services = {
@@ -210,5 +210,5 @@
       rev = "14ddc3382c268aca9547d173f00562cedb485f7b";
     }))
   ];
-  my.packages = with pkgs; [ corectl anki ];
+  my.packages = with pkgs; [ corectl ];
 }

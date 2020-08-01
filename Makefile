@@ -49,7 +49,6 @@ FLAGS			+=--verbose
 FLAGS			+=--show-trace
 endif
 ifeq ($(SYSTEM),Linux)
-NIXOS_VERSION 	:=20.03
 NIXOS_PREFIX  	:=$(PREFIX)/etc/nixos
 NIXOS_INSTALL	:=nixos-install --root "$(PREFIX)" $(FLAGS)
 
@@ -71,15 +70,12 @@ channels:
 ifeq ($(SYSTEM),Darwin)
 	nix-channel --add "$(CH_NIXOS)/nixpkgs-unstable" nixpkgs
 	nix-channel --add "$(CH_NIX_DARWIN)/master.tar.gz" darwin
-	nix-channel --add "$(CH_HOME_MANAGER)/master.tar.gz" home-manager
 endif
 ifeq ($(SYSTEM),Linux)
-	nix-channel --add "$(CH_NIXOS)/nixos-${NIXOS_VERSION}" nixos
+	nix-channel --add "$(CH_NIXOS)/nixos-unstable" nixos
 	nix-channel --add "$(CH_NIXOS_HARDWARE)/master.tar.gz" nixos-hardware
-	nix-channel --add \
-		"$(CH_HOME_MANAGER)/release-${NIXOS_VERSION}.tar.gz" home-manager
 endif
-	nix-channel --add "$(CH_NIXOS)/nixpkgs-unstable" nixpkgs-unstable
+	nix-channel --add "$(CH_HOME_MANAGER)/master.tar.gz" home-manager
 .PHONY: channels
 
 update:
@@ -120,6 +116,7 @@ test: ; $(NIX_REBUILD) $(ACTION)
 
 switch: 	; $(NIX_REBUILD) switch
 rollback: 	; $(NIX_REBUILD) switch --rollback
+upgrade: 	; $(NIX_REBUILD) switch --upgrade
 boot: 		; $(NIX_REBUILD) boot
 dry: 		; $(NIX_REBUILD) dry-build
 .PHONY:		switch rollback boot dry

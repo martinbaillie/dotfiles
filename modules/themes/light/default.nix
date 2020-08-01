@@ -25,14 +25,20 @@ in {
     }
 
     (mkIf isLinux {
-      env.GTK_THEME = "Arc";
-      packages = with pkgs; [ paper-gtk-theme paper-icon-theme ];
+      env.GTK_THEME = "SolArc";
+      packages = with pkgs; [
+        solarc-gtk-theme
+        arc-theme
+        arc-icon-theme
+        paper-gtk-theme
+        paper-icon-theme
+      ];
       home.xdg.configFile = {
         # GTK
         "gtk-3.0/settings.ini".text = ''
           [Settings]
-          gtk-theme-name=Adwaita
-          gtk-icon-theme-name=Paper
+          gtk-theme-name=SolArc
+          gtk-icon-theme-name=Arc
           gtk-fallback-icon-theme=gnome
           gtk-application-prefer-dark-theme=false
           gtk-xft-hinting=1
@@ -41,14 +47,15 @@ in {
         '';
         # GTK2 global theme (widget and icon theme)
         "gtk-2.0/gtkrc".text = ''
-          gtk-theme-name="Adwaita"
-          gtk-icon-theme-name="Paper"
-          gtk-font-name="Sans 10"
+          gtk-theme-name="SolArc"
+          gtk-icon-theme-name="Arc"
+          gtk-cursor-theme-name="Paper"
+          gtk-fallback-icon-theme="gnome"
         '';
         # QT4/5 global theme
         "Trolltech.conf".text = ''
           [Qt]
-          style=Adwaita
+          style=SolArc
         '';
       };
     })

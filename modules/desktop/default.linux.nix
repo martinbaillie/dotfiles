@@ -57,15 +57,22 @@ in {
   fonts = {
     enableFontDir = true;
     enableGhostscriptFonts = true;
-    fonts = with pkgs; [ emojione noto-fonts font-awesome ];
+    fonts = with pkgs; [ iosevka noto-fonts emojione font-awesome ];
     fontconfig = {
       defaultFonts = {
         emoji = [ "Noto Color Emoji" "EmojiOne Color" ];
-        monospace = [ "Noto Sans Mono" "Noto Color Emoji" "EmojiOne Color" ];
-        sansSerif = [ "Noto Sans" "Noto Color Emoji" "EmojiOne Color" ];
-        serif = [ "Noto Serif" "Noto Color Emoji" ];
+        monospace = [ "Iosevka" "Noto Sans Mono" ];
+        sansSerif = [ "Noto Sans" ];
+        serif = [ "Noto Serif" ];
       };
     };
+  };
+
+  # Qt5 integration.
+  qt5 = {
+    enable = true;
+    platformTheme = "gtk2";
+    style = "gtk2";
   };
 
   # Desktop programs.

@@ -14,8 +14,8 @@
       gotools
       protobuf
       go
-      unstable.gopls
-      unstable.gomodifytags
+      gopls
+      gomodifytags
     ];
 
     home.xdg.configFile = {

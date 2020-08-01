@@ -1,9 +1,6 @@
 [
   (self: super:
     with super; {
-      # Allow unstable.
-      unstable = import <nixpkgs-unstable> { inherit config; };
-
       # My own "packages" - mostly desktop apps.
       my = import ./packages { inherit (super) lib pkgs; };
 

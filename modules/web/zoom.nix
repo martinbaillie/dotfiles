@@ -6,6 +6,6 @@ let
 in {
   my = mkMerge [
     (mkIf isDarwin { casks = [ "zoomus" ]; })
-    (mkIf isLinux { packages = with pkgs; [ unstable.zoom-us ]; })
+    (mkIf isLinux { packages = with pkgs; [ zoom-us ]; })
   ];
 }
