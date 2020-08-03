@@ -67,6 +67,16 @@
 (setq +doom-dashboard-banner-file (expand-file-name "logo.png" doom-private-dir))
 #+END_SRC
 
+*** Font
+#+BEGIN_SRC emacs-lisp
+(when IS-LINUX
+  (setq
+   doom-font                     (font-spec :family "Iosevka" :size 15)
+   doom-variable-pitch-font      (font-spec :family "Iosevka" :size 15)
+   +zen-text-scale               1)
+  )
+#+END_SRC
+
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
 #+BEGIN_SRC emacs-lisp
