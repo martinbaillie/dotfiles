@@ -23,6 +23,12 @@
     casks = [ "karabiner-elements" "cursorcerer" ];
   };
 
+  # Fonts.
+  fonts = {
+    enableFontDir = true;
+    fonts = with pkgs; [ iosevka ];
+  };
+
   # My default desktop system settings across all macOS/Darwin installs.
   system = {
     keyboard = {

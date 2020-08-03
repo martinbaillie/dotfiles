@@ -66,7 +66,7 @@ in {
   };
 
   environment = {
-    systemPackages = with pkgs; [ cachix ];
+    systemPackages = with pkgs; [ cachix nix-index ];
     variables = {
       # Set up Cachix.
       CACHIX_SIGNING_KEY = config.my.secrets.cachix_signing_key;
