@@ -4,7 +4,7 @@ with pkgs;
 
 let
   inherit (stdenv) isDarwin;
-  inherit (lib) optionals;
+  inherit (lib) optionals optionalString;
 
   # installApplication pilfered from @jwiegley's dots.
   installApplication = { name, appname ? name, version, src, description
@@ -30,16 +30,22 @@ let
     };
 in rec {
   # My custom Emacs 28 builds for macOS and NixOS (+Wayland).
-  Emacs = emacsGit.overrideAttrs (_: rec {
+  Emacs = emacsGit.overrideAttrs (old: rec {
     name = "emacs-git-${version}";
     version = "20200706.0";
 
     src = fetchFromGitHub {
       owner = "emacs-mirror";
       repo = "emacs";
-      rev = "10a0941f4dcc85d95279ae67032ec04463a44d59";
-      sha256 = "1gwczswxsv7jkqbgdsiyx3ad629gi9l28ywa7fga85fbia9gy998";
+      rev = "1a99697b4d8c11a10d5e6a306103740d92cc08a1"; # 06/08/20
+      sha256 = "1n92fbn9y0bcc08rss8jyv4m3wkww7gglg6p49gz0k05rj6yxmbv";
     };
+
+    # Work laptop OS version is still pinned to Mojave but these headers are
+    # present in userspace.
+    preConfigure = old.preConfigure + optionalString isDarwin ''
+      export ac_cv_func_aligned_alloc=no
+    '';
 
     patches = [
       ./emacs/patches/clean-env.patch

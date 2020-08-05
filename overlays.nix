@@ -4,6 +4,9 @@
       # My own "packages" - mostly desktop apps.
       my = import ./packages { inherit (super) lib pkgs; };
 
+      # Provide a stable overlay.
+      stable = import <nixpkgs-stable> { inherit config; };
+
       # TODO: Fix upstream
       # https://github.com/NixOS/nixpkgs/blob/master/pkgs/applications/editors/emacs-modes/melpa-packages.nix#L151
       emacs-pdf-tools =
@@ -30,8 +33,8 @@
   # }))
 
   # Emacs overlay.
-  (import (builtins.fetchTarball # 17/07/20
-    "https://github.com/nix-community/emacs-overlay/archive/096983e7207c4d76f3d68cf62b1d85e47cbb3b8b.tar.gz"))
+  (import (builtins.fetchTarball # 5/08/20
+    "https://github.com/nix-community/emacs-overlay/archive/7a3098df25f1a873798227cf120e970acf546f52.tar.gz"))
 
   # Mozilla overlay for Rust.
   (import (builtins.fetchTarball # 17/07/20

@@ -477,29 +477,37 @@ Strikethrough checkbox.
 ** go
 *** LSP
 #+BEGIN_SRC emacs-lisp
-(after! go-mode
-  ;; language server
-  (add-hook 'go-mode-hook 'lsp)
+(after! go-mode)
 
-  ;; flycheck configuration
-  (add-hook 'flycheck-mode-hook (lambda ()
-                                  (push 'go-errcheck flycheck-disabled-checkers)
-                                  (push 'go-staticcheck flycheck-disabled-checkers)
-                                  (push 'go-unconvert flycheck-disabled-checkers)
-                                  ;; (push 'go-build flycheck-disabled-checkers)
-                                  ;; (push 'go-test flycheck-disabled-checkers)
-                                  ))
+(after! lsp-mode
+  (lsp-register-custom-settings
+   '(("gopls.completeUnimported" t t)
+     ("gopls.staticcheck" t t)
+     ("gopls.completionDocumentation" t t)
+     )
+   )
+  )
+  ;; ;; language server
+  ;; (add-hook 'go-mode-hook 'lsp)
 
-  (setq flycheck-disabled-checkers '(go-unconvert
-                                     go-staticcheck
-                                     go-errcheck))
+  ;; ;; flycheck configuration
+  ;; (add-hook 'flycheck-mode-hook (lambda ()
+  ;;                                 (push 'go-errcheck flycheck-disabled-checkers)
+  ;;                                 (push 'go-staticcheck flycheck-disabled-checkers)
+  ;;                                 (push 'go-unconvert flycheck-disabled-checkers)
+  ;;                                 ;; (push 'go-build flycheck-disabled-checkers)
+  ;;                                 ;; (push 'go-test flycheck-disabled-checkers)
+  ;;                                 ))
+
+  ;; (setq flycheck-disabled-checkers '(go-unconvert
+  ;;                                    go-staticcheck
+  ;;                                    go-errcheck))
 
 ;; (after! lsp-mode
 ;;   (lsp-register-custom-settings '(("gopls.completionDocumentation" t)))
 ;; )
 ;; (lsp-register-custom-settings '(("gopls.completeUnimported" t)))
 ;;   (lsp-register-custom-settings '(("gopls.staticcheck" t))))
-  )
 #+END_SRC
 
 *** DAP
