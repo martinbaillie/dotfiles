@@ -85,7 +85,9 @@ update:
 ifeq ($(SYSTEM),Darwin)
 	$(BREW) update --quiet
 endif
+ifeq ($(SYSTEM),Linux)
 	sudo nix-channel --update
+endif
 	nix-channel --update
 .PHONY: update
 

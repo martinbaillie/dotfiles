@@ -13,6 +13,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install Nix
       uses: cachix/install-nix-action@v10
+      with:
+        skip_adding_nixpkgs_channel: true
     - name: Install Cachix
       uses: cachix/cachix-action@v6
       with:
@@ -30,6 +32,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install Nix
       uses: cachix/install-nix-action@v10
+      with:
+        skip_adding_nixpkgs_channel: true
     - name: Install Cachix
       uses: cachix/cachix-action@v6
       with:
