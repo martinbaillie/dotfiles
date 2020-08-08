@@ -44,7 +44,7 @@ in mkMerge [
         zstd
 
         (hiPrio clang)
-      ] ++ optionals isLinux [ wkhtmltopdf ];
+      ] ++ optionals isLinux [ stable.wkhtmltopdf ];
 
       home.xdg.configFile = {
         "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;

@@ -4,6 +4,7 @@
 ;; Custom packages.
 (package! dap-mode)
 (package! nyan-mode)
+(package! dhall-mode)
 (package! org-fancy-priorities)
 (package! org-trello)
 (package! edit-indirect)

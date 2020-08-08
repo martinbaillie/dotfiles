@@ -33,6 +33,8 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#vterm][vterm]]
+  - [[#dhall][dhall]]
+  - [[#packages][packages]]
 
 * [7/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
@@ -49,7 +51,7 @@
 - [ ] Fix org-mode ligatures
 
 * Personal
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq user-full-name "Martin Baillie"
       user-mail-address "martin@baillie.email"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg"))
@@ -58,17 +60,17 @@
 
 * UI/General
 *** Frame titles
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq frame-title-format '("%b – Emacs"))
 #+END_SRC
 
 *** Welcome screen
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq +doom-dashboard-banner-file (expand-file-name "logo.png" doom-private-dir))
 #+END_SRC
 
 *** Font
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-LINUX
   (setq
    doom-font                     (font-spec :family "Iosevka" :size 15 :weight 'light)
@@ -86,60 +88,60 @@
 
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq display-line-numbers-type 'relative)
 #+END_SRC
 
 *** Don't truncate lines
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (set-default 'truncate-lines nil)
 #+END_SRC
 
 *** Decrease time taken to pop which-key
 The default is too slow.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq-default which-key-idle-delay   0.4)
 #+END_SRC
 
 *** Scrolloff
 Start scrolling X lines before the end of a screen.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq
  scroll-conservatively 10
  scroll-margin 10)
 #+END_SRC
 
 Disable for terminal buffers since there can be issues completion/interactive shell scripts.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (add-hook 'term-mode-hook (λ! (setq-local scroll-margin 0)))
 (add-hook 'vterm-mode-hook (λ! (setq-local scroll-margin 0)))
 (add-hook 'ivy-mode-hook (λ! (setq-local scroll-margin 0)))
 #+END_SRC
 
 *** Remove scrollbars
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (scroll-bar-mode -1)
 #+END_SRC
 
 *** Remove whitespace at end of lines on save
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
 *** Themes
 Load current theme.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (load! "+theme")
 #+END_SRC
 
 *** Formatting
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq
- +format-on-save-enabled-modes '(not emacs-lisp-mode sql-mode tex-mode markdown-mode gfm-mode html-mode mhtml-mode))
+ +format-on-save-enabled-modes '(not elisp-mode sql-mode tex-mode markdown-mode gfm-mode html-mode mhtml-mode))
 #+END_SRC
 
 *** Brighter region highlights for my dark themes
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (if (eq doom-theme 'doom-dracula)
     (custom-set-faces
      '(region ((t (:background "#bd93f9" :foreground "black"))))
@@ -153,20 +155,20 @@ Load current theme.
 #+END_SRC
 
 *** Move to splits after creating
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
 #+END_SRC
 
 *** Simpler modeline
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (after! doom-modeline
   (setq doom-modeline-buffer-encoding nil)
   )
 #+END_SRC
 * UI/macOS
 *** Source a clean shell environment
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-MAC
   (setq exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-initialize)
@@ -176,17 +178,17 @@ Load current theme.
 #+END_SRC
 
 *** Use font smoothing
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC elisp
 (when IS-MAC (setq ns-use-thin-smoothing t))
   #+END_SRC
 
 *** Hide icons in titles
-  #+BEGIN_SRC emacs-lisp
+  #+BEGIN_SRC elisp
 (when IS-MAC (setq ns-use-proxy-icon nil))
   #+END_SRC
 
 *** Native macOS titles
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-MAC
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   ;; (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -194,7 +196,7 @@ Load current theme.
 #+END_SRC
 
 *** Native macOS fullscreen
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-MAC
   ;; Windowed macOS fullscreen.
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -206,7 +208,7 @@ Load current theme.
 
 * Keys/General
 Miscellaneous.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  :n "C-s" #'save-buffer
  :n "C-/" #'evil-avy-goto-char-timer
@@ -221,7 +223,7 @@ Miscellaneous.
 #+END_SRC
 
 Merge comment (dwim and line).
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
@@ -246,7 +248,7 @@ Version 2016-10-25"
 #+END_SRC
 
 Evil frame movements.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  :n "C-h" #'evil-window-left
  :n "C-j" #'evil-window-down
@@ -255,8 +257,13 @@ Evil frame movements.
  )
 #+END_SRC
 
+Evil subword movements.
+#+BEGIN_SRC elisp
+(global-subword-mode 1)
+#+END_SRC
+
 Motion training.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package! evil-motion-trainer
   :init
   (global-evil-motion-trainer-mode 1)
@@ -271,7 +278,7 @@ Motion training.
 #+END_SRC
 
 * Keys/Linux
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-LINUX
   (map!
     "s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
@@ -282,7 +289,7 @@ Motion training.
 #+END_SRC
 
 * Keys/macOS
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (when IS-MAC
   (map!
    :gni [s-return] #'toggle-frame-fullscreen
@@ -293,23 +300,23 @@ Motion training.
 * Package Customisation
 ** org
 *** Scratch buffers
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)
 #+END_SRC
 
 *** Dropbox-based cache folder
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq org-directory "~/Dropbox/org"
       org-archive-location "~/Dropbox/org/archive/%s_archive::")
 #+END_SRC
 
 *** Fold all on startup
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq org-startup-folded 'fold)
 #+END_SRC
 
 *** Capture templates
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (after! org
   (setq org-capture-templates
         '(("t" "Personal todo" entry
@@ -361,7 +368,7 @@ Motion training.
 #+END_SRC
 
 *** Agenda files
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq org-work-directory (concat org-directory "/work/*/")
       org-agenda-files (list org-directory
                              org-work-directory))
@@ -370,7 +377,7 @@ Motion training.
 
 *** Prettier ligatures
 Prettier ellipsis and checkboxes.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq org-ellipsis " ▼ ")
 
 (add-hook 'org-mode-hook (lambda ()
@@ -383,7 +390,7 @@ Prettier ellipsis and checkboxes.
 #+END_SRC
 
 Strikethrough checkbox.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (defface org-checkbox-done-text
   '((t (:strike-through t)))
   "Face for the text part of a checked org-mode checkbox.")
@@ -396,7 +403,7 @@ Strikethrough checkbox.
 #+END_SRC
 
 *** Keywords
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq
  org-todo-keywords
  '((sequence "TODO(t)" "PROG(p)" "|" "DONE(d)" "ABRT(c)")
@@ -412,7 +419,7 @@ Strikethrough checkbox.
 #+END_SRC
 
 *** Priorities
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (after! org
   (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
                              (?B . (:foreground "orange"))
@@ -425,7 +432,7 @@ Strikethrough checkbox.
 #+END_SRC
 
 *** Keys
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  (:map org-mode-map
   :ni "<s-backspace>" #'org-babel-remove-result
@@ -439,7 +446,7 @@ Strikethrough checkbox.
 
 ** projectile
 *** Known directories and search path
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (projectile-add-known-project "~/Dropbox/org")
 (projectile-add-known-project "/etc/dotfiles")
 (setq projectile-project-search-path '("~/Code/work" "~/Code/personal" "~/Code/upstream"))
@@ -447,15 +454,15 @@ Strikethrough checkbox.
 
 ** deadgrep
 *** Load default bindings
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package! deadgrep :commands (deadgrep))
 #+END_SRC
 
 ** format-all
 *** Disabled modes
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq +format-on-save-enabled-modes
-  '(not emacs-lisp-mode
+  '(not elisp-mode
         sql-mode
         yaml-mode
         sgml-xml-mode)
@@ -464,7 +471,7 @@ Strikethrough checkbox.
 
 ** company
 *** Keys
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package! company-tng
   :config
   (define-key! company-active-map
@@ -476,7 +483,7 @@ Strikethrough checkbox.
 
 ** go
 *** LSP
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (after! go-mode)
 
 (after! lsp-mode
@@ -511,7 +518,7 @@ Strikethrough checkbox.
 #+END_SRC
 
 *** DAP
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 ;; (setq godoc-at-point-function 'godoc-gogetdoc)
 ;; debugger configuration
 ;; (require 'dap-go)
@@ -523,7 +530,7 @@ Strikethrough checkbox.
 #+END_SRC
 
 *** Keys
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map! :map go-mode-map
       :nv "K"  #'lsp-describe-thing-at-point
       )
@@ -531,7 +538,7 @@ Strikethrough checkbox.
 
 ** nyanmode
 Oh gees.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package! nyan-mode
   :after doom-modeline
   :init
@@ -544,35 +551,35 @@ Oh gees.
 
 ** avy
 *** Search across all windows
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq avy-all-windows t)
 #+END_SRC
 
 *** Select the single candidate
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq avy-single-candidate-jump t)
 #+END_SRC
 
 *** Faster timers
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq avy-timeout-seconds 0.35)
 #+END_SRC
 
 ** magit
 *** Avatars
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 #+END_SRC
 
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (add-hook 'git-commit-mode-hook (lambda () (apply #'git-commit-signoff (git-commit-self-ident))))
 #+END_SRC
 
 ** kubectx
 Switch kubectl context and namespace and display current settings in Emacs modeline.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 ;; (use-package! kubectx-mode
   ;; :init
   ;; (setq kubectx-mode-line-string-format "")
@@ -584,7 +591,7 @@ Switch kubectl context and namespace and display current settings in Emacs model
 ** lsp
 *** yaml
 Get the YAML language server to validate Kubernetes resources.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq lsp-yaml-schemas (make-hash-table))
 (puthash "kubernetes" ["resources.yaml"
                        "resources/*"
@@ -603,7 +610,7 @@ Get the YAML language server to validate Kubernetes resources.
 
 *** terraform
 Enable LSP for Terraform.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (after! lsp-mode
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-lsp" "serve"))
@@ -615,7 +622,7 @@ Enable LSP for Terraform.
 
 ** pinentry
 *** Use Emacs pinentry on Linux
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package pinentry
   :demand t
   :after epg
@@ -639,7 +646,7 @@ Enable LSP for Terraform.
 ** treemacs
 *** Keys
 Toggling.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  :n "C-S-e" #'+treemacs/toggle
  (:map evil-treemacs-state-map "C-S-e" #'+treemacs/toggle)
@@ -647,7 +654,7 @@ Toggling.
 #+END_SRC
 
 Evil frame movements.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  (:map evil-treemacs-state-map
   "C-h" #'evil-window-left
@@ -657,7 +664,7 @@ Evil frame movements.
 
 ** easy-motion
 *** Better scoped easy-motions
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (define-key! 'global
     [remap evilem-motion-forward-word-end] #'evilem-motion-forward-WORD-end
     [remap evilem-motion-forward-word-begin] #'evilem-motion-forward-WORD-begin
@@ -667,20 +674,20 @@ Evil frame movements.
 #+END_SRC
 
 *** Keys
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
 #+END_SRC
 
 ** undotree
 *** Finer Undo
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq undo-limit 80000000
       evil-want-fine-undo t)
 #+END_SRC
 
 *** Keys
 Add common Vimisms to undotree mode.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  :nvi "C-z" #'undo-tree-undo
  :nvi "C-y" #'undo-tree-redo
@@ -693,7 +700,7 @@ Add common Vimisms to undotree mode.
 ** move-text
 *** Keys
 Add additional evil movements for text moves.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map! :m "M-j" #'move-text-down
       :m "M-k" #'move-text-up
       :m "s-j" #'move-text-down
@@ -704,7 +711,7 @@ Add additional evil movements for text moves.
 ** buffer-move
 *** Keys
 Add evil movements to buffer moves.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map! :m "s-J" #'buf-move-down
       :m "s-K" #'buf-move-up
       :m "s-H" #'buf-move-left
@@ -718,12 +725,12 @@ Add evil movements to buffer moves.
 
 ** buffer-expose
 *** Disable scaling
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq-default buffer-expose-rescale-factor 1)
 #+END_SRC
 
 *** Workspace expose functions
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (defun buffer-workspace-expose (&optional max)
   "Expose workspace buffers.
 If MAX is given it determines the maximum number of windows to
@@ -743,7 +750,7 @@ show per page, which defaults to
 
 *** Keys
 Add evil movements to expose view.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 ;; NOTE: backtab doesn't work
 ;;(def-package! buffer-expose
 ;;  :init (general-define-key
@@ -758,7 +765,7 @@ Add evil movements to expose view.
 #+END_SRC
 
 Add expose functions to buffer commands.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map! :leader
       :desc "Expose buffers" "be" #'buffer-expose
       :desc "Expose workspace buffers" "bw" #'buffer-workspace-expose
@@ -768,13 +775,13 @@ Add expose functions to buffer commands.
 
 ** vterm
 Use system-wide vterm lib when compiling.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 #+END_SRC
 
 *** Mode handling
 Handle escape between Emacs and vterm.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (defun evil-collection-vterm-toggle-send-escape-ins ()
   "Toggle where ESC is sent between `vterm' and `emacs'.
 This is needed for programs that use ESC, e.g. vim or an ssh'd emacs that
@@ -838,12 +845,12 @@ also uses `evil-mode'. This version sends a `vterm' INS when in `emacs'."
 
 *** Scroll
 Scrollback limit.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq-default vterm-max-scrollback 9999)
 #+END_SRC
 
 Allow stop scroll term sequence.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (defun vterm-disable-output ()
   (interactive)
   (unless (evil-normal-state-p)
@@ -852,34 +859,34 @@ Allow stop scroll term sequence.
 #+END_SRC
 
 *** Titles
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq vterm-buffer-name-string "vterm: %s")
 #+END_SRC
 
 *** Prompt Outlines
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
 #+END_SRC
 
 *** Copy mode
 Exclude prompts when exiting copy mode.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq vterm-copy-exclude-prompt t)
 #+END_SRC
 
 Detect prompts using the vterm prompt tracking technique when exiting copy mode.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq vterm-use-vterm-prompt-detection-method t)
 #+END_SRC
 
 Jump back into insert mode when exiting copy mode.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (advice-add 'vterm-copy-mode-done :after
             (lambda (&rest _) (funcall #'vterm-exit-visual-insert)))
 #+END_SRC
 
 Make evil-yank work by bypassing vterm-copy-mode-done kill ring logic.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (advice-add 'evil-yank :after
             (lambda (&rest _)
               (when (bound-and-true-p vterm-copy-mode)
@@ -888,7 +895,7 @@ Make evil-yank work by bypassing vterm-copy-mode-done kill ring logic.
 #+END_SRC
 
 Display line numbers in copy mode.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (add-hook 'vterm-copy-mode-hook
           (lambda ()
             (if vterm-copy-mode
@@ -898,7 +905,7 @@ Display line numbers in copy mode.
 
 *** Keys
 Miscellaneous vterm bindings.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  ;; Pop new vterms.
  :vgni "s-;" #'+vterm/here
@@ -935,7 +942,7 @@ Miscellaneous vterm bindings.
 #+END_SRC
 
 Fix escape for vterm.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (setq evil-collection-key-blacklist
       (list "C-w" "C-j" "C-k" "gd" "gf" "K" "[" "]" "gz"
             doom-leader-key doom-localleader-key
@@ -943,7 +950,7 @@ Fix escape for vterm.
 #+END_SRC
 
 Evil frame movements.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (map!
  (:map vterm-copy-mode-map
    :i "C-h" #'evil-window-left
@@ -961,7 +968,7 @@ Evil frame movements.
 #+END_SRC
 
 Pass frame movements through to Emacs.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC elisp
 (use-package! vterm
   :defer t
   :init
@@ -969,3 +976,21 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+END_SRC
+
+** dhall
+Mode configuration.
+#+BEGIN_SRC elisp
+(use-package! dhall-mode
+  :defer t
+  :init
+  (setq dhall-use-header-line nil
+        dhall-format-at-save t))
+(add-hook 'dhall-mode-hook #'lsp-deferred)
+#+END_SRC
+
+** packages
+TODO
+# #+BEGIN_SRC elisp :tangle packages.el
+# ;; (package! my-package)
+# ;; (package! other-package)
+# #+END_SRC
