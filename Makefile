@@ -29,7 +29,6 @@ ifeq ($(SYSTEM),Darwin)
 dep: $(DARWIN_REBUILD) $(BREW)
 endif
 	echo "trusted-users = root $(USER)" | sudo tee -a /etc/nix/nix.conf
-	echo "experimental-features = nix-command" | sudo tee -a /etc/nix/nix.conf
 ifeq ($(SYSTEM),Darwin)
 	sudo rm -rf /etc/shells /etc/zprofile /etc/zshrc
 	sudo launchctl stop org.nixos.nix-daemon
