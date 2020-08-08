@@ -10,6 +10,8 @@ endif
 WORKDIR 	:=$(patsubst %/,%,$(dir $(realpath $(lastword $(MAKEFILE_LIST)))))
 HOSTNAME	:=$(shell hostname -s)
 SYSTEM 		:=$(shell uname -s)
+CI 			?=$(GITHUB_ACTIONS)
+CI 			?=$(TRAVIS)
 
 # General dependencies.
 DARWIN_REBUILD ?=$(if $(shell which darwin-rebuild 2>/dev/null),\
@@ -84,7 +86,7 @@ update:
 ifeq ($(SYSTEM),Darwin)
 	$(BREW) update --quiet
 endif
-ifeq ($(SYSTEM),Linux)
+ifeq (,$(CI))
 	sudo nix-channel --update
 endif
 	nix-channel --update
