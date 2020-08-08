@@ -16,6 +16,7 @@ config/emacs/+theme.el
 
 # Machine-local Emacs config tangled from `config.org`.
 config/emacs/config.el
+config/emacs/packages.el
 
 # NixOS build results.
 **/result

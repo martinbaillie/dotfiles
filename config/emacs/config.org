@@ -4,10 +4,13 @@
 
 #+LANGUAGE: en
 #+STARTUP: inlineimages
-#+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
+#+PROPERTY: header-args :cache yes :results silent :padline no
 
 * Table of Contents :TOC_2_gh:
 - [[#personal][Personal]]
+- [[#packages][Packages]]
+  - [[#upstream][Upstream]]
+  - [[#mine][Mine]]
 - [[#uigeneral][UI/General]]
 - [[#uimacos][UI/macOS]]
 - [[#keysgeneral][Keys/General]]
@@ -24,7 +27,9 @@
   - [[#avy][avy]]
   - [[#magit][magit]]
   - [[#kubectx][kubectx]]
-  - [[#lsp][lsp]]
+  - [[#yaml][yaml]]
+  - [[#terraform][terraform]]
+  - [[#dhall][dhall]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
@@ -33,8 +38,6 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#vterm][vterm]]
-  - [[#dhall][dhall]]
-  - [[#packages][packages]]
 
 * [7/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
@@ -56,6 +59,36 @@
       user-mail-address "martin@baillie.email"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg"))
     )
+#+END_SRC
+
+* Packages
+** Upstream
+#+BEGIN_SRC elisp :tangle packages.el
+(package! dap-mode)
+(package! nyan-mode)
+(package! dhall-mode)
+(package! org-fancy-priorities)
+(package! org-trello)
+(package! edit-indirect)
+(package! pinentry)
+(package! deadgrep)
+(package! ripgrep)
+(package! move-text)
+(package! buffer-move)
+(package! buffer-expose)
+(package! exec-path-from-shell)
+(package! flycheck-golangci-lint)
+#+END_SRC
+
+** Mine
+Various forks and packages of my own.
+#+BEGIN_SRC elisp :tangle packages.el
+(package! evil-motion-trainer :recipe
+  (:host github :repo "martinbaillie/evil-motion-trainer"))
+(package! evil-easymotion :pin "e6051245c06354ccd4a57e054cdff80a34f18376" :recipe
+  (:host github :repo "martinbaillie/evil-easymotion"))
+(package! kubectx-mode :recipe
+  (:host github :repo "martinbaillie/emacs-kubectx-mode"))
 #+END_SRC
 
 * UI/General
@@ -588,8 +621,7 @@ Switch kubectl context and namespace and display current settings in Emacs model
   ;;)
 #+END_SRC
 
-** lsp
-*** yaml
+** yaml
 Get the YAML language server to validate Kubernetes resources.
 #+BEGIN_SRC elisp
 (setq lsp-yaml-schemas (make-hash-table))
@@ -608,7 +640,7 @@ Get the YAML language server to validate Kubernetes resources.
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+END_SRC
 
-*** terraform
+** terraform
 Enable LSP for Terraform.
 #+BEGIN_SRC elisp
 (after! lsp-mode
@@ -618,6 +650,14 @@ Enable LSP for Terraform.
                     :server-id 'terraform-lsp))
   )
 (add-hook 'terraform-mode-hook #'lsp-deferred)
+#+END_SRC
+
+** dhall
+Mode configuration.
+#+BEGIN_SRC elisp
+(after! dhall-mode (setq dhall-use-header-line nil
+               dhall-format-at-save t))
+(add-hook 'dhall-mode-hook #'lsp-deferred)
 #+END_SRC
 
 ** pinentry
@@ -976,21 +1016,3 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+END_SRC
-
-** dhall
-Mode configuration.
-#+BEGIN_SRC elisp
-(use-package! dhall-mode
-  :defer t
-  :init
-  (setq dhall-use-header-line nil
-        dhall-format-at-save t))
-(add-hook 'dhall-mode-hook #'lsp-deferred)
-#+END_SRC
-
-** packages
-TODO
-# #+BEGIN_SRC elisp :tangle packages.el
-# ;; (package! my-package)
-# ;; (package! other-package)
-# #+END_SRC
