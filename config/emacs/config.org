@@ -625,7 +625,8 @@ Switch kubectl context and namespace and display current settings in Emacs model
 Get the YAML language server to validate Kubernetes resources.
 #+BEGIN_SRC elisp
 (setq lsp-yaml-schemas (make-hash-table))
-(puthash "kubernetes" ["resources.yaml"
+(puthash "kubernetes" ["kube.yaml"
+                       "resources.yaml"
                        "resources/*"
                        "pod.yaml"
                        "deployment.yaml"

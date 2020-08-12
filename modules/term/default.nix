@@ -99,6 +99,6 @@ in {
       ];
     }
     (mkIf isLinux { packages = [ psmisc ]; })
-    (mkIf isDarwin { packages = [ unixtools.watch ]; })
+    (mkIf isDarwin { packages = [ unixtools.watch pstree ]; })
   ];
 }

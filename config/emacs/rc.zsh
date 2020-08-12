@@ -11,7 +11,7 @@ if [ -n "${INSIDE_EMACS}" ]; then
   alias man=eman
 
   # Add an editor alias.
-  alias v=${EDITOR}
+  alias v='emacs.bash --no-wait'
 fi
 
 # Make the prompt somewhat evil.
