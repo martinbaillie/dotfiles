@@ -130,10 +130,10 @@ This is useful for command combinations e.g. 10j
 (set-default 'truncate-lines nil)
 #+END_SRC
 
-*** Decrease time taken to pop which-key
-The default is too slow.
+*** Increase time taken to pop which-key
+The default is too fast and distracting.
 #+BEGIN_SRC elisp
-(setq-default which-key-idle-delay   0.4)
+(setq-default which-key-idle-delay   1.0)
 #+END_SRC
 
 *** Scrolloff

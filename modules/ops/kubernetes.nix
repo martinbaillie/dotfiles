@@ -2,7 +2,7 @@
   my = {
     packages = with pkgs; [
       kubectl
-      kubectx
+      stable.kubectx
       # kubernetes-helm
       kustomize
     ];
