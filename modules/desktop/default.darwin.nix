@@ -1,21 +1,34 @@
 { config, pkgs, lib, ... }: {
   # My default desktop apps and settings across all macOS/Darwin installs.
   my = {
-    home.xdg.configFile."karabiner/karabiner.json".source =
-      <config/karabiner/karabiner.json>;
-
-    home.xdg.configFile."homebrew/Brewfile" = {
-      text = let casks = map (v: ''cask "${v}"'') config.my.casks;
-      in ''
-        tap "homebrew/core"
-        tap "homebrew/bundle"
-        tap "homebrew/services"
-        tap "homebrew/cask"
-        tap "homebrew/cask-versions"
-
-        ${lib.concatStringsSep "\n" casks}
+    home = {
+      # Align common keybindings between Linux and Darwin.
+      home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
+        {
+            "^\U007F" = deleteWordBackward:; // ctrl-delete
+        }
       '';
-      onChange = "brew bundle || true";
+
+      xdg = {
+        # As always, remap capslock to ctrl (held)/escape (pressed).
+        configFile."karabiner/karabiner.json".source =
+          <config/karabiner/karabiner.json>;
+
+        # Write any configured casks to a Brewfile.
+        configFile."homebrew/Brewfile" = {
+          text = let casks = map (v: ''cask "${v}"'') config.my.casks;
+          in ''
+            tap "homebrew/core"
+            tap "homebrew/bundle"
+            tap "homebrew/services"
+            tap "homebrew/cask"
+            tap "homebrew/cask-versions"
+
+            ${lib.concatStringsSep "\n" casks}
+          '';
+          onChange = "brew bundle || true";
+        };
+      };
     };
     env.HOMEBREW_BUNDLE_FILE = "$XDG_CONFIG_HOME/homebrew/Brewfile";
 

@@ -79,6 +79,22 @@ in rec {
         ++ [ "--without-x" "--with-cairo" "--with-modules" ];
     }));
 
+  # Predictable Firefox for Darwin, controllable with home-manager.
+  Firefox = installApplication rec {
+    name = "Firefox";
+    version = "79.0";
+    sourceRoot = "${name}.app";
+    src = pkgs.fetchurl {
+      name = "Firefox-${version}.dmg";
+      url =
+        "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
+      sha256 = "0c24gf2dd4fnviimvv00fniamnmcpilxa34vam29k16zamwr0c1c";
+    };
+    description =
+      "Firefox, is a free and open-source web browser developed by the Mozilla Foundation";
+    homepage = "https://www.mozilla.org/en-US/exp/firefox";
+  };
+
   # Simplistic window snapping in lieu of a proper tiling WM like Yabai.
   Spectacle = installApplication rec {
     name = "Spectacle";
@@ -141,5 +157,4 @@ in rec {
   #     	#launchctl load -F $out/Library/LaunchAgents/org.pqrs.karabiner.karabiner_console_user_server.plist
   #           '';
   # });
-
 }
