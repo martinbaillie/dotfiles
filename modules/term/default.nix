@@ -2,7 +2,7 @@
 with pkgs;
 with import <home-manager/modules/lib/dag.nix> { inherit lib; };
 let
-  inherit (lib) mkMerge mkIf concatMapStrings;
+  inherit (lib) mkMerge mkIf concatMapStrings concatStringsSep mapAttrsToList;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isDarwin isLinux;
   mkAuthorizedKeys = { runCommand }:
@@ -15,6 +15,7 @@ let
     } ''
       sed -s '$G' $source > $out
     '';
+  envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') config.my.env;
 in {
   my = mkMerge [
     {
@@ -52,6 +53,10 @@ in {
             alias l='exa -1a'
             alias ll='exa -la'
             alias lt='exa -lm -s modified'
+          '';
+          "zsh/rc.d/env.term.zsh".text = ''
+            ${concatStringsSep "\n" envLines}
+            ${config.my.init}
           '';
         };
       };

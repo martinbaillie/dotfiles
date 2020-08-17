@@ -70,8 +70,7 @@ in {
     default = "";
   };
 
-  # PATH should always start with its old value.
-  config.my.env.PATH = [ ./bin "$PATH" ];
+  # Build an OS-level customised environment.
   config.environment.extraInit = let
     exportLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') config.my.env;
   in ''
