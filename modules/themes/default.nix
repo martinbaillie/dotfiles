@@ -33,7 +33,6 @@ with lib; {
   };
 
   config = {
-
     my = {
       env.ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE =
         "fg=${config.theme.colours.fg},bg=${config.theme.colours.base4}";

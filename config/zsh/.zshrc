@@ -69,7 +69,7 @@ case ${TERM} in
     }
     ;;
   xterm*|rxvt*)
-    precmd () {
+    precmd() {
       if [ ! -n "${INSIDE_EMACS}" ]; then
         print -Pn "\e]0;%n@%m: %~\a"
       fi

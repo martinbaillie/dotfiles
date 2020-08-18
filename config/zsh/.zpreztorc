@@ -31,5 +31,6 @@ zstyle ':prezto:module:syntax-highlighting' styles \
    'command' 'fg=green' \
    'function' 'fg=green'
 zstyle ':prezto:module:autosuggestions' color 'yes'
+zstyle ':prezto:module:autosuggestions:color' found $ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE
 zstyle ':prezto:module:terminal' auto-title 'yes'
 zstyle ':prezto:module:utility' safe-ops 'no'
