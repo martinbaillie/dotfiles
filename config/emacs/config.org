@@ -408,33 +408,6 @@ Motion training.
 (setq org-log-done 'time)
 #+END_SRC
 
-*** Prettier ligatures
-Prettier ellipsis and checkboxes.
-#+BEGIN_SRC elisp
-(setq org-ellipsis " ▼ ")
-
-(add-hook 'org-mode-hook (lambda ()
-  "Beautify Org Checkbox Symbol"
-  (push '("[ ]" .  "☐") prettify-symbols-alist)
-  (push '("[X]" . "☑" ) prettify-symbols-alist)
-  (push '("[-]" . "❍" ) prettify-symbols-alist)
-  (push '("->"  . "→" ) prettify-symbols-alist)
-  (prettify-symbols-mode)))
-#+END_SRC
-
-Strikethrough checkbox.
-#+BEGIN_SRC elisp
-(defface org-checkbox-done-text
-  '((t (:strike-through t)))
-  "Face for the text part of a checked org-mode checkbox.")
-
-(font-lock-add-keywords
- 'org-mode
- `(("^[ \t]*\\(?:[-+*]\\|[0-9]+[).]\\)[ \t]+\\(\\(?:\\[@\\(?:start:\\)?[0-9]+\\][ \t]*\\)?\\[\\(?:X\\|\\([0-9]+\\)/\\2\\)\\][^\n]*\n\\)"
-    1 'org-checkbox-done-text prepend))
- 'append)
-#+END_SRC
-
 *** Keywords
 #+BEGIN_SRC elisp
 (setq
