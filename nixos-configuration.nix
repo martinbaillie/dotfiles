@@ -72,7 +72,7 @@
       ntfs3g
       openssl
       patchelf
-      protonvpn-cli-ng
+      protonvpn-cli
       sshfs
       zlib
     ];
