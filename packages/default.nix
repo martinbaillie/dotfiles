@@ -29,21 +29,11 @@ let
       };
     };
 in rec {
-  # My custom Emacs 28 builds for macOS and NixOS (+Wayland).
-  Emacs = emacsGit.overrideAttrs (old: rec {
-    name = "emacs-git-${version}";
-    version = "20200706.0";
-
-    src = fetchFromGitHub {
-      owner = "emacs-mirror";
-      repo = "emacs";
-      rev = "1a99697b4d8c11a10d5e6a306103740d92cc08a1"; # 06/08/20
-      sha256 = "1n92fbn9y0bcc08rss8jyv4m3wkww7gglg6p49gz0k05rj6yxmbv";
-    };
-
+  # My custom Emacs 28 native comp builds for macOS and NixOS (+Wayland).
+  Emacs = emacsGcc.overrideAttrs (old: rec {
     # Work laptop OS version is still pinned to Mojave but these headers are
     # present in userspace.
-    preConfigure = old.preConfigure + optionalString isDarwin ''
+    preConfigure = optionalString isDarwin ''
       export ac_cv_func_aligned_alloc=no
     '';
 
