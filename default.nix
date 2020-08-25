@@ -27,9 +27,13 @@ in {
       "cachix.cachix.org-1:eWNHQldwUO7G2VkjpnjDbWwy4KQ/HNxht7H4SSoMckM=";
     martinbaillie = mkCache "https://martinbaillie.cachix.org"
       "martinbaillie.cachix.org-1:nHT0c4/+UFDToxIVA6UoayUiNfaUA1SqFvZHeiYHVpo=";
+    r-ryantm = mkCache "https://r-ryantm.cachix.org"
+      "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c=";
+    nix-community = mkCache "https://nix-community.cachix.org"
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=";
     hercules-ci = mkCache "https://hercules-ci.cachix.org"
       "hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0=";
-    all = [ cache cachix martinbaillie hercules-ci ];
+    all = [ cache cachix martinbaillie r-ryantm nix-community hercules-ci ];
   in {
     # Trusted binary caches.
     binaryCaches = map (x: x.url) all;

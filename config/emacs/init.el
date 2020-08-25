@@ -1,5 +1,7 @@
 (when (and noninteractive IS-LINUX)
-  (add-to-list 'doom-env-blacklist "SWAYSOCK"))
+  (add-to-list 'doom-env-blacklist "^SWAYSOCK$"))
+(when (and noninteractive IS-MAC)
+  (add-to-list 'doom-env-whitelist "^SSH_"))
 
 (doom! :input
        :completion

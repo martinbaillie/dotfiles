@@ -1,7 +1,8 @@
 { lib, pkgs, config, ... }:
 let
   inherit (lib) mkMerge mkIf;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; }) isLinux;
+  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
+    isLinux isDarwin;
 in mkMerge [
   {
     my = {
@@ -41,6 +42,11 @@ in mkMerge [
           };
         };
       };
+
+      # Tridactyl
+      packages = [ pkgs.tridactyl-native ];
+      home.xdg.configFile."tridactyl/tridactylrc".source =
+        <config/firefox/tridactylrc>;
     };
   }
   (mkIf isLinux {
@@ -60,6 +66,20 @@ in mkMerge [
         "x-scheme-handler/http" = [ "firefox.desktop" ];
         "x-scheme-handler/https" = [ "firefox.desktop" ];
       };
+
+      # REVIEW: home-manager support.
+      home.xdg.dataFile."mozilla/native-messaging-hosts" = {
+        source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+        recursive = true;
+      };
     };
+  })
+  (mkIf isDarwin {
+    # REVIEW: home-manager support.
+    my.home.home.file."Library/Application Support/Mozilla/NativeMessagingHosts" =
+      {
+        source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+        recursive = true;
+      };
   })
 ]

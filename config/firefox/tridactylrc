@@ -1,0 +1,17 @@
+" Plain old, new tabs.
+set newtab about:blank
+
+" Make Tridactyl work on more sites at the expense of some CSP.
+set csp clobber
+fixamo_quiet
+
+" Theming.
+set theme dark
+
+" Use Emacs as my external editor.
+set editorcmd emacsclient -F '((name . "Tridactyl"))' -c
+
+" Scroll smoothly and slowly.
+set smoothscroll true
+bind j scrollline 5
+bind k scrollline -5
