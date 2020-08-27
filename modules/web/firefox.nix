@@ -45,8 +45,40 @@ in mkMerge [
 
       # Tridactyl
       packages = [ pkgs.tridactyl-native ];
-      home.xdg.configFile."tridactyl/tridactylrc".source =
-        <config/firefox/tridactylrc>;
+
+      home.xdg.configFile = {
+        "tridactyl/tridactylrc".text = let
+          # Use Emacs for long-form Firefox text area edits.
+          #
+          # On Linux, just create a new frame but with a name of 'Tridactyl' so I
+          # can tell my tiling window manager du-jour to target and overlay it as
+          # a central floating window above the Firefox window.
+          #
+          # On macOS, just use regular emacsclient but from a zsh context to
+          # ensure correct envirionment and upon success, re-pop to Firefox.
+          emacsclientTridactyl = pkgs.writeScriptBin "emacsclient-tridactyl"
+            (if isLinux then ''
+              emacsclient -q -F '((name . "Tridactyl"))' -c $@
+            '' else ''
+              #!${pkgs.zsh}/bin/zsh
+              emacsclient -q $@ && osascript -e 'tell application "Firefox" to activate'
+            '');
+        in builtins.readFile <config/firefox/tridactylrc> + ''
+
+          " Set a custom colour theme.
+          colourscheme ${config.theme.tridactyl}
+
+          " Emacs as my external editor.
+          set editorcmd ${emacsclientTridactyl}/bin/emacsclient-tridactyl
+        '';
+
+        # Base16 colour schemes for Tridactyl.
+        "tridactyl/themes" = {
+          source =
+            builtins.fetchGit "https://github.com/bezmi/base16-tridactyl.git";
+          recursive = true;
+        };
+      };
     };
   }
   (mkIf isLinux {

@@ -3,6 +3,7 @@ with lib; {
   options.theme = {
     wallpaper = mkOption { type = with types; nullOr (either str path); };
     icons = mkOption { type = with types; nullOr (either str path); };
+    tridactyl = mkOption { type = types.str; };
     colours = {
       bg = mkOption { type = types.str; };
       bgalt = mkOption { type = types.str; };

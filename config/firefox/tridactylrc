@@ -1,17 +1,61 @@
+" Vim-like behaviour. Removing a line from here makes the setting disappear.
+sanitise tridactyllocal tridactylsync
+
 " Plain old, new tabs.
 set newtab about:blank
 
-" Make Tridactyl work on more sites at the expense of some CSP.
-set csp clobber
+" Slack unread and thread shortcuts.
+bind gsu composite js document.getElementsByClassName("p-channel_sidebar__link--unread")[0].click()
+bind gst composite js document.getElementsByClassName("p-channel_sidebar__link--all-threads")[0].click()
+
+" Make Tridactyl work on more sites at the expense of some security.
+jsb browser.webRequest.onHeadersReceived.addListener(tri.request.clobberCSP,{urls:["<all_urls>"],types:["main_frame"]},["blocking","responseHeaders"])
+command fixamo_quiet jsb tri.excmds.setpref("privacy.resistFingerprinting.block_mozAddonManager", "true").then(tri.excmds.setpref("extensions.webextensions.restrictedDomains", '""'))
+command fixamo js tri.excmds.setpref("privacy.resistFingerprinting.block_mozAddonManager", "true").then(tri.excmds.setpref("extensions.webextensions.restrictedDomains", '""').then(tri.excmds.fillcmdline_tmp(3000, "Permissions added to user.js. Please restart Firefox to make them take affect.")))
 fixamo_quiet
 
-" Theming.
-set theme dark
+" Defaults to 300ms.
+set hintdelay 100
 
-" Use Emacs as my external editor.
-set editorcmd emacsclient -F '((name . "Tridactyl"))' -c
+" Lowercase makes more sense to me.
+set hintuppercase false
+
+" Allow for hint refinement.
+set hintfiltermode vimperator-reflow
+
+" Vim-styled page search
+unbind <C-f>
+bind / fillcmdline find
+bind ? fillcmdline find -?
+bind n findnext 1
+bind N findnext -1
+bind <Escape> composite mode normal ; hidecmdline ; nohlsearch
+set incsearch true
+
+" Allow Ctrl-a to select all in the commandline.
+unbind --mode=ex <C-a>
+
+" Allow Ctrl-c to copy in the commandline.
+unbind --mode=ex <C-c>
+
+" Move up and down using C-j/k in the commandline.
+bind --mode=ex <C-k> ex.prev_completion
+bind --mode=ex <C-j> ex.next_completion
+
+" Easier full-ignore mode for macOS
+bind <C-]> mode ignore
+
+" Only hint search results on Google and DDG
+bindurl www.google.com f hint -Jc .rc > .r > a
+bindurl www.google.com F hint -Jbc .rc>.r>a
+bindurl ^https://duckduckgo.com f hint -Jc [class=result__a]
+bindurl ^https://duckduckgo.com F hint -Jbc [class=result__a]
 
 " Scroll smoothly and slowly.
 set smoothscroll true
 bind j scrollline 5
 bind k scrollline -5
+
+" Use scroll keys similar to Vimium.
+bind d scrollline 15
+bind u scrollline -15

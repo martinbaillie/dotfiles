@@ -16,7 +16,6 @@
 - [[#keyslinux][Keys/Linux]]
 - [[#keysmacos][Keys/macOS]]
 - [[#package-customisation][Package Customisation]]
-  - [[#edit-server][edit-server]]
   - [[#org][org]]
   - [[#projectile][projectile]]
   - [[#deadgrep][deadgrep]]
@@ -69,8 +68,7 @@
 (package! org-fancy-priorities)
 (package! org-trello)
 (package! edit-indirect)
-(package! edit-server)
-(package! edit-server-htmlize)
+(package! vimrc-mode)
 (package! pinentry)
 (package! deadgrep)
 (package! ripgrep)
@@ -200,6 +198,14 @@ Load current theme.
   (setq doom-modeline-buffer-encoding nil)
   )
 #+END_SRC
+
+*** Default modes
+#+BEGIN_SRC elisp
+(add-to-list 'auto-mode-alist '(".*\\.txt" . indented-text-mode))
+(add-to-list 'auto-mode-alist '("github\\.com_.*\\.txt" . gfm-mode))
+(add-to-list 'auto-mode-alist '("tridactyl\\(rc\\)?\\'" . vimrc-mode))
+#+END_SRC
+
 * UI/macOS
 *** Source a clean shell environment
 #+BEGIN_SRC elisp
@@ -332,25 +338,6 @@ Motion training.
 #+END_SRC
 
 * Package Customisation
-** edit-server
-#+BEGIN_SRC elisp
-(use-package! edit-server
-  :config
-  (edit-server-start)
-  (setq edit-server-default-major-mode 'indented-text-mode
-        edit-server-url-major-mode-alist '(("github\\.com" . markdown-mode))
-        edit-server-htmlize-url-regexp (mapconcat
-                                        (lambda(s) (concat "^" (regexp-quote s)))
-                                        '( "app.slack.com"
-                                           "mail.google.com/mail/") "\\|"))
-  (autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize"
-    "edit-server-htmlize" t)
-  (autoload 'edit-server-maybe-htmlize-buffer "edit-server-htmlize"
-    "edit-server-htmlize" t)
-  (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
-  (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer))
-#+END_SRC
-
 ** org
 *** Scratch buffers
 #+BEGIN_SRC elisp

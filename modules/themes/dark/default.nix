@@ -11,6 +11,7 @@ in {
     {
       wallpaper = ./dj_nobu_dark.jpg;
       colours = import ./doom_dracula.nix;
+      tridactyl = "base16-dracula";
     }
 
     (mkIf isLinux {

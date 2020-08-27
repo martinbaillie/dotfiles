@@ -11,6 +11,7 @@ in {
     {
       wallpaper = ./dj_nobu_light.jpg;
       colours = import ./doom_solarized_light.nix;
+      tridactyl = "base16-solarized-light";
     }
 
     (mkIf isLinux { icons = "${pkgs.paper-icon-theme}/share/icons/Paper"; })
