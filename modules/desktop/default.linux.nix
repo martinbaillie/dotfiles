@@ -93,7 +93,7 @@ in {
         swayidle # Idle timeouts and triggers (screen locking, etc.).
         swaylock # Lock Wayland sessions.
         termite # Wayland-native terminal emulator.
-        waybar # Polybar-alike bar for Wayland.
+        stable.waybar # Polybar-alike bar for Wayland.
         waypipe # Network transparency for Wayland.
         wev # Wayland xev.
         wf-recorder # Wayland screen recorder.
@@ -245,6 +245,9 @@ in {
 
           # Idle inhibition.
           for_window [app_id="firefox"] inhibit_idle fullscreen
+
+          # Float Tridactyl windows.
+          for_window [title="Tridactyl"] floating enable
 
           # Show applications Xwayland or native Wayland status.
           for_window [shell=".*"] title_format "%title :: %shell"

@@ -42,14 +42,55 @@ unbind --mode=ex <C-c>
 bind --mode=ex <C-k> ex.prev_completion
 bind --mode=ex <C-j> ex.next_completion
 
-" Easier full-ignore mode for macOS
+" Easier full-ignore mode for macOS.
 bind <C-]> mode ignore
+bind --mode=ignore <Escape> mode normal
 
-" Only hint search results on Google and DDG
+" Only hint search results on Google and DDG.
 bindurl www.google.com f hint -Jc .rc > .r > a
 bindurl www.google.com F hint -Jbc .rc>.r>a
 bindurl ^https://duckduckgo.com f hint -Jc [class=result__a]
 bindurl ^https://duckduckgo.com F hint -Jbc [class=result__a]
+
+" Disable all default searchurls.
+" See https://github.com/tridactyl/tridactyl/issues/2306#issuecomment-615798111
+jsb Object.keys(tri.config.get("searchurls")).reduce((prev, u) => prev.then(_ => tri.config.set("searchurls", u, null)), Promise.resolve())
+
+set searchurls.g https://www.google.com.au/search?q=%s
+set searchurls.ddg https://duckduckgo.com/html?q=%s
+set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
+set searchurls.gh https://github.com/search?q=%s
+set searchurls.no https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
+set searchurls.np https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
+set searchengine g
+
+" New reddit design is just fucking _terrible_.
+autocmd DocStart https://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
+
+" Gmail.
+unbindurl mail.google.com j " Next email
+unbindurl mail.google.com k " Previous email
+unbindurl mail.google.com e " Archive
+unbindurl mail.google.com u " Go back to list
+unbindurl mail.google.com c " Compose
+unbindurl mail.google.com x " Select conversation
+
+unbindurl mail.google.com ga " All email
+unbindurl mail.google.com gi " Inbox
+unbindurl mail.google.com gl " Labels
+unbindurl mail.google.com , " Focus toolbar
+
+unbindurl mail.google.com a " Reply All
+unbindurl mail.google.com r " Reply
+unbindurl mail.google.com m " Mute
+unbindurl mail.google.com f " Forward
+unbindurl mail.google.com y " Remove label
+unbindurl mail.google.com s " Star
+unbindurl mail.google.com - " Not important
+unbindurl mail.google.com + " Important
+
+unbindurl mail.google.com I " Mark as read
+unbindurl mail.google.com U " Mark as unread
 
 " Scroll smoothly and slowly.
 set smoothscroll true

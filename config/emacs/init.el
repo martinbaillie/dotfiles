@@ -20,7 +20,7 @@
        ophints           ; highlight the region an operation acts on
        (popup +all
               +defaults) ; tame sudden yet inevitable temporary windows
-       pretty-code       ; ligatures or substitute text with pretty symbols
+       (ligatures +extra); ligatures or substitute text with pretty symbols
        treemacs          ; a project drawer, like neotree but cooler
        vc-gutter         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB

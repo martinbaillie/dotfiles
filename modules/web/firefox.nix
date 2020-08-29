@@ -100,7 +100,7 @@ in mkMerge [
       };
 
       # REVIEW: home-manager support.
-      home.xdg.dataFile."mozilla/native-messaging-hosts" = {
+      home.home.file.".mozilla/native-messaging-hosts" = {
         source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
         recursive = true;
       };
