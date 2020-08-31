@@ -20,20 +20,3 @@ jobs:
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
     - name: Build
       run: make ci
-  macos_perf_test:
-    runs-on: macos-latest
-    steps:
-    - name: Disable syspolicy assessments
-      run: |
-        spctl --status
-        sudo spctl --master-disable
-    - uses: actions/checkout@v2
-    - name: Install Nix
-      uses: cachix/install-nix-action@v10
-    - name: Install Cachix
-      uses: cachix/cachix-action@v6
-      with:
-        name: martinbaillie
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-    - name: Build
-      run: make ci
