@@ -11,6 +11,7 @@ in mkMerge [
     # gpg --edit-key <id> RET trust RET 5
     # chown -R $(whoami) ~/.gnupg
     # find ~/.gnupg -type f -exec chmod 600 {} \;
+    # chmod 700 ~/.gnupg
     # find ~/.gnupg -type d -exec chmod 700 {} \;
 
     programs.gnupg.agent = {
