@@ -42,7 +42,8 @@ in {
   config.home-manager.users.${config.my.username} =
     mkAliasDefinitions options.my.home;
 
-  options.my.user = mkOption { type = types.submodule; };
+  options.my.user =
+    mkOption { type = options.users.users.type.functor.wrapped; };
   config.users.users.${config.my.username} = mkAliasDefinitions options.my.user;
 
   options.my.packages = mkOption {

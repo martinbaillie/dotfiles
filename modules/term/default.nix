@@ -89,6 +89,7 @@ in {
         lsof
         ncdu
         nmap
+        perl
         sqlite
         stunnel
         tmux
