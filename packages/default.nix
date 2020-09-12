@@ -30,7 +30,21 @@ let
     };
 in rec {
   # My custom Emacs 28 native comp builds for macOS and NixOS (+Wayland).
-  Emacs = emacsGcc.overrideAttrs (old: rec {
+  # Emacs = emacsGcc.overrideAttrs (old: rec {
+  #
+  # Native comp currently bust on macOS.
+  # REVIEW: https://github.com/NixOS/nixpkgs/pull/94637
+  Emacs = emacsGit.overrideAttrs (old: rec {
+    name = "emacs-git-${version}";
+    version = "20200706.0";
+
+    src = fetchFromGitHub {
+      owner = "emacs-mirror";
+      repo = "emacs";
+      rev = "1a99697b4d8c11a10d5e6a306103740d92cc08a1"; # 06/08/20
+      sha256 = "1n92fbn9y0bcc08rss8jyv4m3wkww7gglg6p49gz0k05rj6yxmbv";
+    };
+
     # Work laptop OS version is still pinned to Mojave but these headers are
     # present in userspace.
     preConfigure = optionalString isDarwin ''
@@ -72,13 +86,13 @@ in rec {
   # Predictable Firefox for Darwin, controllable with home-manager.
   Firefox = installApplication rec {
     name = "Firefox";
-    version = "79.0";
+    version = "80.0";
     sourceRoot = "${name}.app";
     src = pkgs.fetchurl {
       name = "Firefox-${version}.dmg";
       url =
         "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
-      sha256 = "0c24gf2dd4fnviimvv00fniamnmcpilxa34vam29k16zamwr0c1c";
+      sha256 = "1slxg3s2ywbs0mkcayk5b6nh9dw9jzwc4bswggv32zligmbh157n";
     };
     description =
       "Firefox, is a free and open-source web browser developed by the Mozilla Foundation";

@@ -22,6 +22,8 @@ in mkMerge [
               "privacy.userContext.enabled" = true;
               # Disable Pocket.
               "extensions.pocket.enabled" = false;
+              # Catch fat fingered quits.
+              "browser.sessionstore.warnOnQuit" = true;
               # Compact UI.
               "browser.uidensity" = 1;
               # Hide warnings when playing with config.

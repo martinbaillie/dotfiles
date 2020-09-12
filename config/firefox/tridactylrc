@@ -17,9 +17,6 @@ fixamo_quiet
 " Defaults to 300ms.
 set hintdelay 100
 
-" Lowercase makes more sense to me.
-set hintuppercase false
-
 " Allow for hint refinement.
 set hintfiltermode vimperator-reflow
 
@@ -46,26 +43,41 @@ bind --mode=ex <C-j> ex.next_completion
 bind <C-]> mode ignore
 bind --mode=ignore <Escape> mode normal
 
-" Only hint search results on Google and DDG.
-bindurl www.google.com f hint -Jc .rc > .r > a
-bindurl www.google.com F hint -Jbc .rc>.r>a
-bindurl ^https://duckduckgo.com f hint -Jc [class=result__a]
-bindurl ^https://duckduckgo.com F hint -Jbc [class=result__a]
-
 " Disable all default searchurls.
 " See https://github.com/tridactyl/tridactyl/issues/2306#issuecomment-615798111
+" TODO: this doesn't work anymore.
 jsb Object.keys(tri.config.get("searchurls")).reduce((prev, u) => prev.then(_ => tri.config.set("searchurls", u, null)), Promise.resolve())
-
-set searchurls.g https://www.google.com.au/search?q=%s
-set searchurls.ddg https://duckduckgo.com/html?q=%s
-set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
-set searchurls.gh https://github.com/search?q=%s
-set searchurls.no https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
-set searchurls.np https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
-set searchengine g
 
 " New reddit design is just fucking _terrible_.
 autocmd DocStart https://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
+
+" Make gu take you back to subreddit from comments
+bindurl reddit.com gu urlparent 3
+
+" Toggle comments on Reddit/HN.
+bind ;c hint -c [class*="expand"],[class="togg"]
+
+" Search engine and shortcuts.
+set searchengine g
+" General.
+set searchurls.g https://www.google.com.au/search?q=%s
+set searchurls.ddg https://duckduckgo.com/html?q=%s
+set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
+set searchurls.yt https://youtube.com/results?search_query=%s
+set searchurls.gh https://github.com/search?q=%s
+set searchurls.reddit https://old.reddit.com/r/%s
+" Nix.
+set searchurls.nixopt https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
+set searchurls.nixpkg https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
+" Rust.
+set searchurls.crate https://crates.io/search?q=%s
+set searchurls.librs https://lib.rs/search?q=%s
+set searchurls.docsrs https://docs.rs/releases/search?query=%s
+set searchurls.rust https://doc.rust-lang.org/std/index.html?search=%s
+" Go.
+set searchurls.godev https://pkg.go.dev/search?q=%s
+set searchurls.godoc https://godoc.org/?q=%s
+set searchurls.gopkg https://golang.org/pkg/%s
 
 " Gmail.
 unbindurl mail.google.com j " Next email

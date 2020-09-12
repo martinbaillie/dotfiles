@@ -1,7 +1,7 @@
 { lib, pkgs, ... }: {
   my = {
     packages = with pkgs; [
-      awscli
+      awscli2
       dhall
       dhall-json
       haskellPackages.dhall-lsp-server

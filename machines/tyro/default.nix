@@ -50,7 +50,7 @@
   my = {
     username = config.my.secrets.work_username;
     email = config.my.secrets.work_email;
-    packages = [ pkgs.corectl ];
-    casks = [ "anki" ];
+    packages = [ ];
+    casks = [ "nosql-workbench-for-amazon-dynamodb" ];
   };
 }
