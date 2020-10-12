@@ -1,0 +1,11 @@
+# SSH over AWS SSM.
+# NOTE:
+# 0. Get an SSM session the normal way.
+# sudo su - ec2-user
+# 1. Get instance name:
+# curl -s http://169.254.169.254/latest/meta-data/instance-id
+# 2. Add an authorized keys:
+# echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFmeGhik8sx9aaK5mWsmPodEPFlAjYkPlIAgeAeY+E8" >> ~/.ssh/authorized_keys
+# 3. scp/ssh to ec2user@instance-name
+host i-* mi-*
+ProxyCommand sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"

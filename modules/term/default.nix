@@ -22,6 +22,7 @@ in {
       home = {
         home = {
           file = {
+            ".ssh/config".source = <config/ssh/config>;
             ".ssh/id_rsa".text = config.my.secrets.id_rsa;
             ".ssh/id_rsa.pub".source = <config/ssh/id_rsa.pub>;
             ".ssh/id_ed25519".text = config.my.secrets.id_ed25519;
