@@ -2,7 +2,6 @@
 #+AUTHOR: Martin Baillie
 #+EMAIL: martin@baillie.email
 #+LANGUAGE: en
-#+STARTUP: inlineimages
 #+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
 
 * Table of Contents :TOC_2_gh:
@@ -32,7 +31,6 @@
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
-  - [[#undotree][undotree]]
   - [[#move-text][move-text]]
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
@@ -98,7 +96,8 @@ Various forks and packages of my own.
 
 *** Welcome screen
 #+BEGIN_SRC elisp
-(setq +doom-dashboard-banner-file (expand-file-name "logo.png" doom-private-dir))
+(setq +doom-dashboard-banner-file
+      (expand-file-name "logo.png" doom-private-dir))
 #+END_SRC
 
 *** Font
@@ -352,7 +351,7 @@ Motion training.
 
 *** Fold all on startup
 #+BEGIN_SRC elisp
-(setq org-startup-folded 'fold)
+(setq org-startup-folded 'content)
 #+END_SRC
 
 *** Capture templates
@@ -555,9 +554,7 @@ Oh gees.
 (use-package! nyan-mode
   :after doom-modeline
   :init
-  (setq
-    nyan-bar-length 20
-    )
+  (setq nyan-bar-length 20)
    (nyan-mode)
   )
 #+END_SRC
@@ -697,25 +694,6 @@ Evil frame movements.
 *** Keys
 #+BEGIN_SRC elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
-#+END_SRC
-
-** undotree
-*** Finer Undo
-#+BEGIN_SRC elisp
-(setq undo-limit 80000000
-      evil-want-fine-undo t)
-#+END_SRC
-
-*** Keys
-Add common Vimisms to undotree mode.
-#+BEGIN_SRC elisp
-(map!
- :nvi "C-z" #'undo-tree-undo
- :nvi "C-y" #'undo-tree-redo
- :nvi "C-s" #'save-buffer
- :n "u" #'undo-tree-undo
- :n "U" #'undo-tree-redo
- )
 #+END_SRC
 
 ** move-text
