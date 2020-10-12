@@ -16,12 +16,17 @@ in mkMerge [
             settings = {
               # I'll manage the updates thanks.
               "app.update.auto" = false;
+              "app.update.service.enabled" = false;
+              "app.update.download.promptMaxAttempts" = 0;
+              "app.update.elevation.promptMaxAttempts" = 0;
               # Privacy and fingerprinting.
               "privacy.trackingprotection.enabled" = true;
               "privacy.trackingprotection.socialtracking.enabled" = true;
               "privacy.userContext.enabled" = true;
               # Disable Pocket.
               "extensions.pocket.enabled" = false;
+              # Recently used order for tab cycles.
+              "browser.ctrlTab.recentlyUsedOrder" = true;
               # Catch fat fingered quits.
               "browser.sessionstore.warnOnQuit" = true;
               # Compact UI.

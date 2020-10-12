@@ -29,6 +29,9 @@ bind N findnext -1
 bind <Escape> composite mode normal ; hidecmdline ; nohlsearch
 set incsearch true
 
+" Lowercase makes more sense to me.
+set hintuppercase false
+
 " Allow Ctrl-a to select all in the commandline.
 unbind --mode=ex <C-a>
 
@@ -44,9 +47,25 @@ bind <C-]> mode ignore
 bind --mode=ignore <Escape> mode normal
 
 " Disable all default searchurls.
-" See https://github.com/tridactyl/tridactyl/issues/2306#issuecomment-615798111
-" TODO: this doesn't work anymore.
-jsb Object.keys(tri.config.get("searchurls")).reduce((prev, u) => prev.then(_ => tri.config.set("searchurls", u, null)), Promise.resolve())
+setnull searchurls.amazon
+setnull searchurls.amazonuk
+setnull searchurls.bing
+setnull searchurls.cnrtl
+setnull searchurls.duckduckgo
+setnull searchurls.gentoo_wiki
+setnull searchurls.github
+setnull searchurls.google
+setnull searchurls.googlelucky
+setnull searchurls.googleuk
+setnull searchurls.mdn
+setnull searchurls.osm
+setnull searchurls.qwant
+setnull searchurls.scholar
+setnull searchurls.searx
+setnull searchurls.startpage
+setnull searchurls.twitter
+setnull searchurls.wikipedia
+setnull searchurls.yahoo
 
 " New reddit design is just fucking _terrible_.
 autocmd DocStart https://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
@@ -71,9 +90,10 @@ set searchurls.nixopt https://search.nixos.org/options?from=0&size=15&sort=relev
 set searchurls.nixpkg https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
 " Rust.
 set searchurls.crate https://crates.io/search?q=%s
+set searchurls.crates https://crates.io/search?q=%s
+set searchurls.cargo https://crates.io/search?q=%s
 set searchurls.librs https://lib.rs/search?q=%s
 set searchurls.docsrs https://docs.rs/releases/search?query=%s
-set searchurls.rust https://doc.rust-lang.org/std/index.html?search=%s
 " Go.
 set searchurls.godev https://pkg.go.dev/search?q=%s
 set searchurls.godoc https://godoc.org/?q=%s
@@ -106,9 +126,9 @@ unbindurl mail.google.com U " Mark as unread
 
 " Scroll smoothly and slowly.
 set smoothscroll true
-bind j scrollline 5
-bind k scrollline -5
+bind j scrollline 3
+bind k scrollline -3
 
 " Use scroll keys similar to Vimium.
-bind d scrollline 15
-bind u scrollline -15
+bind d scrollline 10
+bind u scrollline -10
