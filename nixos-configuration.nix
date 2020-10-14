@@ -74,6 +74,7 @@
       patchelf
       protonvpn-cli
       sshfs
+      tailscale
       zlib
     ];
   };

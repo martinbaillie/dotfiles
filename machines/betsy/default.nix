@@ -210,5 +210,5 @@
       rev = "14ddc3382c268aca9547d173f00562cedb485f7b";
     }))
   ];
-  my.packages = with pkgs; [ corectl ];
+  my.packages = with pkgs; [ ];
 }
