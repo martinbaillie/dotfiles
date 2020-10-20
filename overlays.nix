@@ -36,6 +36,10 @@
   (import (builtins.fetchTarball # 5/08/20
     "https://github.com/nix-community/emacs-overlay/archive/7a3098df25f1a873798227cf120e970acf546f52.tar.gz"))
 
+  # Emacs overlay (mjlbach's native-comp + pgtk builds).
+  (import (builtins.fetchTarball
+    "https://github.com/mjlbach/emacs-pgtk-nativecomp-overlay/archive/master.tar.gz"))
+
   # Mozilla overlay for Rust.
   (import (builtins.fetchTarball # 17/07/20
     "https://github.com/mozilla/nixpkgs-mozilla/archive/efda5b357451dbb0431f983cca679ae3cd9b9829.tar.gz"))

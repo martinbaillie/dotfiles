@@ -4,10 +4,9 @@ let
   inherit (lib) optionals optionalString mkMerge mkIf makeBinPath;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
-  myEmacs = if isDarwin then
-    my.Emacs
-  else
-    my.Emacs; # my.EmacsWayland (slow rendering on Sway...);
+  myEmacs = if isDarwin then emacsGcc else emacsGccPgtk;
+  # my.Emacs;
+  # my.EmacsWayland (slow rendering on Sway...);
 
   myEmacsClient = writeShellScriptBin "emacs.bash" (''
     ${myEmacs}/bin/emacsclient --no-wait --eval \
