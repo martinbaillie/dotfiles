@@ -208,6 +208,10 @@ ifeq ($(SYSTEM),Linux)
 		$(ZDOTDIR)/theme.zsh
 endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
+ifeq ($(SYSTEM),Darwin)
+	echo "(add-to-list 'default-frame-alist '(ns-appearance . dark))" \
+		>>$(XDG_CONFIG_HOME)/doom/+theme.el
+endif
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
 		-e "(doom/reload-theme)" &>/dev/null
 .PHONY: dark
