@@ -4,7 +4,13 @@ let
   inherit (lib) optionals optionalString mkMerge mkIf makeBinPath;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isLinux isDarwin;
-  myEmacs = if isDarwin then emacsGcc else emacsGccPgtk;
+  myEmacs = if isDarwin then
+  # Emacs Darwin (Sierra/Mojave) native-comp builds.
+    (import (builtins.fetchTarball
+      "https://github.com/twlz0ne/nix-gccemacs-sierra/archive/7f7b0af6a187ed4d7f9ae5310c8d12a63d1b92f3.tar.gz")).emacsGccSierra
+  else
+  # Emacs Linux overlay from mjlbach providing native-comp + pgtk builds.
+    emacsGccPgtk;
   # my.Emacs;
   # my.EmacsWayland (slow rendering on Sway...);
 
