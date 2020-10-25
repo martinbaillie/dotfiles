@@ -86,13 +86,13 @@ in rec {
   # Predictable Firefox for Darwin, controllable with home-manager.
   Firefox = installApplication rec {
     name = "Firefox";
-    version = "80.0";
+    version = "82.0";
     sourceRoot = "${name}.app";
     src = pkgs.fetchurl {
       name = "Firefox-${version}.dmg";
       url =
         "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/en-GB/Firefox%20${version}.dmg";
-      sha256 = "1slxg3s2ywbs0mkcayk5b6nh9dw9jzwc4bswggv32zligmbh157n";
+      sha256 = "0hrhwzj2fhashariy7c8xyq4fz08zpxmmi8lk74zxkj7qhlba5mr";
     };
     description =
       "Firefox, is a free and open-source web browser developed by the Mozilla Foundation";
