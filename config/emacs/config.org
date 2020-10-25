@@ -75,6 +75,7 @@
 (package! buffer-expose)
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
+(package! command-log-mode)
 #+END_SRC
 
 ** Mine
@@ -862,7 +863,10 @@ Allow stop scroll term sequence.
 
 *** Prompt Outlines
 #+BEGIN_SRC elisp
-(setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
+;; Old dir + Lambda based prompt:
+;; (setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
+;; New uber minimal prompt:
+(setq-hook! 'vterm-mode-hook outline-regexp "^; .*")
 #+END_SRC
 
 *** Copy mode
