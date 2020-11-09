@@ -81,7 +81,10 @@ in {
         fzy
         gawk
         gettext
+        gnumake
         gnuplot
+        gnused
+        gron
         htop
         inetutils
         jq
@@ -97,6 +100,7 @@ in {
         tree
         unzip
         wget
+        wireshark
         xar
         yq-go
         zip

@@ -17,6 +17,7 @@
 - [[#package-customisation][Package Customisation]]
   - [[#org][org]]
   - [[#projectile][projectile]]
+  - [[#direnv][direnv]]
   - [[#deadgrep][deadgrep]]
   - [[#format-all][format-all]]
   - [[#company][company]]
@@ -99,6 +100,7 @@ Various forks and packages of my own.
 #+BEGIN_SRC elisp
 (setq +doom-dashboard-banner-file
       (expand-file-name "logo.png" doom-private-dir))
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 #+END_SRC
 
 *** Font
@@ -340,6 +342,7 @@ Motion training.
 *** Scratch buffers
 #+BEGIN_SRC elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)
+(setq doom-scratch-initial-major-mode 'org-mode)
 #+END_SRC
 
 *** Dropbox-based cache folder
@@ -462,7 +465,11 @@ Motion training.
 (projectile-add-known-project "/etc/dotfiles")
 (setq projectile-project-search-path '("~/Code/work" "~/Code/personal" "~/Code/upstream"))
 #+END_SRC
-
+** direnv
+Silence annoying popup
+#+BEGIN_SRC elisp
+(setq direnv-always-show-summary nil)
+#+END_SRC
 ** deadgrep
 *** Load default bindings
 #+BEGIN_SRC elisp
@@ -977,3 +984,4 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+END_SRC
+

@@ -3,5 +3,13 @@
     inherit (lib.systems.elaborate { system = builtins.currentSystem; })
       isLinux;
   in if isLinux then [ ./default.linux.nix ] else [ ./default.darwin.nix ];
-  my.packages = with pkgs; [ gnumake cmake nixfmt rnix-lsp niv ];
+  my.packages = with pkgs; [
+    cmake
+    gnumake
+    niv
+    nixfmt
+    rnix-lsp
+    shfmt
+    stable.shellcheck
+  ];
 }

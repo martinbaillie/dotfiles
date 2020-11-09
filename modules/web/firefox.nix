@@ -44,6 +44,9 @@ in mkMerge [
               # Don't save passwords or try to fill forms.
               "signon.rememberSignons" = false;
               "signon.autofillForms" = false;
+              # Tell Firefox not to trust fake Enterprise-injected certificates.
+              "security.enterprise_roots.auto-enabled" = false;
+              "security.enterprise_roots.enabled" = false;
             };
             userChrome = builtins.readFile <config/firefox/userChrome.css>;
           };
