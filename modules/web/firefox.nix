@@ -19,6 +19,9 @@ in mkMerge [
               "app.update.service.enabled" = false;
               "app.update.download.promptMaxAttempts" = 0;
               "app.update.elevation.promptMaxAttempts" = 0;
+              # HTTPs only.
+              "dom.security.https_only_mode" = true;
+              "dom.security.https_only_mode_ever_enabled" = true;
               # Privacy and fingerprinting.
               "privacy.trackingprotection.enabled" = true;
               "privacy.trackingprotection.socialtracking.enabled" = true;
