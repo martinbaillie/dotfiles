@@ -22,6 +22,7 @@
   - [[#format-all][format-all]]
   - [[#company][company]]
   - [[#go][go]]
+  - [[#python][python]]
   - [[#nyanmode][nyanmode]]
   - [[#avy][avy]]
   - [[#magit][magit]]
@@ -77,6 +78,7 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 (package! command-log-mode)
+(unpin! vterm)
 #+END_SRC
 
 ** Mine
@@ -552,6 +554,13 @@ Silence annoying popup
 (map! :map go-mode-map
       :nv "K"  #'lsp-describe-thing-at-point
       )
+#+END_SRC
+** python
+Locate the preferred language server.
+#+BEGIN_SRC elisp
+(after! lsp-python-ms
+  (setq lsp-python-ms-executable (executable-find "python-language-server"))
+  (set-lsp-priority! 'mspyls 1))
 #+END_SRC
 
 ** nyanmode

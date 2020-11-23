@@ -3,7 +3,7 @@
 
 [[file:/etc/dotfiles/config/emacs/config.org::*Keys][Keys]]
 ** [ ] TODO Check in on Nix flakes every now and then
-
+Good repo: https://github.com/chayward1/dotfiles
 Move to Nix flakes eventually
 ** [ ] TODO Move to home-manager session variables
 https://rycee.gitlab.io/home-manager/index.html#_why_are_the_session_variables_not_set
