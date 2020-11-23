@@ -96,6 +96,7 @@ in {
         perl
         sqlite
         stunnel
+        tcpdump
         tmux
         tree
         unzip
