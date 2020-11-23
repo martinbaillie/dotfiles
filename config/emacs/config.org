@@ -54,7 +54,7 @@
 * Personal
 #+BEGIN_SRC elisp
 (setq user-full-name "Martin Baillie"
-      user-mail-address "martin@baillie.email"
+      user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
 #+END_SRC
 
@@ -984,4 +984,3 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+END_SRC
-

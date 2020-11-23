@@ -17,7 +17,7 @@ in {
   # Personal.
   options.my.username = mkOptionStr "martin";
   options.my.fullname = mkOptionStr "Martin Baillie";
-  options.my.email = mkOptionStr "martin@baillie.email";
+  options.my.email = mkOptionStr "martin@baillie.id";
 
   # Secrets.
   options.my.secrets = {
@@ -34,6 +34,12 @@ in {
     work_email = mkSecret "$WORK email." "";
     protonvpn_username = mkSecret "ProtonVPN OpenVPN username." "";
     protonvpn_password = mkSecret "ProtonVPN OpenVPN password." "";
+    zuul_server_host = mkSecret "Zuul server host" "";
+    zuul_server_port = mkSecret "Zuul server port" "";
+    zuul_server_private_key = mkSecret "Zuul server private key" "";
+    zuul_server_public_key = mkSecret "Zuul server public key" "";
+    zuul_client_private_key = mkSecret "Zuul client private key" "";
+    zuul_client_public_key = mkSecret "Zuul client public key" "";
   };
 
   # Convenience aliases.
