@@ -14,9 +14,11 @@
         configFile."karabiner/karabiner.json".source =
           <config/karabiner/karabiner.json>;
 
-        # Write any configured casks to a Brewfile.
+        # Write any configured brews and casks to a Brewfile.
         configFile."homebrew/Brewfile" = {
-          text = let casks = map (v: ''cask "${v}"'') config.my.casks;
+          text = let
+            brews = map (v: ''brew "${v}"'') config.my.brews;
+            casks = map (v: ''cask "${v}"'') config.my.casks;
           in ''
             tap "homebrew/core"
             tap "homebrew/bundle"
@@ -24,6 +26,7 @@
             tap "homebrew/cask"
             tap "homebrew/cask-versions"
 
+            ${lib.concatStringsSep "\n" brews}
             ${lib.concatStringsSep "\n" casks}
           '';
           onChange = "brew bundle || true";

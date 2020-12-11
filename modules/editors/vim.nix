@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   my = {
-    packages = with pkgs; [ stable.neovim ];
+    packages = with pkgs; [ neovim ];
     env.VIMINIT = "let \\$RC='\\$XDG_CONFIG_HOME/nvim/init.vim'|source \\$RC";
     home.xdg.configFile = {
       "nvim/init.vim".text = ''

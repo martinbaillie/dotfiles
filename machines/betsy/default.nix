@@ -31,6 +31,7 @@
     <modules/term/direnv.nix>
     <modules/term/git.nix>
     <modules/term/gnupg.nix>
+    <modules/term/ssh.nix>
     <modules/term/zsh.nix>
 
     <modules/web/chrome.nix>
@@ -155,51 +156,14 @@
   # Fix Intel CPU throttling affecting ThinkPads.
   services.throttled.enable = true;
 
-  # Fingerprint daemon and PAM module for reader handling.
-  # NOTE: Currently broken upstream for Betsy.
-  services.fprintd = {
+  # Blue light filtering.
+  # TODO: Not on VMWare VM.
+  services.redshift = {
     enable = true;
-    # package = pkgs.fprintd-thinkpad;
-  };
-
-  security.pam.services = {
-    login.fprintAuth = true;
-    su.fprintAuth = true;
-    sudo.fprintAuth = true;
-    "system-local-login".fprintAuth = true;
-  };
-
-  # Other system-level services and software.
-  # Docker.
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-  };
-
-  # Dropbox.
-  # NOTE: (NixOS) run a one-off `dropbox start` to configure in the browser.
-  systemd.user.services.dropbox = {
-    description = "Dropbox";
-    wantedBy = [ "graphical-session.target" ];
-    environment = {
-      QT_PLUGIN_PATH = "/run/current-system/sw/"
-        + pkgs.qt5.qtbase.qtPluginPrefix;
-      QML2_IMPORT_PATH = "/run/current-system/sw/"
-        + pkgs.qt5.qtbase.qtQmlPrefix;
+    temperature = {
+      day = 6500;
+      night = 2300;
     };
-    serviceConfig = {
-      ExecStart = "${pkgs.dropbox.out}/bin/dropbox";
-      ExecReload = "${pkgs.coreutils.out}/bin/kill -HUP $MAINPID";
-      KillMode = "control-group"; # upstream recommends process
-      Restart = "on-failure";
-      PrivateTmp = true;
-      ProtectSystem = "full";
-      Nice = 10;
-    };
-  };
-  networking.firewall = {
-    allowedTCPPorts = [ 17500 ];
-    allowedUDPPorts = [ 17500 ];
   };
 
   # Work.

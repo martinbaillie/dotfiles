@@ -2,9 +2,7 @@
   my = {
     packages = with pkgs; [
       awscli2
-      dhall
-      dhall-json
-      haskellPackages.dhall-lsp-server
+      ssm-session-manager-plugin
       terraform
       terraform-lsp
       vault

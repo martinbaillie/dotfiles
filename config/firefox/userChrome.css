@@ -29,22 +29,22 @@
 }
 /*** END Firefox 77 (June 2, 2020) Override URL bar enlargement ***/
 
-/* Ditch the buttons altogether */
-.titlebar-buttonbox-container {
-  display: none !important;
-}
+/* Ditch the macOS window buttons altogether */
+/* .titlebar-buttonbox-container { */
+/*   display: none !important; */
+/* } */
 
 /* No gaps for macOS window buttons */
-.titlebar-placeholder[type="pre-tabs"],
-.titlebar-placeholder[type="post-tabs"] {
-  display: none !important;
-  width: 1px !important;
-  max-width: 1px !important;
-}
+/* .titlebar-placeholder[type="pre-tabs"], */
+/* .titlebar-placeholder[type="post-tabs"] { */
+/*   display: none !important; */
+/*   width: 1px !important; */
+/*   max-width: 1px !important; */
+/* } */
 
-.titlebar-spacer[type="pre-tabs"],
-.titlebar-spacer[type="post-tabs"] {
-  display: none !important;
-  width: 1px !important;
-  max-width: 1px !important;
-}
+/* .titlebar-spacer[type="pre-tabs"], */
+/* .titlebar-spacer[type="post-tabs"] { */
+/*   display: none !important; */
+/*   width: 1px !important; */
+/*   max-width: 1px !important; */
+/* } */

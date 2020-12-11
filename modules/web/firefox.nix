@@ -10,7 +10,6 @@ in mkMerge [
 
       home.programs.firefox = {
         enable = true;
-        package = with pkgs; if isLinux then firefox-wayland else my.Firefox;
         profiles = {
           default = {
             settings = {
@@ -62,6 +61,8 @@ in mkMerge [
       home.xdg.configFile = {
         "tridactyl/tridactylrc".text = let
           # Use Emacs for long-form Firefox text area edits.
+          #
+          # TODO: Reconsider this plugin in lieu of `exwm-edit`.
           #
           # On Linux, just create a new frame but with a name of 'Tridactyl' so I
           # can tell my tiling window manager du-jour to target and overlay it as

@@ -77,7 +77,6 @@
        (org              ; organize your plain life in plain text
         +gnuplot
         +hugo
-        +jupyter
         +noter
         +pandoc
         +present
@@ -90,3 +89,7 @@
        :config
        literate
        (default +bindings +smartparens))
+
+;; FIXME: move by visual line
+;; https://github.com/hlissner/doom-emacs/issues/401
+(setq evil-respect-visual-line-mode t)

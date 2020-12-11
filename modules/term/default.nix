@@ -2,44 +2,20 @@
 with pkgs;
 with import <home-manager/modules/lib/dag.nix> { inherit lib; };
 let
-  inherit (lib) mkMerge mkIf concatMapStrings concatStringsSep mapAttrsToList;
+  inherit (lib) mkMerge mkIf mapAttrsToList concatStringsSep;
   inherit (lib.systems.elaborate { system = builtins.currentSystem; })
     isDarwin isLinux;
-  mkAuthorizedKeys = { runCommand }:
-    runCommand "authorized_keys" {
-      source = builtins.toFile "authorized_keys"
-        (concatMapStrings builtins.readFile [
-          <config/ssh/id_rsa.pub>
-          <config/ssh/id_ed25519.pub>
-        ]);
-    } ''
-      sed -s '$G' $source > $out
-    '';
   envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') config.my.env;
 in {
   my = mkMerge [
     {
       home = {
-        home = {
-          file = {
-            ".ssh/config".source = <config/ssh/config>;
-            ".ssh/id_rsa".text = config.my.secrets.id_rsa;
-            ".ssh/id_rsa.pub".source = <config/ssh/id_rsa.pub>;
-            ".ssh/id_ed25519".text = config.my.secrets.id_ed25519;
-            ".ssh/id_ed25519.pub".source = <config/ssh/id_ed25519.pub>;
-          };
-          activation.authorizedKeys = dagEntryAfter [ "writeBoundary" ] ''
-            install -D -m600 ${
-              callPackage mkAuthorizedKeys { }
-            } $HOME/.ssh/authorized_keys
-          '';
-        };
         xdg.configFile = {
           "zsh/rc.d/rc.fzy.zsh".source = <config/fzy/rc.zsh>;
           "zsh/rc.d/rc.fzf.zsh".source = <config/fzf/rc.zsh>;
           "zsh/rc.d/rc.term.zsh".text = ''
             alias mkdir='mkdir -p'
-            alias cat='bat -p'
+            # alias cat='bat -p'
             alias wget='wget -c'
             alias bc='bc -lq'
             alias rg='rg --hidden'
@@ -110,7 +86,7 @@ in {
         (ripgrep.override { withPCRE2 = true; })
       ];
     }
-    (mkIf isLinux { packages = [ psmisc ]; })
+    (mkIf isLinux { packages = [ psmisc kitty ]; })
     (mkIf isDarwin { packages = [ unixtools.watch pstree ]; })
   ];
 }

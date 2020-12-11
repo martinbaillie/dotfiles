@@ -86,10 +86,18 @@ in {
   '';
 
   # Darwin.
-  options.my.casks = mkOption {
-    type = with types; nullOr (listOf str);
-    description = ''
-      Homebrew casks to install on the macOS/Darwin system.
-    '';
+  options.my = {
+    brews = mkOption {
+      type = with types; nullOr (listOf str);
+      description = ''
+        Homebrew brews to install on the macOS/Darwin system.
+      '';
+    };
+    casks = mkOption {
+      type = with types; nullOr (listOf str);
+      description = ''
+        Homebrew casks to install on the macOS/Darwin system.
+      '';
+    };
   };
 }
