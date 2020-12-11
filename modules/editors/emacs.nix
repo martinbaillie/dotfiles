@@ -9,11 +9,7 @@ let
     (import (builtins.fetchTarball
       "https://github.com/twlz0ne/nix-gccemacs-sierra/archive/7f7b0af6a187ed4d7f9ae5310c8d12a63d1b92f3.tar.gz")).emacsGccSierra
   else
-  # Emacs Linux overlay from mjlbach providing native-comp + pgtk builds.
     emacsGcc;
-  # emacsGccPgtk;
-  # my.Emacs;
-  # my.EmacsWayland (slow rendering on Sway...);
 
   myEmacsClient = writeShellScriptBin "emacs.bash" (''
     ${myEmacs}/bin/emacsclient --no-wait --eval \
@@ -37,9 +33,10 @@ in mkMerge [
   {
     my = {
       packages = [
+        # Emacs itself.
+        ((emacsPackagesNgGen myEmacs).emacsWithPackages
+          (epkgs: with epkgs; [ vterm exwm emacsql emacsql-sqlite ]))
         myEmacsClient
-        ((emacsPackagesGen myEmacs).emacsWithPackages
-          (epkgs: (with epkgs.melpaPackages; [ vterm emacsql emacsql-sqlite ])))
 
         # Emacs external dependencies.
         discount
@@ -50,7 +47,7 @@ in mkMerge [
         zstd
 
         (hiPrio clang)
-      ] ++ optionals isLinux [ stable.wkhtmltopdf ];
+      ] ++ optionals isLinux [ wkhtmltopdf ];
 
       home.xdg.configFile = {
         "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;

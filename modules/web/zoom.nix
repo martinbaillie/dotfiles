@@ -5,7 +5,7 @@ let
     isLinux isDarwin;
 in {
   my = mkMerge [
-    (mkIf isDarwin { casks = [ "zoomus" ]; })
+    (mkIf isDarwin { casks = [ "zoom" ]; })
     (mkIf isLinux { packages = with pkgs; [ zoom-us ]; })
   ];
 }

@@ -10,6 +10,6 @@
     nixfmt
     rnix-lsp
     shfmt
-    stable.shellcheck
+    shellcheck
   ];
 }

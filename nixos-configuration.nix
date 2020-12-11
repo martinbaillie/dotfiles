@@ -11,7 +11,7 @@
   ] ++ (optional (pathExists hardware) hardware);
 
   # NixOS version.
-  system.stateVersion = "20.03";
+  system.stateVersion = "20.09";
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
 
@@ -61,7 +61,7 @@
 
   console = {
     keyMap = "us";
-    font = "Lat2-Terminus16";
+    # font = "Lat2-Terminus16";
   };
 
   # Default low-level system packages.
@@ -72,29 +72,27 @@
       ntfs3g
       openssl
       patchelf
-      protonvpn-cli
       sshfs
-      tailscale
       zlib
     ];
   };
 
-  # Keyboard.
-  services.interception-tools = {
-    enable = true;
+  # # Keyboard.
+  # services.interception-tools = {
+  #   enable = true;
 
-    # Keyboard modifications:
-    # 1. Use CAPS as CTRL when held; ESC when pressed alone.
-    udevmonConfig = ''
-      - JOB: "intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE"
-        DEVICE:
-          EVENTS:
-            EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-    '';
-  };
+  #   # Keyboard modifications:
+  #   # 1. Use CAPS as CTRL when held; ESC when pressed alone.
+  #   udevmonConfig = ''
+  #     - JOB: "intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE"
+  #       DEVICE:
+  #         EVENTS:
+  #           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+  #   '';
+  # };
 
   # Location, timezone and internationalisation.
-  location.provider = "geoclue2";
+  #location.provider = "geoclue2";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_AU.UTF-8";
 
@@ -111,17 +109,18 @@
     enable = true;
     forwardX11 = true;
     permitRootLogin = "no";
-    passwordAuthentication = false;
+    passwordAuthentication = true;
   };
-  services.tailscale.enable = true;
+  # services.tailscale.enable = true;
 
   # DBus.
   programs.dconf.enable = true;
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
+
   services.fwupd.enable = true;
 
   # Automounting and virtual filesystem.
-  services.gvfs.enable = true;
+  #services.gvfs.enable = true;
 
   my = {
     # Homedir.

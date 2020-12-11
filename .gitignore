@@ -1,6 +1,9 @@
 # Machines
 machines/*
+machines/parasite/packer_cache
+
 !machines/tyro
+!machines/parasite
 !machines/betsy
 !machines/aero
 !machines/ci
@@ -23,3 +26,7 @@ config/emacs/packages.el
 
 # QEMU VMs.
 **/*.qcow*
+
+# Vagrant boxes.
+**/*.box
+**/.vagrant

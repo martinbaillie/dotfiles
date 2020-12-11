@@ -5,10 +5,11 @@
   font-size: 14px;
   min-height: 0;
 }
+window.Virtual-1 * { font-size: 13px; }
 
 window#waybar {
   background: @bg@;
-  border-bottom: 2px solid @bgalt@;
+  border-bottom: 2px solid @bg@;
   color: @fg@;
 }
 

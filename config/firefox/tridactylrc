@@ -17,6 +17,9 @@ fixamo_quiet
 " Defaults to 300ms.
 set hintdelay 100
 
+" Hide modeindicator.
+set modeindicator false
+
 " Allow for hint refinement.
 set hintfiltermode vimperator-reflow
 

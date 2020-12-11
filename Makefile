@@ -63,7 +63,7 @@ NIX_BUILD 		:=nix-build $(FLAGS)
 
 # Nix channels.
 CH_NIXOS 			?="https://nixos.org/channels"
-CH_NIXOS_STABLE 	?="$(CH_NIXOS)/nixos-20.03"
+CH_NIXOS_STABLE 	?="$(CH_NIXOS)/nixos-20.09"
 CH_NIXOS_UNSTABLE 	?="$(CH_NIXOS)/nixos-unstable"
 CH_NIXOS_HARDWARE 	?="https://github.com/NixOS/nixos-hardware/archive"
 CH_NIX_DARWIN 	 	?="https://github.com/LnL7/nix-darwin/archive"
@@ -71,15 +71,15 @@ CH_HOME_MANAGER 	?="https://github.com/rycee/home-manager/archive"
 
 channels:
 ifeq ($(SYSTEM),Darwin)
-	nix-channel --add "$(CH_NIXOS_UNSTABLE)" nixpkgs
+	nix-channel --add "$(CH_NIXOS_STABLE)" nixpkgs
 	nix-channel --add "$(CH_NIX_DARWIN)/master.tar.gz" darwin
 endif
 ifeq ($(SYSTEM),Linux)
-	nix-channel --add "$(CH_NIXOS_UNSTABLE)" nixos
+	nix-channel --add "$(CH_NIXOS_STABLE)" nixos
 	nix-channel --add "$(CH_NIXOS_HARDWARE)/master.tar.gz" nixos-hardware
 endif
 	nix-channel --add "$(CH_HOME_MANAGER)/master.tar.gz" home-manager
-	nix-channel --add "$(CH_NIXOS_STABLE)" nixpkgs-stable
+	nix-channel --add "$(CH_NIXOS_UNSTABLE)" nixpkgs-unstable
 .PHONY: channels
 
 update:

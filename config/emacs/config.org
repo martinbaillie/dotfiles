@@ -1,6 +1,6 @@
 #+TITLE: My Literate Emacs Configuration
 #+AUTHOR: Martin Baillie
-#+EMAIL: martin@baillie.email
+#+EMAIL: martin@baillie.id
 #+LANGUAGE: en
 #+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
 
@@ -29,7 +29,6 @@
   - [[#kubectx][kubectx]]
   - [[#yaml][yaml]]
   - [[#terraform][terraform]]
-  - [[#dhall][dhall]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
@@ -37,6 +36,7 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#vterm][vterm]]
+  - [[#exwm][EXWM]]
 
 * [8/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
@@ -64,9 +64,7 @@
 #+BEGIN_SRC elisp :tangle packages.el
 (package! dap-mode)
 (package! nyan-mode)
-(package! dhall-mode)
 (package! org-fancy-priorities)
-(package! org-trello)
 (package! edit-indirect)
 (package! vimrc-mode)
 (package! pinentry)
@@ -78,7 +76,12 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 (package! command-log-mode)
-(unpin! vterm)
+
+;; EXWM related.
+;; (package! exwm-firefox-evil)
+;; (package! exwm-firefox-core)
+(package! exwm-edit)
+(package! transpose-frame)
 #+END_SRC
 
 ** Mine
@@ -107,12 +110,6 @@ Various forks and packages of my own.
 
 *** Font
 #+BEGIN_SRC elisp
-(when IS-LINUX
-  (setq
-   doom-font                     (font-spec :family "Iosevka" :size 15 :weight 'light)
-   doom-variable-pitch-font      (font-spec :family "Iosevka" :size 15)
-   )
-  )
 (when IS-MAC
   (setq
    doom-font                     (font-spec :family "Iosevka" :size 13 :weight 'light)
@@ -260,7 +257,12 @@ Miscellaneous.
 
  :vgni "s-x" #'execute-extended-command
  :vgni "s-," #'+ivy/switch-workspace-buffer
+ :vgni "s-/" #'ivy-switch-buffer
  :vgni "s-." #'+workspace/switch-to
+ :vgni "H-s-x" #'execute-extended-command
+ :vgni "H-s-," #'+ivy/switch-workspace-buffer
+ :vgni "H-s-/" #'ivy-switch-buffer
+ :vgni "H-s-." #'+workspace/switch-to
  )
 #+END_SRC
 
@@ -323,11 +325,14 @@ Motion training.
 #+BEGIN_SRC elisp
 (when IS-LINUX
   (map!
-    "s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
-    "s-v" #'yank
-    "s-f" #'counsel-grep-or-swiper
+   "s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
+   "s-v" #'yank
+   "s-f" #'counsel-grep-or-swiper
+   "H-s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
+   "H-s-v" #'yank
+   "H-s-f" #'counsel-grep-or-swiper
+   )
   )
-)
 #+END_SRC
 
 * Keys/macOS
@@ -645,14 +650,6 @@ Enable LSP for Terraform.
 (add-hook 'terraform-mode-hook #'lsp-deferred)
 #+END_SRC
 
-** dhall
-Mode configuration.
-#+BEGIN_SRC elisp
-(after! dhall-mode (setq dhall-use-header-line nil
-               dhall-format-at-save t))
-(add-hook 'dhall-mode-hook #'lsp-deferred)
-#+END_SRC
-
 ** pinentry
 *** Use Emacs pinentry on Linux
 #+BEGIN_SRC elisp
@@ -716,25 +713,17 @@ Evil frame movements.
 Add additional evil movements for text moves.
 #+BEGIN_SRC elisp
 (map! :m "M-j" #'move-text-down
-      :m "M-k" #'move-text-up
-      :m "s-j" #'move-text-down
-      :m "s-k" #'move-text-up
-      )
+      :m "M-k" #'move-text-up)
 #+END_SRC
 
 ** buffer-move
 *** Keys
 Add evil movements to buffer moves.
 #+BEGIN_SRC elisp
-(map! :m "s-J" #'buf-move-down
-      :m "s-K" #'buf-move-up
-      :m "s-H" #'buf-move-left
-      :m "s-L" #'buf-move-right
-      :m "M-J" #'buf-move-down
-      :m "M-K" #'buf-move-up
-      :m "M-H" #'buf-move-left
-      :m "M-L" #'buf-move-right
-      )
+(map! :vgni "M-J" #'buf-move-down
+      :vgni "M-K" #'buf-move-up
+      :vgni "M-H" #'buf-move-left
+      :vgni "M-L" #'buf-move-right)
 #+END_SRC
 
 ** buffer-expose
@@ -759,23 +748,21 @@ show per page, which defaults to
 `buffer-expose-max-num-windows'."
   (interactive "P")
   (buffer-expose-show-buffers
-   (projectile-project-buffers) max '("\\`[^vterm]")))
+   (projectile-project-buffers) max nil
+   (lambda (buffer)
+     (string-prefix-p "vterm: " (buffer-name buffer)))))
 #+END_SRC
 
 *** Keys
 Add evil movements to expose view.
 #+BEGIN_SRC elisp
-;; NOTE: backtab doesn't work
-;;(def-package! buffer-expose
-;;  :init (general-define-key
-;;         :keymaps 'buffer-expose-grid-map
-;;         "<backtab>" 'buffer-expose-prev-page
-;;         "h" 'buffer-expose-left-window
-;;         "k" 'buffer-expose-up-window
-;;         "j" 'buffer-expose-down-window
-;;         "l" 'buffer-expose-right-window
-;;         "m" 'buffer-expose-choose)
-;;  :config (buffer-expose-mode 1))
+;; TODO: Fix.
+;; (map!
+;;  (:map buffer-expose-grid-map
+;;   :vgni "h" 'buffer-expose-left-window
+;;   :vgni "k" 'buffer-expose-up-window
+;;   :vgni "j" 'buffer-expose-down-window
+;;   :vgni "l" 'buffer-expose-right-window))
 #+END_SRC
 
 Add expose functions to buffer commands.
@@ -783,8 +770,7 @@ Add expose functions to buffer commands.
 (map! :leader
       :desc "Expose buffers" "be" #'buffer-expose
       :desc "Expose workspace buffers" "bw" #'buffer-workspace-expose
-      :desc "Expose workspace vterm buffers" "bv" #'buffer-workspace-vterm-expose
-      )
+      :desc "Expose workspace vterm buffers" "bv" #'buffer-workspace-vterm-expose)
 #+END_SRC
 
 ** vterm
@@ -926,6 +912,7 @@ Miscellaneous vterm bindings.
 (map!
  ;; Pop new vterms.
  :vgni "s-;" #'+vterm/here
+ :vgni "H-s-;" #'+vterm/here
 
  (:map vterm-mode-map
 
@@ -937,6 +924,7 @@ Miscellaneous vterm bindings.
 
   ;; Fix shift-space vterm ';2u' artefact.
   :i "S-SPC" "SPC"
+  :i "H-S-SPC" "SPC"
 
   ;; Term sequences.
   :i "C-c" #'vterm-send-C-c
@@ -993,3 +981,9 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+END_SRC
+** EXWM
+Load my flavour of EXWM when in Linux.
+#+begin_src elisp
+(when IS-LINUX
+  (load! "+exwm"))
+#+end_src
