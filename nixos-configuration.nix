@@ -73,26 +73,12 @@
       openssl
       patchelf
       sshfs
+      usbutils
       zlib
     ];
   };
 
-  # # Keyboard.
-  # services.interception-tools = {
-  #   enable = true;
-
-  #   # Keyboard modifications:
-  #   # 1. Use CAPS as CTRL when held; ESC when pressed alone.
-  #   udevmonConfig = ''
-  #     - JOB: "intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE"
-  #       DEVICE:
-  #         EVENTS:
-  #           EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
-  #   '';
-  # };
-
   # Location, timezone and internationalisation.
-  #location.provider = "geoclue2";
   time.timeZone = "Australia/Sydney";
   i18n.defaultLocale = "en_AU.UTF-8";
 

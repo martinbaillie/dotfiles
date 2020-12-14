@@ -21,12 +21,16 @@
     };
   };
 
-  # EXWM
+  # EXWM.
   services.xserver = {
     enable = true;
     updateDbusEnvironment = true;
-    libinput.enable = true;
+    libinput = {
+      enable = true;
+      naturalScrolling = true;
+    };
     layout = "au";
+    xkbOptions = "altwin:swap_alt_win";
     enableCtrlAltBackspace = true;
 
     windowManager.session = lib.singleton {
