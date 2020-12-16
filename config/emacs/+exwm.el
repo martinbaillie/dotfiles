@@ -23,17 +23,18 @@
        "--auto")
       (if (string= resolution "2880x1800") ;; MacBook Retina.
           (write-region "Xft.dpi: 192\n" nil "~/.Xresources")
-        (delete-file "~/.Xresources"))
+        ;; TODO: System name.
+        (write-region "Xft.dpi: 130\n" nil "~/.Xresources"))
       (setq exwm-randr-workspace-monitor-plist
             (list 0 (match-string 1))))))
 
 (defun mb/setup-window-by-class ()
   (interactive)
   (pcase exwm-class-name
-    ;; Disabled as trialing a single workspace.
-    ;; ("Firefox"(exwm-workspace-move-window 2))
-    ;; ("Slack" (exwm-workspace-move-window 3))
-    ))
+    ("ROOT" (exwm-floating-toggle-floating))))
+;; Disabled as trialing a single workspace.
+;; ("Firefox"(exwm-workspace-move-window 2))
+;; ("Slack" (exwm-workspace-move-window 3))
 
 ;; Ensure `exwm' windows can be restored when switching workspaces.
 (defun mb/exwm-update-utf8-title (oldfun id &optional force)
@@ -243,17 +244,17 @@
 
   ;; TODO: Emacs desktop management for non-VM based NixOS.
   ;;
-  ;; (require 'desktop-environment)
-  ;; (desktop-environment-mode)
-  ;; (setq desktop-environment-brightness-set-command "light %s")
-  ;; (setq desktop-environment-brightness-normal-decrement "-U 10")
-  ;; (setq desktop-environment-brightness-small-decrement "-U 5")
-  ;; (setq desktop-environment-brightness-normal-increment "-A 10")
-  ;; (setq desktop-environment-brightness-small-increment "-A 5")
-  ;; (setq desktop-environment-brightness-get-command "light")
-  ;; (setq desktop-environment-brightness-get-regexp "\\([0-9]+\\)\\.[0-9]+")
-  ;; (setq desktop-environment-screenlock-command "loginctl lock-session")
-  ;; (setq desktop-environment-screenshot-command "flameshot gui")
+  (require 'desktop-environment)
+  (desktop-environment-mode)
+  (setq desktop-environment-brightness-set-command "light %s")
+  (setq desktop-environment-brightness-normal-decrement "-U 10")
+  (setq desktop-environment-brightness-small-decrement "-U 5")
+  (setq desktop-environment-brightness-normal-increment "-A 10")
+  (setq desktop-environment-brightness-small-increment "-A 5")
+  (setq desktop-environment-brightness-get-command "light")
+  (setq desktop-environment-brightness-get-regexp "\\([0-9]+\\)\\.[0-9]+")
+  (setq desktop-environment-screenlock-command "loginctl lock-session")
+  (setq desktop-environment-screenshot-command "flameshot gui")
 
   ;; TODO: Emacs notification mode? https://github.com/sinic/ednc
 

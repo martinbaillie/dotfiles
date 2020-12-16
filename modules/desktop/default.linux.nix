@@ -10,8 +10,6 @@
     fonts = with pkgs; [ iosevka noto-fonts emojione font-awesome ];
     fontconfig = {
       enable = true;
-      # hinting.autohint = true;
-      # hinting.enable = true;
       defaultFonts = {
         emoji = [ "Noto Color Emoji" "EmojiOne Color" ];
         monospace = [ "Iosevka" "Noto Sans Mono" ];
@@ -30,8 +28,8 @@
       naturalScrolling = true;
     };
     layout = "au";
-    # ONLY ON ThinkPad:
-    # xkbOptions = "altwin:swap_alt_win";
+    # TODO: Swap only on NixOS.
+    xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
     enableCtrlAltBackspace = true;
 
     windowManager.session = lib.singleton {
@@ -57,36 +55,21 @@
     };
   };
 
-  # Use a compositor.
-  services.picom.enable = true;
-
   # Hide the cursor when typing.
   services.xbanish.enable = true;
 
   my = {
-    # home.services.polybar = {
-    #   enable = true;
-    #   package = pkgs.polybar.override {
-    #     githubSupport = true;
-    #     pulseSupport = true;
-    #   };
-    #   config = {
-    #     "bar/bottom" = {
-    #       width = "100%";
-    #       height = "3%";
-    #       radius = 0;
-    #       modules-center = "date";
-    #     };
-    #     "module/date" = {
-    #       type = "internal/date";
-    #       internal = 5;
-    #       date = "%d.%m.%y";
-    #       time = "%H:%M";
-    #       label = "%time%  %date%";
-    #     };
-    #   };
-    #   script = "polybar bottom &";
-    # };
+    home.services = {
+      # Compositor.
+      picom.enable = true;
+      # Screenshotting.
+      flameshot.enable = true;
+      # Screen locking.
+      screen-locker = {
+        enable = true;
+        lockCmd = "${pkgs.i3lock-fancy}/bin/i3lock-fancy -p -t ''";
+      };
+    };
 
     packages = with pkgs; [
       alsaUtils

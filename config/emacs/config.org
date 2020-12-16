@@ -35,6 +35,7 @@
   - [[#move-text][move-text]]
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
+  - [[#golden-ratio][golden-ratio]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
 
@@ -82,6 +83,8 @@
 ;; (package! exwm-firefox-core)
 (package! exwm-edit)
 (package! transpose-frame)
+(package! desktop-environment)
+(package! golden-ratio)
 #+END_SRC
 
 ** Mine
@@ -785,7 +788,23 @@ Add expose functions to buffer commands.
       :desc "Expose workspace buffers" "bw" #'buffer-workspace-expose
       :desc "Expose workspace vterm buffers" "bv" #'buffer-workspace-vterm-expose)
 #+END_SRC
-
+** golden-ratio
+Automatically resize the viewable windows according to the golden ratio.
+#+begin_src elisp
+(use-package! golden-ratio
+  :config
+  (setq golden-ratio-extra-commands
+        (append golden-ratio-extra-commands
+                '(evil-window-left
+                  evil-window-right
+                  evil-window-up
+                  evil-window-down
+                  select-window-1
+                  select-window-2
+                  select-window-3
+                  select-window-4
+                  select-window-5))))
+#+end_src
 ** vterm
 Use system-wide vterm lib when compiling.
 #+BEGIN_SRC elisp
