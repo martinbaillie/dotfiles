@@ -80,8 +80,7 @@ ifeq ($(SYSTEM),Linux)
 	nix-channel --add "$(CH_NIXOS_HARDWARE)/master.tar.gz" nixos-hardware
 endif
 	nix-channel --add "$(CH_NIXOS_UNSTABLE)" nixpkgs-unstable
-	nix-channel --add "$(CH_HOME_MANAGER)/archive/release-$(NIXOS).tar.gz" \
-		home-manager
+	nix-channel --add "$(CH_HOME_MANAGER)/release-$(NIXOS).tar.gz" home-manager
 .PHONY: channels
 
 update:

@@ -196,8 +196,21 @@ Load current theme.
 *** Simpler modeline
 #+BEGIN_SRC elisp
 (after! doom-modeline
+  ;; Don't care about encoding.
   (setq doom-modeline-buffer-encoding nil)
-  )
+  ;; Or state.
+  (setq doom-modeline-buffer-state-icon nil)
+  ;; But I like file type icons.
+  (setq doom-modeline-major-mode-icon t)
+  ;; And GitHub notifications.
+  (setq doom-modeline-github t)
+  ;; Re-organise.
+  (doom-modeline-def-modeline 'main
+    '(bar workspace-name window-number buffer-info word-count
+          matches remote-host parrot modals buffer-position selection-info)
+    '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
+                  input-method indent-info buffer-encoding major-mode
+                  process vcs checker)))
 #+END_SRC
 
 *** Default modes

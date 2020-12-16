@@ -30,7 +30,8 @@
       naturalScrolling = true;
     };
     layout = "au";
-    xkbOptions = "altwin:swap_alt_win";
+    # ONLY ON ThinkPad:
+    # xkbOptions = "altwin:swap_alt_win";
     enableCtrlAltBackspace = true;
 
     windowManager.session = lib.singleton {
@@ -62,14 +63,40 @@
   # Hide the cursor when typing.
   services.xbanish.enable = true;
 
-  my.packages = with pkgs; [
-    alsaUtils
-    arandr
-    xorg.xdpyinfo
-    xorg.xev
-    xorg.xmodmap
-    lxqt.pavucontrol-qt
-  ];
+  my = {
+    # home.services.polybar = {
+    #   enable = true;
+    #   package = pkgs.polybar.override {
+    #     githubSupport = true;
+    #     pulseSupport = true;
+    #   };
+    #   config = {
+    #     "bar/bottom" = {
+    #       width = "100%";
+    #       height = "3%";
+    #       radius = 0;
+    #       modules-center = "date";
+    #     };
+    #     "module/date" = {
+    #       type = "internal/date";
+    #       internal = 5;
+    #       date = "%d.%m.%y";
+    #       time = "%H:%M";
+    #       label = "%time%  %date%";
+    #     };
+    #   };
+    #   script = "polybar bottom &";
+    # };
+
+    packages = with pkgs; [
+      alsaUtils
+      arandr
+      xorg.xdpyinfo
+      xorg.xev
+      xorg.xmodmap
+      lxqt.pavucontrol-qt
+    ];
+  };
 
   # Sway
   # TODO: Extract EXWM/Sway into modules when rewriting for flakes.

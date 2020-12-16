@@ -6,7 +6,7 @@
   ;; (exwm-workspace-switch-create 1)
   )
 
-;; External monitor handling
+;; External monitor handling.
 (defun mb/screen-switch ()
   (let ((xrandr-output-regexp "\n\\([^ ]+\\) connected primary \\([[:digit:]]*x[[:digit:]]*\\)")
         default-output)
@@ -31,7 +31,7 @@
   (interactive)
   (pcase exwm-class-name
     ;; Disabled as trialing a single workspace.
-    ;; ("Firefox" (exwm-workspace-move-window 2))
+    ;; ("Firefox"(exwm-workspace-move-window 2))
     ;; ("Slack" (exwm-workspace-move-window 3))
     ))
 
@@ -70,7 +70,7 @@
             (exwm-workspace-switch-to-buffer existing-buffer)))
       (start-process-shell-command suffix nil cmd))))
 
-;; Configure `exwm' the X window manager for Emacs.
+;; Configure EXWM.
 (use-package! exwm
   :init
   (setq
@@ -104,20 +104,15 @@
                 ("Firefox" (exwm-workspace-rename-buffer
                             (format "%s" exwm-title))))))
 
-  ;; Manipulate windows as they're created
+  ;; Manipulate windows as they're created.
   (add-hook 'exwm-manage-finish-hook
             (lambda ()
-              ;; Send the window where it belongs.
+              ;; Configure per-class.
               (mb/setup-window-by-class)
 
-              ;; Hide the modeline on all X windows.
-              ;; (exwm-layout-hide-mode-line)))
-
-              ;; (setq-local hide-mode-line-format '("> %b"))
-              ;; (hide-mode-line-mode)
-              ;;               ;; No nyaning in X org.
-              ;; (setq-local nyan-mode nil))
-              ))
+              ;; Switch to the EXWM modeline format.
+              (setq-local hide-mode-line-format (doom-modeline-format--exwm))
+              (hide-mode-line-mode)))
 
   ;; Hide the modeline just on floating X windows.
   (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
@@ -215,6 +210,9 @@
         #'counsel-linux-app-format-function-name-pretty)
   (exwm-input-set-key (kbd "s-SPC") #'counsel-linux-app)
 
+  ;; Buffer switching.
+  (exwm-input-set-key (kbd "s-/") #'ivy-switch-buffer)
+
   ;; Familiar macOS close behaviour.
   (exwm-input-set-key (kbd "s-q") #'kill-current-buffer)
 
@@ -230,25 +228,33 @@
   (exwm-input-set-key (kbd "S-s-<return>")
                       (lambda () (interactive) (mb/split-with-browser)))
 
-  ;; TODO: WIP vital stats function.
-  (exwm-input-set-key (kbd "s-?")
-                      (lambda () (interactive)
-                        (message "%s %s"
-                                 (concat (format-time-string "%Y-%m-%d %T (%a w%W)"))
-                                 (battery-format "| %L: %p%% (%t)"
-                                                 (funcall battery-status-function)))))
+  ;; ;; TODO: WIP vital stats function.
+  ;; (exwm-input-set-key (kbd "s-?")
+  ;;                     (lambda () (interactive)
+  ;;                       (message "%s %s"
+  ;;                                (concat (format-time-string "%Y-%m-%d %T (%a w%W)"))
+  ;;                                (battery-format "| %L: %p%% (%t)"
+  ;;                                                (funcall battery-status-function)))))
 
   ;; Allow resizing with mouse, of non-floating windows.
   (setq window-divider-default-bottom-width 2
         window-divider-default-right-width 2)
   (window-divider-mode)
 
-  ;; Configure a rudimentary status bar at least for now.
-  (setq display-time-default-load-average nil)
-  (display-time-mode +1)
-  (display-battery-mode +1)
-
   ;; TODO: Emacs desktop management for non-VM based NixOS.
+  ;;
+  ;; (require 'desktop-environment)
+  ;; (desktop-environment-mode)
+  ;; (setq desktop-environment-brightness-set-command "light %s")
+  ;; (setq desktop-environment-brightness-normal-decrement "-U 10")
+  ;; (setq desktop-environment-brightness-small-decrement "-U 5")
+  ;; (setq desktop-environment-brightness-normal-increment "-A 10")
+  ;; (setq desktop-environment-brightness-small-increment "-A 5")
+  ;; (setq desktop-environment-brightness-get-command "light")
+  ;; (setq desktop-environment-brightness-get-regexp "\\([0-9]+\\)\\.[0-9]+")
+  ;; (setq desktop-environment-screenlock-command "loginctl lock-session")
+  ;; (setq desktop-environment-screenshot-command "flameshot gui")
+
   ;; TODO: Emacs notification mode? https://github.com/sinic/ednc
 
   ;; Use EXWM randr for setting external monitors correctly.
@@ -280,13 +286,58 @@
     :select t :quit nil :ttl t)
   :config
   (defalias 'exwm-edit--display-buffer 'pop-to-buffer)
-  ;; Use GFM mode in the buffers
+  ;; Use GFM mode in the edit buffers.
   (add-hook 'exwm-edit-compose-hook (lambda () (funcall 'gfm-mode))))
 
-;; And give EXWM buffers an icon.
+;; Give EXWM buffers an icon.
 (use-package! all-the-icons
-  :ensure t
   :config
   (add-to-list 'all-the-icons-mode-icon-alist
                '(exwm-mode all-the-icons-faicon "desktop"
                            :height 1.0 :face all-the-icons-purple)))
+;; TODO: How to set an icon for an EXWM window?
+;; '(exwm-mode all-the-icons-faicon "firefox"
+;;             :v-adjust -0.1 :height 1.0 :face
+;;             '(:foreground "#E66000"))
+
+;; And a specialised EXWM modeline.
+(setq display-time-default-load-average nil)
+(display-time-mode +1)
+(display-battery-mode +1)
+(after! doom-modeline
+  (doom-modeline-def-modeline 'exwm
+    '(bar buffer-info)
+    '(misc-info github battery " ")))
+
+;; (defun th/golden-split ()
+;;   "Splits the current window into two, at a golden-ratio like ratio"
+;;   (interactive)
+;;   (delete-other-windows)
+;;   ;; Add one fifth to make it go from 1/2 to 1/3, ish
+;;   (let* ((width (/ (window-width) 5)))
+;;     (split-window-right)
+;;     (other-window 1)
+;;     (enlarge-window-horizontally width)
+;;     (set-frame-parameter nil 'th/prohibit-balance t)))
+
+;; (defun th/browser-golden ()
+;;   "Splits the current window into a browser at 2/3 of the window"
+;;   (interactive)
+;;   (th/golden-split)
+;;   (th/goto-browser))
+
+;; (defun th/goto-browser ()
+;;   "Run or raise a browser in the current frame.
+;; If there are multiple, complete for them."
+;;   (interactive)
+;;   (let* ((browser-buffers (--map (buffer-name it)
+;;                                  (--filter (s-prefix? "Chromium" (buffer-name it))
+;;                                   (buffer-list)))))
+;;     (cond
+;;      ((= (length browser-buffers) 1)
+;;       (switch-to-buffer (car browser-buffers)))
+;;      ((> (length browser-buffers) 1)
+;;       (switch-to-buffer (switch-to-buffer
+;;                          (completing-read "Select chromium: " browser-buffers))))
+;;      (t
+;;       (start-process-shell-command "chromium" nil "chromium")))))
