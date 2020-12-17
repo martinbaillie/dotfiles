@@ -11,6 +11,7 @@
   - [[#mine][Mine]]
 - [[#uigeneral][UI/General]]
 - [[#uimacos][UI/macOS]]
+- [[#uilinux][UI/Linux]]
 - [[#keysgeneral][Keys/General]]
 - [[#keyslinux][Keys/Linux]]
 - [[#keysmacos][Keys/macOS]]
@@ -210,10 +211,10 @@ Load current theme.
   ;; Re-organise.
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number buffer-info word-count
-          matches remote-host parrot modals buffer-position selection-info)
+          remote-host parrot modals buffer-position selection-info)
     '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
                   input-method indent-info buffer-encoding major-mode
-                  process vcs checker)))
+                  process vcs checker matches)))
 #+END_SRC
 
 *** Default modes
@@ -222,6 +223,12 @@ Load current theme.
 (add-to-list 'auto-mode-alist '("github\\.com_.*\\.txt" . gfm-mode))
 (add-to-list 'auto-mode-alist '("tridactyl\\(rc\\)?\\'" . vimrc-mode))
 #+END_SRC
+
+*** Always fullscreen
+#+begin_src elisp
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
 
 * UI/macOS
 *** Source a clean shell environment
@@ -252,14 +259,19 @@ Load current theme.
 
 *** Native macOS fullscreen
 #+BEGIN_SRC elisp
-(when IS-MAC
-  ;; Windowed macOS fullscreen.
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-
-  ;; Native macOS fullscreen.
-  ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
-  )
+;; (when IS-MAC
+;; Native macOS fullscreen.
+;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
+;; )
 #+END_SRC
+* UI/Linux
+*** Transparency
+Set frame transparency and maximize windows by default.
+#+begin_src elisp
+(when IS-LINUX
+  (set-frame-parameter (selected-frame) 'alpha '(95 . 95))
+  (add-to-list 'default-frame-alist '(alpha . (95 . 95))))
+#+end_src
 
 * Keys/General
 Miscellaneous.
@@ -535,27 +547,6 @@ Silence annoying popup
      )
    )
   )
-  ;; ;; language server
-  ;; (add-hook 'go-mode-hook 'lsp)
-
-  ;; ;; flycheck configuration
-  ;; (add-hook 'flycheck-mode-hook (lambda ()
-  ;;                                 (push 'go-errcheck flycheck-disabled-checkers)
-  ;;                                 (push 'go-staticcheck flycheck-disabled-checkers)
-  ;;                                 (push 'go-unconvert flycheck-disabled-checkers)
-  ;;                                 ;; (push 'go-build flycheck-disabled-checkers)
-  ;;                                 ;; (push 'go-test flycheck-disabled-checkers)
-  ;;                                 ))
-
-  ;; (setq flycheck-disabled-checkers '(go-unconvert
-  ;;                                    go-staticcheck
-  ;;                                    go-errcheck))
-
-;; (after! lsp-mode
-;;   (lsp-register-custom-settings '(("gopls.completionDocumentation" t)))
-;; )
-;; (lsp-register-custom-settings '(("gopls.completeUnimported" t)))
-;;   (lsp-register-custom-settings '(("gopls.staticcheck" t))))
 #+END_SRC
 
 *** DAP
@@ -803,7 +794,8 @@ Automatically resize the viewable windows according to the golden ratio.
                   select-window-2
                   select-window-3
                   select-window-4
-                  select-window-5))))
+                  select-window-5)))
+  (map! "s-g" #'golden-ratio-mode))
 #+end_src
 ** vterm
 Use system-wide vterm lib when compiling.

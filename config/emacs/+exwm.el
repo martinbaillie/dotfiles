@@ -4,7 +4,14 @@
 (defun mb/exwm-init ()
   ;; Start at workspace 1.
   ;; (exwm-workspace-switch-create 1)
-  )
+
+  ;; Set a wallpaper.
+  (run-at-time "1 sec" nil (lambda () (mb/set-wallpaper))))
+
+(defun mb/set-wallpaper ()
+  (interactive)
+  (start-process-shell-command
+   "feh" nil  "feh --bg-fill ~/.config/wallpaper"))
 
 ;; External monitor handling.
 (defun mb/screen-switch ()
@@ -24,7 +31,8 @@
       (if (string= resolution "2880x1800") ;; MacBook Retina.
           (write-region "Xft.dpi: 192\n" nil "~/.Xresources")
         ;; TODO: System name.
-        (write-region "Xft.dpi: 130\n" nil "~/.Xresources"))
+        ;; (write-region "Xft.dpi: 130\n" nil "~/.Xresources"))
+        (write-region "Xft.dpi: 96\n" nil "~/.Xresources"))
       (setq exwm-randr-workspace-monitor-plist
             (list 0 (match-string 1))))))
 
@@ -75,6 +83,8 @@
 (use-package! exwm
   :init
   (setq
+   ;; Use the primary clipboard.
+   select-enable-primary t
    ;; Follow the mouse.
    focus-follows-mouse t
    ;; Move the focus to the followed window.
@@ -148,6 +158,8 @@
           ?\s-,
           ?\s-.
           ?\s-;
+          ?\s-/
+          ?\s-g
           ?\s-x
           ?\C-\ ))  ;; Ctrl-space
 
@@ -210,9 +222,6 @@
   (setq counsel-linux-app-format-function ;; Make the launcher list pretty.
         #'counsel-linux-app-format-function-name-pretty)
   (exwm-input-set-key (kbd "s-SPC") #'counsel-linux-app)
-
-  ;; Buffer switching.
-  (exwm-input-set-key (kbd "s-/") #'ivy-switch-buffer)
 
   ;; Familiar macOS close behaviour.
   (exwm-input-set-key (kbd "s-q") #'kill-current-buffer)
@@ -308,7 +317,7 @@
 (after! doom-modeline
   (doom-modeline-def-modeline 'exwm
     '(bar buffer-info)
-    '(misc-info github battery " ")))
+    '(github battery misc-info "  ")))
 
 ;; (defun th/golden-split ()
 ;;   "Splits the current window into two, at a golden-ratio like ratio"

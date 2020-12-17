@@ -6,6 +6,8 @@
 	user = martinbaillie
 [alias]
 	st = status
+[pull]
+	rebase = true
 [push]
 	default = simple
 [credential]

@@ -50,6 +50,9 @@
     kernelParams = [ "mitigations=off" "transparent_hugepage=never" ];
   };
 
+  # We'll let the host handle this.
+  powerManagement.enable = false;
+
   # Replace ntpd by timesyncd for more accurate virtualisation alignment.
   services.timesyncd.enable = true;
 

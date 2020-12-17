@@ -29,7 +29,8 @@
     };
     layout = "au";
     # TODO: Swap only on NixOS.
-    xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
+    # xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
+    xkbOptions = "terminate:ctrl_alt_bksp";
     enableCtrlAltBackspace = true;
 
     windowManager.session = lib.singleton {
@@ -74,10 +75,12 @@
     packages = with pkgs; [
       alsaUtils
       arandr
+      feh
+      lxqt.pavucontrol-qt
+      xclip
       xorg.xdpyinfo
       xorg.xev
       xorg.xmodmap
-      lxqt.pavucontrol-qt
     ];
   };
 

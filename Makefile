@@ -189,7 +189,7 @@ ifeq ($(SYSTEM),Linux)
 endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
-		-e "(doom/reload-theme)" &>/dev/null
+		-e "(doom/reload-theme)" -e "(mb/set-wallpaper)" &>/dev/null
 .PHONY: light
 
 dark: EMACS_THEME ?=doom-dracula
@@ -214,7 +214,7 @@ ifeq ($(SYSTEM),Darwin)
 		>>$(XDG_CONFIG_HOME)/doom/+theme.el
 endif
 	emacsclient -a "" -n -e "(setq doom-theme '$(EMACS_THEME))" \
-		-e "(doom/reload-theme)" &>/dev/null
+		-e "(doom/reload-theme)" -e "(mb/set-wallpaper)" &>/dev/null
 .PHONY: dark
 
 # Make defaults.

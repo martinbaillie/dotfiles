@@ -1,0 +1,13 @@
+#+TITLE: Parasite Notes
+
+* VMX
+#+begin_src
+MemTrimRate = "0"
+sched.mem.pshare.enable = "FALSE"
+prefvmx.useRecommendedLockedMemSize = "TRUE"
+mouse.vusb.enable = "TRUE"
+suspend.disabled = "TRUE"
+mouse.vusb.useBasicMouse = "FALSE"
+mks.mouse.pixelScrollSensitivity = "1"
+mainmem.backing = "swap"
+#+end_src
