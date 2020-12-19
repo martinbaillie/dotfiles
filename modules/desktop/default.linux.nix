@@ -28,12 +28,17 @@
       naturalScrolling = true;
     };
     layout = "au";
-    # TODO: Swap only on NixOS.
-    # xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
-    xkbOptions = "terminate:ctrl_alt_bksp";
     enableCtrlAltBackspace = true;
+    dpi = config.my.dpi;
 
-    windowManager.session = lib.singleton {
+    windowManager.session = let
+      # Allow for per-system injected Emacs configuration.
+      extraConfig = pkgs.writeText "emacs-extra-config" ''
+        (setq mb/system-settings
+          '((desktop/dpi . ${(toString config.my.dpi)})
+            (desktop/hidpi . ${if config.my.hidpi then "t" else "nil"})))
+      '';
+    in lib.singleton {
       name = "exwm";
       start = ''
         # Ensure Emacs env is up-to-date.
@@ -42,11 +47,36 @@
           doom env
         fi
         # Launch a fullscreen DBused Emacs.
-        ${pkgs.dbus.dbus-launch} --exit-with-session emacs -mm --fullscreen
+        ${pkgs.dbus.dbus-launch} --exit-with-session emacs -mm --fullscreen \
+          -l "${extraConfig}"
       '';
     };
 
     displayManager = {
+      lightdm = {
+        enable = true;
+        greeters.mini = {
+          enable = true;
+          user = config.my.username;
+          extraConfig = ''
+            font-size = 1.0em
+            font = "Iosevka"
+            text-color = "${config.theme.colours.magenta}"
+            password-background-color = "${config.theme.colours.bg}"
+            window-color = "${config.theme.colours.bgalt}"
+            border-color = "${config.theme.colours.magenta}"
+            background-color = "${config.theme.colours.bgalt}"
+            background-image = ""
+
+            [greeter]
+            show-password-label = false
+            password-label-text = ""
+            password-input-width = 30
+            password-alignment = left
+          '';
+        };
+      };
+
       autoLogin = {
         enable = true;
         user = config.my.username;
@@ -59,10 +89,18 @@
   # Hide the cursor when typing.
   services.xbanish.enable = true;
 
+  # Compositor.
+  services.picom = {
+    enable = true;
+    backend = "glx";
+    vSync = true;
+    fade = true;
+    fadeDelta = 1;
+    fadeSteps = [ 1.0e-2 1.2e-2 ];
+  };
+
   my = {
     home.services = {
-      # Compositor.
-      picom.enable = true;
       # Screenshotting.
       flameshot.enable = true;
       # Screen locking.
@@ -76,6 +114,7 @@
       alsaUtils
       arandr
       feh
+      gtk3
       lxqt.pavucontrol-qt
       xclip
       xorg.xdpyinfo

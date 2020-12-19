@@ -15,26 +15,38 @@
 
 ;; External monitor handling.
 (defun mb/screen-switch ()
-  (let ((xrandr-output-regexp "\n\\([^ ]+\\) connected primary \\([[:digit:]]*x[[:digit:]]*\\)")
-        default-output)
+  (interactive)
+  (when-let ;; Persist a system DPI if configured.
+      (dpi (alist-get 'desktop/dpi mb/system-settings))
+    (write-region (format "Xft.dpi: %s\n" dpi) nil "~/.Xresources"))
+  (let ((xrandr-output-regexp "\n\\([^ ]+\\) connected ")
+        (xrandr-resolution-regexp "\n*connected.* \\([[:digit:]]+x[[:digit:]]+\\)")
+        default-output
+        default-resolution)
     (with-temp-buffer
       (call-process "xrandr" nil t nil)
       (goto-char (point-min))
+      (re-search-forward xrandr-resolution-regexp nil 'noerror)
+      (setq default-resolution (match-string 1))
+      (goto-char (point-min))
       (re-search-forward xrandr-output-regexp nil 'noerror)
       (setq default-output (match-string 1))
-      (setq resolution (match-string 2))
       (forward-line)
-      (call-process
-       "xrandr" nil nil nil
-       "--output" default-output
-       "--auto")
-      (if (string= resolution "2880x1800") ;; MacBook Retina.
-          (write-region "Xft.dpi: 192\n" nil "~/.Xresources")
-        ;; TODO: System name.
-        ;; (write-region "Xft.dpi: 130\n" nil "~/.Xresources"))
-        (write-region "Xft.dpi: 96\n" nil "~/.Xresources"))
-      (setq exwm-randr-workspace-monitor-plist
-            (list 0 (match-string 1))))))
+      (if (not (re-search-forward xrandr-output-regexp nil 'noerror))
+          ;; We have just a primary display. First check for a special case of a
+          ;; HiDPI screen like my Macbook's retina, and double the DPI if so.
+          (progn (when (and (alist-get 'desktop/hidpi mb/system-settings)
+                            (string= default-resolution "2880x1800")) ;; Retina.
+                   (write-region "Xft.dpi: 192\n" nil "~/.Xresources"))
+                 ;; Finally setup the display.
+                 (call-process "xrandr" nil nil nil "--auto"))
+        ;; There's a secondary display. Use it as primary and turn off the
+        ;; default output (making the presumption that it is a laptop display).
+        (call-process "xrandr" nil nil nil
+                      "--output" (match-string 1) "--primary" "--auto"
+                      "--output" default-output "--off")
+        (setq exwm-randr-workspace-monitor-plist
+              (list 0 (match-string 1)))))))
 
 (defun mb/setup-window-by-class ()
   (interactive)
@@ -88,7 +100,7 @@
    ;; Follow the mouse.
    focus-follows-mouse t
    ;; Move the focus to the followed window.
-   mouse-autoselect-window t
+   mouse-autoselect-window nil
    ;; Warp the cursor automatically after workspace switches.
    exwm-workspace-warp-cursor t
    ;; Start with a single workspace.
@@ -218,6 +230,11 @@
   ;; Make Doom's leader work.
   (exwm-input-set-key (kbd doom-leader-alt-key) doom-leader-map)
 
+  ;; Bind a default XRandr toggle for jigging displays.
+  (exwm-input-set-key (kbd "<XF86Display>")
+                      (lambda () (interactive) (start-process-shell-command
+                                                "xrandr" nil  "xrandr --auto")))
+
   ;; Rofi-styled launcher.
   (setq counsel-linux-app-format-function ;; Make the launcher list pretty.
         #'counsel-linux-app-format-function-name-pretty)
@@ -317,7 +334,8 @@
 (after! doom-modeline
   (doom-modeline-def-modeline 'exwm
     '(bar buffer-info)
-    '(github battery misc-info "  ")))
+    ;; TODO: Better misc-info.
+    '(github misc-info battery " ")))
 
 ;; (defun th/golden-split ()
 ;;   "Splits the current window into two, at a golden-ratio like ratio"

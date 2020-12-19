@@ -85,6 +85,24 @@ in {
     ${config.my.init}
   '';
 
+  # Desktop customisation.
+  options.my = {
+    dpi = mkOption {
+      type = types.int;
+      description = ''
+        The font DPI to use for this system.
+      '';
+      default = 96;
+    };
+    hidpi = mkOption {
+      type = types.bool;
+      description = ''
+        This system has an HiDPI display.
+      '';
+      default = false;
+    };
+  };
+
   # Darwin.
   options.my = {
     brews = mkOption {

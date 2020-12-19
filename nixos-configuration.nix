@@ -59,6 +59,9 @@
     cleanTmpDir = true;
   };
 
+  # Fix early boot display.
+  hardware.video.hidpi.enable = config.my.hidpi;
+
   console = {
     keyMap = "us";
     # font = "Lat2-Terminus16";

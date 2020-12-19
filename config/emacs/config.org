@@ -790,6 +790,8 @@ Automatically resize the viewable windows according to the golden ratio.
                   evil-window-right
                   evil-window-up
                   evil-window-down
+                  evil-mouse-drag-region
+                  ace-window
                   select-window-1
                   select-window-2
                   select-window-3

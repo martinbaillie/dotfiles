@@ -146,7 +146,11 @@
     '';
   };
 
+  # Display.
+  my.dpi = 119;
+
   # Keyboard.
+  services.xserver.xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
   services.interception-tools = {
     enable = true;
 

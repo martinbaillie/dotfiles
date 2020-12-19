@@ -56,19 +56,23 @@
   # Replace ntpd by timesyncd for more accurate virtualisation alignment.
   services.timesyncd.enable = true;
 
-  # HiDPI (Retina) fixes in early boot.
-  hardware.video.hidpi.enable = true;
+  # Keyboard.
+  services.xserver.xkbOptions = "terminate:ctrl_alt_bksp";
 
   my = {
+    # User.
     username = config.my.secrets.work_username;
     email = config.my.secrets.work_email;
 
+    # Display.
+    hidpi = true;
+
     home.xsession = {
-      # pointerCursor = {
-      #   name = "Vanilla-DMZ";
-      #   package = pkgs.vanilla-dmz;
-      #   size = 32 * scale;
-      # };
+      pointerCursor = {
+        name = "Vanilla-DMZ";
+        package = pkgs.vanilla-dmz;
+        #   size = 32 * scale;
+      };
     };
   };
 
