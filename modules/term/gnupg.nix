@@ -40,7 +40,6 @@ in mkMerge [
       home = {
         services.gpg-agent = {
           enable = true;
-          sshKeys = config.my.secrets.ssh_keygrips;
           enableSshSupport = true;
         };
       };

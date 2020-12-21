@@ -68,31 +68,29 @@
     hidpi = true;
 
     home.xsession = {
-      pointerCursor = {
-        name = "Vanilla-DMZ";
-        package = pkgs.vanilla-dmz;
-        #   size = 32 * scale;
-      };
+      # pointerCursor = {
+      #   name = "Vanilla-DMZ";
+      #   package = pkgs.vanilla-dmz;
+      #   #   size = 32 * scale;
+      # };
     };
   };
 
   # NOTE: To allow parasite to be used as a router from the host.
   # host $ route add 0.0.0.0/1 172.16.16.16
   # host $ route add 128.0.0.0/1 172.16.16.16
-  networking.wg-quick.interfaces = {
-    wg0 = {
-      address = [ "10.0.1.2/24" ];
-      dns = [ "10.0.1.1" ];
-      privateKey = "${config.my.secrets.zuul_client_private_key}";
-      peers = [{
-        publicKey = "${config.my.secrets.zuul_server_public_key}";
-        allowedIPs = [ "0.0.0.0/0" ];
-        # TODO: Document change on fly.
-        # endpoint = "115.70.50.240:31339";
-        endpoint =
-          "${config.my.secrets.zuul_server_host}:${config.my.secrets.zuul_server_port}";
-        persistentKeepalive = 25;
-      }];
-    };
-  };
+  # networking.wg-quick.interfaces = {
+  #   wg0 = {
+  #     address = [ "10.0.1.2/24" ];
+  #     dns = [ "10.0.1.1" ];
+  #     privateKey = "${config.my.secrets.zuul_client_private_key}";
+  #     peers = [{
+  #       publicKey = "${config.my.secrets.zuul_server_public_key}";
+  #       allowedIPs = [ "0.0.0.0/0" ];
+  #       endpoint =
+  #         "${config.my.secrets.zuul_server_host}:${config.my.secrets.zuul_server_port}";
+  #       persistentKeepalive = 25;
+  #     }];
+  #   };
+  # };
 }

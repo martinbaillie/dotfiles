@@ -66,6 +66,7 @@
             window-color = "${config.theme.colours.bgalt}"
             border-color = "${config.theme.colours.magenta}"
             background-color = "${config.theme.colours.bgalt}"
+            text-color = "${config.theme.colours.fg}"
             background-image = ""
 
             [greeter]
@@ -89,18 +90,15 @@
   # Hide the cursor when typing.
   services.xbanish.enable = true;
 
-  # Compositor.
-  services.picom = {
-    enable = true;
-    backend = "glx";
-    vSync = true;
-    fade = true;
-    fadeDelta = 1;
-    fadeSteps = [ 1.0e-2 1.2e-2 ];
-  };
-
   my = {
     home.services = {
+      # Compositor.
+      picom = {
+        enable = true;
+        fade = true;
+        fadeDelta = 1;
+        fadeSteps = [ (toString 1.0e-2) (toString 1.2e-2) ];
+      };
       # Screenshotting.
       flameshot.enable = true;
       # Screen locking.
