@@ -335,7 +335,7 @@
   (doom-modeline-def-modeline 'exwm
     '(bar buffer-info)
     ;; TODO: Better misc-info.
-    '(github misc-info battery " ")))
+    '(checker github misc-info battery)))
 
 ;; (defun th/golden-split ()
 ;;   "Splits the current window into two, at a golden-ratio like ratio"

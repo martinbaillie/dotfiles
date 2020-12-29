@@ -39,6 +39,7 @@
   - [[#golden-ratio][golden-ratio]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
+  - [[#garbage-collection][Garbage collection]]
 
 * [8/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
@@ -1012,4 +1013,14 @@ Load my flavour of EXWM when in Linux.
 #+begin_src elisp
 (when IS-LINUX
   (load! "+exwm"))
+#+end_src
+** TODO Garbage collection
+#+begin_src elisp
+(defun +mb/increase-mem ()
+  "Allow Emacs to use up to 1 GB of memory."
+  (setq +lsp--default-gcmh-high-cons-threshold 1073741824
+        gcmh-high-cons-threshold 1073741824))
+(after! lsp-mode (+mb/increase-mem))
+(after! gcmh (+mb/increase-mem))
+(after! gcmh (setq-default gcmh-idle-delay 5))
 #+end_src
