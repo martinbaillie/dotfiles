@@ -7,6 +7,7 @@
 
     <modules/dev>
     <modules/dev/go.nix>
+    <modules/dev/javascript.nix>
 
     <modules/ops>
     <modules/ops/docker.nix>

@@ -1,6 +1,7 @@
 { config, pkgs, ... }: {
   my = {
     packages = with pkgs; [
+      delve
       errcheck
       go2nix
       gocode

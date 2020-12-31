@@ -554,12 +554,12 @@ Silence annoying popup
 #+BEGIN_SRC elisp
 ;; (setq godoc-at-point-function 'godoc-gogetdoc)
 ;; debugger configuration
-;; (require 'dap-go)
-;; (dap-go-setup)
-;; (dap-mode 1)
-;; (dap-ui-mode 1)
-;; (dap-tooltip-mode 1)
-;; (tooltip-mode 1)
+(require 'dap-go)
+(dap-go-setup)
+(dap-mode 1)
+(dap-ui-mode 1)
+(dap-tooltip-mode 1)
+(tooltip-mode 1)
 #+END_SRC
 
 *** Keys
@@ -798,7 +798,11 @@ Automatically resize the viewable windows according to the golden ratio.
                   select-window-3
                   select-window-4
                   select-window-5)))
-  (map! "s-g" #'golden-ratio-mode))
+  (map! (:map evil-window-map
+         "g" #'golden-ratio
+         "G" #'golden-ratio-mode
+         ))
+  )
 #+end_src
 ** vterm
 Use system-wide vterm lib when compiling.

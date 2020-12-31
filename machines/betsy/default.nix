@@ -175,7 +175,6 @@
   services.throttled.enable = true;
 
   # Blue light filtering.
-  # TODO: Not on VMWare VM.
   location.provider = "geoclue2";
   services.redshift = {
     enable = true;
