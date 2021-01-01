@@ -12,13 +12,18 @@
       emacs-pdf-tools =
         callPackage ./packages/emacs/pdf-tools { stdenv = clangStdenv; };
 
+      # Patch a hysterisis issue in libinput on my ThinkPad.
+      # NOTE: https://gitlab.freedesktop.org/libinput/libinput/-/issues/286
+      libinput = super.libinput.overrideAttrs
+        (o: { patches = o.patches ++ [ ./packages/libinput/libinput.patch ]; });
+
       emacsWithPackages =
         (pkgs.emacsPackagesNgGen pkgs.emacsGcc).emacsWithPackages;
     })
 
   # Emacs overlay.
-  (import (builtins.fetchTarball # <2020-12-08 Tue>
-    "https://github.com/nix-community/emacs-overlay/archive/00feeed284c86d1713b777404fae2e58d73cd94c.tar.gz"))
+  (import (builtins.fetchTarball # <2020-12-21 Mon>
+    "https://github.com/nix-community/emacs-overlay/archive/aa95116c0259a365a0d97715b74f3559112869ae.tar.gz"))
 
   # Mozilla overlay (for Rust, Firefox).
   (import (builtins.fetchTarball # 17/07/20

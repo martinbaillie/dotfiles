@@ -1,0 +1,89 @@
+From 938116fe2172635561f372c922c790f7f3a360bb Mon Sep 17 00:00:00 2001
+From: Martin Baillie <martin@baillie.id>
+Date: Sun, 20 Dec 2020 13:50:31 +1100
+Subject: [PATCH] Lenovo E490
+
+Signed-off-by: Martin Baillie <martin@baillie.id>
+---
+ meson.build                    | 2 +-
+ quirks/50-system-lenovo.quirks | 6 ++++++
+ src/evdev.c                    | 7 ++++++-
+ src/quirks.c                   | 1 +
+ src/quirks.h                   | 1 +
+ 5 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index c9b53a3b..8dd19c1c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1,5 +1,5 @@
+ project('libinput', 'c',
+-	version : '1.16.1',
++	version : '1.16.8',
+ 	license : 'MIT/Expat',
+ 	default_options : [ 'c_std=gnu99', 'warning_level=2' ],
+ 	meson_version : '>= 0.45.0')
+diff --git a/quirks/50-system-lenovo.quirks b/quirks/50-system-lenovo.quirks
+index 19a3b9e5..3365d58e 100644
+--- a/quirks/50-system-lenovo.quirks
++++ b/quirks/50-system-lenovo.quirks
+@@ -84,6 +84,12 @@ MatchDMIModalias=dmi:*svnLENOVO:*:pvrThinkPad??60*:
+ ModelLenovoT450Touchpad=1
+ AttrPalmPressureThreshold=150
+ 
++[Lenovo E490 Touchpad]
++MatchName=Synaptics TM3471-010
++MatchDMIModalias=dmi:*svnLENOVO:*:pvrThinkPadE490*
++ModelLenovoE490Touchpad=1
++AttrPalmPressureThreshold=150
++
+ [Lenovo X1 Carbon 3rd Touchpad]
+ MatchName=SynPS/2 Synaptics TouchPad
+ MatchDMIModalias=dmi:*svnLENOVO:*:pvrThinkPadX1Carbon3rd:*
+diff --git a/src/evdev.c b/src/evdev.c
+index 40f0726b..a7ed480b 100644
+--- a/src/evdev.c
++++ b/src/evdev.c
+@@ -2063,9 +2063,14 @@ evdev_pre_configure_model_quirks(struct evdev_device *device)
+ 	 * https://gitlab.freedesktop.org/libinput/libinput/issues/234 */
+ 	if (evdev_device_has_model_quirk(device, QUIRK_MODEL_LENOVO_T480S_TOUCHPAD) ||
+ 	    evdev_device_has_model_quirk(device, QUIRK_MODEL_LENOVO_T490S_TOUCHPAD) ||
+-	    evdev_device_has_model_quirk(device, QUIRK_MODEL_LENOVO_L380_TOUCHPAD))
++	    evdev_device_has_model_quirk(device, QUIRK_MODEL_LENOVO_E490_TOUCHPAD) ||
++	    evdev_device_has_model_quirk(device, QUIRK_MODEL_LENOVO_L380_TOUCHPAD)) {
+ 		libevdev_enable_property(device->evdev,
+ 					 INPUT_PROP_BUTTONPAD);
++		evdev_log_debug(device, "did it martin");
++	} else {
++		evdev_log_debug(device, "did NOT DO it martin");
++	}
+ 
+ 	/* Touchpad claims to have 4 slots but only ever sends 2
+ 	 * https://bugs.freedesktop.org/show_bug.cgi?id=98100 */
+diff --git a/src/quirks.c b/src/quirks.c
+index 45d1f554..c32640a8 100644
+--- a/src/quirks.c
++++ b/src/quirks.c
+@@ -242,6 +242,7 @@ quirk_get_name(enum quirk q)
+ 	case QUIRK_MODEL_LENOVO_L380_TOUCHPAD:		return "ModelLenovoL380Touchpad";
+ 	case QUIRK_MODEL_LENOVO_SCROLLPOINT:		return "ModelLenovoScrollPoint";
+ 	case QUIRK_MODEL_LENOVO_T450_TOUCHPAD:		return "ModelLenovoT450Touchpad";
++	case QUIRK_MODEL_LENOVO_E490_TOUCHPAD:		return "ModelLenovoE490Touchpad";
+ 	case QUIRK_MODEL_LENOVO_T480S_TOUCHPAD:		return "ModelLenovoT480sTouchpad";
+ 	case QUIRK_MODEL_LENOVO_T490S_TOUCHPAD:		return "ModelLenovoT490sTouchpad";
+ 	case QUIRK_MODEL_LENOVO_X1GEN6_TOUCHPAD:	return "ModelLenovoX1Gen6Touchpad";
+diff --git a/src/quirks.h b/src/quirks.h
+index ee85fe3b..959d29d2 100644
+--- a/src/quirks.h
++++ b/src/quirks.h
+@@ -75,6 +75,7 @@ enum quirk {
+ 	QUIRK_MODEL_LENOVO_L380_TOUCHPAD,
+ 	QUIRK_MODEL_LENOVO_SCROLLPOINT,
+ 	QUIRK_MODEL_LENOVO_T450_TOUCHPAD,
++	QUIRK_MODEL_LENOVO_E490_TOUCHPAD,
+ 	QUIRK_MODEL_LENOVO_T480S_TOUCHPAD,
+ 	QUIRK_MODEL_LENOVO_T490S_TOUCHPAD,
+ 	QUIRK_MODEL_LENOVO_X1GEN6_TOUCHPAD,
+-- 
+2.29.2
+
