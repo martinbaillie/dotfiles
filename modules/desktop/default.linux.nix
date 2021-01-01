@@ -61,7 +61,6 @@
           extraConfig = ''
             font-size = 1.0em
             font = "Iosevka"
-            text-color = "${config.theme.colours.magenta}"
             password-background-color = "${config.theme.colours.bg}"
             window-color = "${config.theme.colours.bgalt}"
             border-color = "${config.theme.colours.magenta}"
@@ -105,6 +104,7 @@
       screen-locker = {
         enable = true;
         lockCmd = "${pkgs.i3lock-fancy}/bin/i3lock-fancy -p -t ''";
+        inactiveInterval = 20;
       };
     };
 
@@ -113,7 +113,7 @@
       arandr
       feh
       gtk3
-      lxqt.pavucontrol-qt
+      i3lock-fancy
       xclip
       xorg.xdpyinfo
       xorg.xev
@@ -718,4 +718,7 @@
   #     };
   #   };
   # }
+  #
+  # Autologin TTYs on Sway.
+  # services.mingetty.autologinUser = config.my.username;
 }

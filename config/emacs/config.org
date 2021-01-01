@@ -350,6 +350,15 @@ Motion training.
   :desc "Evil motion trainer" "t" #'evil-motion-trainer-mode))
 #+END_SRC
 
+Find in dotfiles.
+#+begin_src elisp
+(defun mb/find-in-dotfiles ()
+  "Fuzzy find in dotfiles."
+  (interactive)
+  (doom-project-find-file (expand-file-name "/etc/dotfiles")))
+(map! :leader "f ." #'mb/find-in-dotfiles)
+#+end_src
+
 * Keys/Linux
 #+BEGIN_SRC elisp
 (when IS-LINUX
@@ -791,7 +800,6 @@ Automatically resize the viewable windows according to the golden ratio.
                   evil-window-right
                   evil-window-up
                   evil-window-down
-                  evil-mouse-drag-region
                   ace-window
                   select-window-1
                   select-window-2

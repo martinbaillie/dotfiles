@@ -139,6 +139,4 @@
     # Ensure only way to change users/groups is through this file.
     mutableUsers = false;
   };
-
-  services.mingetty.autologinUser = config.my.username;
 }

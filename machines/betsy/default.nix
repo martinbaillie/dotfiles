@@ -81,6 +81,8 @@
       };
     };
 
+    # kernelParams = [ "psmouse.synaptics_intertouch=1" ];
+
     # Kernel tuning.
     kernel.sysctl = {
       # NOTE: An inotify watch consumes 1kB on 64-bit machines.
@@ -115,11 +117,12 @@
   #
   # NOTE: The global useDHCP flag is deprecated, therefore explicitly set to
   # false here. Per-interface useDHCP will be mandatory in the future.
-  networking.useDHCP = false;
-  networking.interfaces.enp4s0.useDHCP = true;
-  networking.interfaces.wlp5s0.useDHCP = true;
+  # networking.useDHCP = false;
+  # networking.interfaces.enp4s0.useDHCP = true;
+  # networking.interfaces.wlp5s0.useDHCP = true;
   networking.hostName = "betsy";
   networking.wireless.enable = true;
+  systemd.services.systemd-udev-settle.enable = false;
   # networking.extraHosts = ''
   #   127.0.0.1 something
   # '';

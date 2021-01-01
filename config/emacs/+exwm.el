@@ -100,7 +100,7 @@
    ;; Follow the mouse.
    focus-follows-mouse t
    ;; Move the focus to the followed window.
-   mouse-autoselect-window nil
+   mouse-autoselect-window t
    ;; Warp the cursor automatically after workspace switches.
    exwm-workspace-warp-cursor t
    ;; Start with a single workspace.
@@ -335,7 +335,7 @@
   (doom-modeline-def-modeline 'exwm
     '(bar buffer-info)
     ;; TODO: Better misc-info.
-    '(checker github misc-info battery)))
+    '(github misc-info battery "  ")))
 
 ;; (defun th/golden-split ()
 ;;   "Splits the current window into two, at a golden-ratio like ratio"
