@@ -26,6 +26,7 @@
     libinput = {
       enable = true;
       naturalScrolling = true;
+      disableWhileTyping = true;
     };
     layout = "au";
     enableCtrlAltBackspace = true;
