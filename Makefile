@@ -45,6 +45,7 @@ endif
 FLAGS   		+=-I "config=$(WORKDIR)/config"
 FLAGS 			+=-I "modules=$(WORKDIR)/modules"
 FLAGS			+=-I "bin=$(WORKDIR)/bin"
+FLAGS			+=-I "packages=$(WORKDIR)/packages"
 ifdef DEBUG
 FLAGS			+=--verbose
 FLAGS			+=--show-trace

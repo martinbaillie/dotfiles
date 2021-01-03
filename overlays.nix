@@ -12,11 +12,6 @@
       emacs-pdf-tools =
         callPackage ./packages/emacs/pdf-tools { stdenv = clangStdenv; };
 
-      # Patch a hysterisis issue in libinput on my ThinkPad.
-      # NOTE: https://gitlab.freedesktop.org/libinput/libinput/-/issues/286
-      libinput = super.libinput.overrideAttrs
-        (o: { patches = o.patches ++ [ ./packages/libinput/libinput.patch ]; });
-
       emacsWithPackages =
         (pkgs.emacsPackagesNgGen pkgs.emacsGcc).emacsWithPackages;
     })

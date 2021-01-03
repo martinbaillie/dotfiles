@@ -189,6 +189,15 @@
 
   # Work.
   nixpkgs.overlays = [
+    (self: super:
+      with super; {
+        # Patch a hysterisis issue in libinput on my ThinkPad.
+        # NOTE: https://gitlab.freedesktop.org/libinput/libinput/-/issues/286
+        libinput = super.libinput.overrideAttrs (o: {
+          patches = o.patches ++ [ <packages/libinput/libinput.patch> ];
+        });
+      })
+
     (import (builtins.fetchGit {
       url = config.my.secrets.work_overlay_url;
       ref = "master";
