@@ -548,7 +548,12 @@ Silence annoying popup
 ** go
 *** LSP
 #+BEGIN_SRC elisp
-(after! go-mode)
+(after! go-mode
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+  (setq gofmt-command "gofumpt")
+  )
 
 (after! lsp-mode
   (lsp-register-custom-settings

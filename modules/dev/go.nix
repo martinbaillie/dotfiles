@@ -3,20 +3,21 @@
     packages = with pkgs; [
       delve
       errcheck
+      go
       go2nix
       gocode
       godef
+      gofumpt
       golangci-lint
       golint
+      gomodifytags
+      gopls
       go-protobuf
       gotags
       gotests
       gotestsum
       gotools
       protobuf
-      go
-      gopls
-      gomodifytags
     ];
 
     home.xdg.configFile = {

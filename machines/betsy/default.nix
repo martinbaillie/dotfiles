@@ -149,8 +149,18 @@
     '';
   };
 
-  # Display.
-  my.dpi = 119;
+  my = {
+    # Display.
+    dpi = 119;
+
+    home.services = {
+      # Compositor.
+      picom = {
+        backend = "glx";
+        vSync = true;
+      };
+    };
+  };
 
   # Keyboard.
   services.xserver.xkbOptions = "altwin:swap_alt_win,terminate:ctrl_alt_bksp";
@@ -190,12 +200,13 @@
   # Work.
   nixpkgs.overlays = [
     (self: super:
-      with super; {
+      with super;
+      {
         # Patch a hysterisis issue in libinput on my ThinkPad.
         # NOTE: https://gitlab.freedesktop.org/libinput/libinput/-/issues/286
-        libinput = super.libinput.overrideAttrs (o: {
-          patches = o.patches ++ [ <packages/libinput/libinput.patch> ];
-        });
+        # libinput = super.libinput.overrideAttrs (o: {
+        #   patches = o.patches ++ [ <packages/libinput/libinput.patch> ];
+        # });
       })
 
     (import (builtins.fetchGit {
