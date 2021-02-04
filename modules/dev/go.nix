@@ -18,6 +18,7 @@
       gotestsum
       gotools
       protobuf
+      vgo2nix
     ];
 
     home.xdg.configFile = {

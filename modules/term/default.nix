@@ -82,6 +82,8 @@ in {
         yq-go
         zip
 
+        unstable.ijq
+
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
         (ripgrep.override { withPCRE2 = true; })
       ];

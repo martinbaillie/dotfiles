@@ -49,6 +49,8 @@ in mkMerge [
               # Tell Firefox not to trust fake Enterprise-injected certificates.
               "security.enterprise_roots.auto-enabled" = false;
               "security.enterprise_roots.enabled" = false;
+              # Speed up scroll for Linux/Xorg.
+              "mousewheel.min_line_scroll_amount" = 60;
             };
             userChrome = builtins.readFile <config/firefox/userChrome.css>;
           };

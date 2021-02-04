@@ -8,6 +8,7 @@
     <modules/dev>
     <modules/dev/go.nix>
     <modules/dev/javascript.nix>
+    <modules/dev/python.nix>
 
     <modules/ops>
     <modules/ops/docker.nix>
@@ -48,7 +49,7 @@
     };
 
     # Kernel tuning for virtualisation.
-    kernelParams = [ "mitigations=off" "transparent_hugepage=never" ];
+    kernelParams = [ "mitigations=off" ];
   };
 
   # We'll let the host handle this.
