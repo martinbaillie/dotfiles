@@ -79,6 +79,7 @@
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
 (package! command-log-mode)
+(package! rego-mode)
 
 ;; EXWM related.
 ;; (package! exwm-firefox-evil)
