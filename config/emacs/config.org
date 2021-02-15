@@ -976,6 +976,10 @@ Miscellaneous vterm bindings.
   :i "C-c" #'vterm-send-C-c
   :i "C-z" #'vterm-send-C-z
 
+  ;; Claim TAB from Emacs.
+  :i [tab] #'vterm-send-tab
+  :i "TAB" #'vterm-send-tab
+
   ;; Fix C-backspace.
   :i "<C-backspace>" (lambda () (interactive) (vterm-send-key (kbd "C-w")))
   :i "<s-backspace>" (lambda () (interactive) (vterm-send-key (kbd "C-w")))

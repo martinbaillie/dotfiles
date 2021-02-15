@@ -17,8 +17,8 @@
     })
 
   # Emacs overlay.
-  (import (builtins.fetchTarball # <2020-12-21 Mon>
-    "https://github.com/nix-community/emacs-overlay/archive/aa95116c0259a365a0d97715b74f3559112869ae.tar.gz"))
+  (import (builtins.fetchTarball # <2021-12-02 Mon>
+    "https://github.com/nix-community/emacs-overlay/archive/e86b0f6d38f29e3b27032977db4f431e2f9d1a9b.tar.gz"))
 
   # Mozilla overlay (for Rust, Firefox).
   (import (builtins.fetchTarball # 17/07/20

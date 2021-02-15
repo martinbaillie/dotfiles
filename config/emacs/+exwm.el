@@ -158,21 +158,20 @@
   ;;
   ;; These keys should always pass through to Emacs when in line mode.
   (setq exwm-input-prefix-keys
-        '(?\C-x
-          ?\C-u
-          ?\C-h
+        '(?\C-h
           ?\C-w
+          ?\C-g
           ?\C-\;
           ?\M-x
           ?\M-`
           ?\M-&
           ?\M-:
           ?\s-,
+          ?\s-$
           ?\s-.
           ?\s-;
           ?\s-/
           ?\s-g
-          ?\s-x
           ?\C-\ ))  ;; Ctrl-space
 
   ;; Ctrl+Q will enable the next key to be sent directly.
@@ -198,6 +197,7 @@
   ;; Configure line-mode simulation key bindings.
   (setq exwm-input-simulation-keys
         `( ;; Add some macOSisms for compatability when in a macOS hosted VM.
+          (,(kbd "s-a") . ,(kbd "C-a"))
           (,(kbd "s-c") . ,(kbd "C-c"))
           (,(kbd "s-f") . ,(kbd "C-f"))
           (,(kbd "s-k") . ,(kbd "C-k"))
@@ -205,16 +205,14 @@
           (,(kbd "s-P") . ,(kbd "C-P"))
           (,(kbd "s-t") . ,(kbd "C-t"))
           (,(kbd "s-T") . ,(kbd "C-T"))
-          (,(kbd "s-w") . ,(kbd "C-w"))
           (,(kbd "s-v") . ,(kbd "C-v"))
-          (,(kbd "C-x") . ,(kbd "C-x"))
+          (,(kbd "s-w") . ,(kbd "C-w"))
+          (,(kbd "s-x") . ,(kbd "C-x"))
           (,(kbd "s-<backspace>") . ,(kbd "C-<backspace>"))
           (,(kbd "M-<left>") . ,(kbd "C-<left>"))
           (,(kbd "M-<right>") . ,(kbd "C-<right>"))
           (,(kbd "s-<left>") . ,(kbd "C-<left>"))
-          (,(kbd "s-<right>") . ,(kbd "C-<right>"))
-          ;; TODO: Below not working:
-          (,(kbd "<s-mouse-1>") . ,(kbd "<C-mouse-1>"))))
+          (,(kbd "s-<right>") . ,(kbd "C-<right>"))))
 
   ;; Set local simulation keys for Firefox.
   (add-hook 'exwm-manage-finish-hook
@@ -239,6 +237,9 @@
   (setq counsel-linux-app-format-function ;; Make the launcher list pretty.
         #'counsel-linux-app-format-function-name-pretty)
   (exwm-input-set-key (kbd "s-SPC") #'counsel-linux-app)
+
+  ;; Try to fix C-click.
+  ;; (exwm-input-set-key (kbd "<s-mouse-1>") #'fake-C-down-mouse-1)
 
   ;; Familiar macOS close behaviour.
   (exwm-input-set-key (kbd "s-q") #'kill-current-buffer)
@@ -369,3 +370,28 @@
 ;;                          (completing-read "Select chromium: " browser-buffers))))
 ;;      (t
 ;;       (start-process-shell-command "chromium" nil "chromium")))))
+
+(defun fake-C-down-mouse-1 ()
+  (let ((id (exwm--buffer->id (window-buffer (selected-window)))))
+    (when id
+      (dolist (class '(xcb:ButtonPress xcb:ButtonRelease))
+        (xcb:+request exwm--connection
+            (make-instance 'xcb:SendEvent
+                           :propagate 0
+                           :destination id
+                           :event-mask xcb:EventMask:NoEvent
+                           :event (xcb:marshal
+                                   (make-instance class
+                                                  :detail xcb:ButtonIndex:1
+                                                  :time xcb:Time:CurrentTime
+                                                  :root exwm--root
+                                                  :event id
+                                                  :child 0
+                                                  :root-x 0
+                                                  :root-y 0
+                                                  :event-x 0
+                                                  :event-y 0
+                                                  :state xcb:ModMask:Control
+                                                  :same-screen 1)
+                                   exwm--connection)))))
+    (xcb:flush exwm--connection)))
