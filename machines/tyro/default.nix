@@ -9,6 +9,9 @@
 
     <modules/term>
     <modules/term/zsh.nix>
+
+    <modules/web/slack.nix>
+    <modules/web/firefox.nix>
   ];
 
   nix = {

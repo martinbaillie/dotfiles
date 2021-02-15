@@ -123,11 +123,18 @@ in mkMerge [
     };
   })
   (mkIf isDarwin {
-    # REVIEW: home-manager support.
-    my.home.home.file."Library/Application Support/Mozilla/NativeMessagingHosts" =
-      {
-        source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
-        recursive = true;
+    my = {
+      packages = [ pkgs.my.Firefox ];
+      home = {
+        programs.firefox.package = pkgs.my.Firefox;
+
+        # REVIEW: home-manager support.
+        home.file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
+          source =
+            "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+          recursive = true;
+        };
       };
+    };
   })
 ]

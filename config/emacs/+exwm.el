@@ -371,27 +371,27 @@
 ;;      (t
 ;;       (start-process-shell-command "chromium" nil "chromium")))))
 
-(defun fake-C-down-mouse-1 ()
-  (let ((id (exwm--buffer->id (window-buffer (selected-window)))))
-    (when id
-      (dolist (class '(xcb:ButtonPress xcb:ButtonRelease))
-        (xcb:+request exwm--connection
-            (make-instance 'xcb:SendEvent
-                           :propagate 0
-                           :destination id
-                           :event-mask xcb:EventMask:NoEvent
-                           :event (xcb:marshal
-                                   (make-instance class
-                                                  :detail xcb:ButtonIndex:1
-                                                  :time xcb:Time:CurrentTime
-                                                  :root exwm--root
-                                                  :event id
-                                                  :child 0
-                                                  :root-x 0
-                                                  :root-y 0
-                                                  :event-x 0
-                                                  :event-y 0
-                                                  :state xcb:ModMask:Control
-                                                  :same-screen 1)
-                                   exwm--connection)))))
-    (xcb:flush exwm--connection)))
+(defun my-dpi ()
+  (let* ((attrs (car (display-monitor-attributes-list)))
+         (size (assoc 'mm-size attrs))
+         (sizex (cadr size))
+         (res (cdr (assoc 'geometry attrs)))
+         (resx (- (caddr res) (car res)))
+         dpi)
+    (catch 'exit
+      ;; in terminal
+      (unless sizex
+        (throw 'exit 10))
+      ;; on big screen
+      (when (> sizex 1000)
+        (throw 'exit 10))
+      ;; DPI
+      (* (/ (float resx) sizex) 25.4))))
+
+(defun my-preferred-font-size ()
+  (let ( (dpi (my-dpi)) )
+    (cond
+     ((< dpi 110) 10)
+     ((< dpi 130) 11)
+     ((< dpi 160) 12)
+     (t 12))))

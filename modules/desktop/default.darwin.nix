@@ -1,7 +1,30 @@
-{ config, pkgs, lib, ... }: {
+{ config, pkgs, lib, ... }:
+with import <home-manager/modules/lib/dag.nix> { inherit lib; }; {
   # My default desktop apps and settings across all macOS/Darwin installs.
   my = {
     home = {
+      # Fix macOS Application links.
+      home.activation = {
+        copyApplications = let
+          apps = pkgs.buildEnv {
+            name = "home-manager-applications";
+            paths = config.my.packages;
+            pathsToLink = "/Applications";
+          };
+        in dagEntryAfter [ "writeBoundary" ] ''
+          baseDir="$HOME/Applications/Home Manager Apps"
+          if [ -d "$baseDir" ]; then
+            rm -rf "$baseDir"
+          fi
+          mkdir -p "$baseDir"
+          for appFile in ${apps}/Applications/*; do
+            target="$baseDir/$(basename "$appFile")"
+            $DRY_RUN_CMD cp ''${VERBOSE_ARG:+-v} -fHRL "$appFile" "$baseDir"
+            $DRY_RUN_CMD chmod ''${VERBOSE_ARG:+-v} -R +w "$target"
+          done
+        '';
+      };
+
       # Align common keybindings between Linux and Darwin.
       home.file."Library/KeyBindings/DefaultKeyBinding.dict".text = ''
         {
@@ -35,8 +58,8 @@
     };
     env.HOMEBREW_BUNDLE_FILE = "$XDG_CONFIG_HOME/homebrew/Brewfile";
 
-    packages = with pkgs; [ my.Spectacle my.Flux ];
-    casks = [ "karabiner-elements" "cursorcerer" ];
+    packages = with pkgs; [ ];
+    casks = [ "karabiner-elements" "spectacle" "flux" "cursorcerer" ];
   };
 
   # Fonts.
