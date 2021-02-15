@@ -78,6 +78,13 @@
     };
   };
 
+  # Shares with the host.
+  fileSystems."/shared" = {
+    device = ".host:/shared";
+    fsType = "fuse./run/current-system/sw/bin/vmhgfs-fuse";
+    options = [ "nofail,allow_other" ];
+  };
+
   # NOTE: To allow parasite to be used as a router from the host.
   # host $ route add 0.0.0.0/1 172.16.16.16
   # host $ route add 128.0.0.0/1 172.16.16.16
