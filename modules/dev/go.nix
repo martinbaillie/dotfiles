@@ -3,7 +3,7 @@
     packages = with pkgs; [
       delve
       errcheck
-      go
+      unstable.go
       go2nix
       gocode
       godef
