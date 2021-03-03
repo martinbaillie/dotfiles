@@ -121,12 +121,12 @@
             modules-center = "exwm-title";
             modules-right = "volume battery gladate syddate";
             font-0 = "Iosevka";
-            font-1 = "FontAwesome";
-            font-2 = "EmojiOne Color";
-            font-3 = "Unifont";
-            font-4 = "file\\-icons:style=icons";
-            font-5 = "github\\-octicons:style=Regular";
-            font-6 = "all\\-the\\-icons:style=Regular";
+            font-1 = "file\\-icons:style=icons";
+            font-2 = "all\\-the\\-icons:style=Regular";
+            font-3 = "github\\-octicons:style=Regular";
+            font-4 = "FontAwesome";
+            font-5 = "EmojiOne Color";
+            font-6 = "Unifont";
             background = "${config.theme.colours.bg}";
             foreground = "${config.theme.colours.fg}";
             enable-ipc = true;
@@ -160,6 +160,7 @@
             type = "internal/pulseaudio";
             format-volume = "<ramp-volume> <label-volume>";
             label-muted = "";
+            ramp-volume-font = 5;
             ramp-volume-0 = "";
             ramp-volume-1 = "";
             ramp-volume-2 = "";
@@ -170,13 +171,10 @@
             full-at = 95;
             format-charging = "<animation-charging> <label-charging>";
             format-charging-foreground = "${config.theme.colours.green}";
-            # format-charging-background = ${colors.base03}
             format-discharging = "<ramp-capacity> <label-discharging>";
             format-discharging-foreground = "${config.theme.colours.green}";
-            # format-discharging-background = ${colors.base03}
             format-full = "<label-full>";
             format-full-foreground = "${config.theme.colours.green}";
-            # format-full-background = ${colors.base03}
             label-charging = "%percentage%% ";
             label-discharging = "%percentage%% ";
             label-discharging-foreground = "${config.theme.colours.green}";
@@ -201,8 +199,8 @@
           };
           "module/gladate" = {
             type = "custom/script";
-            exec =
-              ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +" GLA %H:%M "'';
+            exec = ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +"%H:%M "'';
+            label = "%{T5}%{T-} GLA %output%";
           };
         };
       };
