@@ -5,6 +5,7 @@
       kubectx
       kubernetes-helm
       kustomize
+      stern
 
       unstable.krew
     ];

@@ -391,6 +391,20 @@ Find in dotfiles.
 
 * Package Customisation
 ** org
+*** Tree slide
+#+begin_src elisp
+(setq +org-present-text-scale 5
+      org-tree-slide-slide-in-effect t
+      org-tree-slide-indicator '(:next nil
+                                 :previous nil
+                                 :content nil))
+(add-hook! 'org-tree-slide-play-hook #'org-display-inline-images)
+(add-hook! 'org-tree-slide-play-hook #'doom-disable-line-numbers-h)
+(advice-remove 'org-tree-slide--display-tree-with-narrow
+               #'+org-present--narrow-to-subtree-a)
+(map! :map org-tree-slide-mode-map
+      :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
+#+end_src
 *** Scratch buffers
 #+BEGIN_SRC elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)

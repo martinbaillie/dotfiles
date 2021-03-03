@@ -3,7 +3,6 @@
     packages = with pkgs; [
       delve
       errcheck
-      unstable.go
       go2nix
       gocode
       godef
@@ -11,7 +10,6 @@
       golangci-lint
       golint
       gomodifytags
-      gopls
       go-protobuf
       gotags
       gotests
@@ -19,6 +17,9 @@
       gotools
       protobuf
       vgo2nix
+
+      unstable.go
+      unstable.gopls
     ];
 
     home.xdg.configFile = {

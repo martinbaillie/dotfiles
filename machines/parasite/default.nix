@@ -24,6 +24,7 @@
     <modules/term/ssh.nix>
     <modules/term/zsh.nix>
 
+    <modules/web/chrome.nix>
     <modules/web/dropbox.nix>
     <modules/web/firefox.nix>
     <modules/web/slack.nix>
