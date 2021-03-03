@@ -77,6 +77,11 @@
       #   #   size = 32 * scale;
       # };
     };
+
+    home.services.polybar.config."module/battery" = {
+      adapter = "ACAD";
+      battery = "BAT1";
+    };
   };
 
   # Shares with the host.

@@ -127,11 +127,14 @@
             font-4 = "FontAwesome";
             font-5 = "EmojiOne Color";
             font-6 = "Unifont";
-            background = "${config.theme.colours.bg}";
+            background = let stripHash = (s: builtins.substring 1 (-1) s);
+            in "#F2${
+              stripHash config.theme.colours.bg
+            }"; # 95% Alpha transparency.
             foreground = "${config.theme.colours.fg}";
             enable-ipc = true;
             width = "100%";
-            height = 25;
+            height = 21;
             offset-x = 0;
             offset-y = 3;
             fixed-center = true;
@@ -145,7 +148,6 @@
             '';
             initial = 1;
             format-underline = "${config.theme.colours.blue}";
-            format-background = "${config.theme.colours.bgalt}";
           };
           "module/exwm-title" = {
             type = "custom/ipc";
@@ -195,12 +197,12 @@
           "module/syddate" = {
             type = "internal/date";
             time = "%H:%M";
-            label = "SYD %time% ";
+            label = "SYD %time%";
           };
           "module/gladate" = {
             type = "custom/script";
-            exec = ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +"%H:%M "'';
-            label = "%{T5}%{T-} GLA %output%";
+            exec = ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +"%H:%M"'';
+            label = "%{T5}%{T-} GLA %output% ";
           };
         };
       };
@@ -272,7 +274,7 @@
   #     fi
   #     swaymsg "[class=$id] focus" || swaymsg "[app_id=$id] focus"
   #   '';
-  #   stripHash = (s: builtins.substring 1 (-1) s);
+  #   striphash = (s: builtins.substring 1 (-1) s);
   # in {
   #   # Sound.
   #   sound.enable = true;
