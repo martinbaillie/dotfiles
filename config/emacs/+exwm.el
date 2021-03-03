@@ -91,6 +91,8 @@
             (exwm-workspace-switch-to-buffer existing-buffer)))
       (start-process-shell-command suffix nil cmd))))
 
+
+
 ;; Configure EXWM.
 (use-package! exwm
   :init
@@ -124,8 +126,9 @@
   (add-hook 'exwm-update-title-hook
             (lambda ()
               (pcase exwm-class-name
-                ("Firefox" (exwm-workspace-rename-buffer
-                            (format "%s" exwm-title))))))
+                ("Firefox" (progn
+                             (exwm-workspace-rename-buffer (format "%s" exwm-title))
+                             (mb/update-polybar-exwm))))))
 
   ;; Manipulate windows as they're created.
   (add-hook 'exwm-manage-finish-hook
@@ -134,8 +137,8 @@
               (mb/setup-window-by-class)
 
               ;; Switch to the EXWM modeline format.
-              (setq-local hide-mode-line-format (doom-modeline-format--exwm))
-              (hide-mode-line-mode)))
+              ;; (setq-local hide-mode-line-format (doom-modeline-format--exwm))
+              (exwm-layout-toggle-mode-line)))
 
   ;; Hide the modeline just on floating X windows.
   (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
@@ -169,10 +172,10 @@
           ?\s-,
           ?\s-$
           ?\s-.
-          ?\s-;
+          ?\s-                          ;
           ?\s-/
           ?\s-g
-          ?\C-\ ))  ;; Ctrl-space
+          ?\C-\ )) ;; Ctrl-space
 
   ;; Ctrl+Q will enable the next key to be sent directly.
   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
@@ -196,7 +199,7 @@
 
   ;; Configure line-mode simulation key bindings.
   (setq exwm-input-simulation-keys
-        `( ;; Add some macOSisms for compatability when in a macOS hosted VM.
+        `(;; Add some macOSisms for compatability when in a macOS hosted VM.
           (,(kbd "s-a") . ,(kbd "C-a"))
           (,(kbd "s-c") . ,(kbd "C-c"))
           (,(kbd "s-f") . ,(kbd "C-f"))
@@ -208,6 +211,8 @@
           (,(kbd "s-v") . ,(kbd "C-v"))
           (,(kbd "s-w") . ,(kbd "C-w"))
           (,(kbd "s-x") . ,(kbd "C-x"))
+          (,(kbd "s-N") . ,(kbd "C-N"))
+          (,(kbd "s-P") . ,(kbd "C-P"))
           (,(kbd "s-<backspace>") . ,(kbd "C-<backspace>"))
           (,(kbd "M-<left>") . ,(kbd "C-<left>"))
           (,(kbd "M-<right>") . ,(kbd "C-<right>"))
@@ -329,14 +334,14 @@
 ;;             '(:foreground "#E66000"))
 
 ;; And a specialised EXWM modeline.
-(setq display-time-default-load-average nil)
-(display-time-mode +1)
-(display-battery-mode +1)
-(after! doom-modeline
-  (doom-modeline-def-modeline 'exwm
-    '(bar buffer-info)
-    ;; TODO: Better misc-info.
-    '(github misc-info battery "  ")))
+;; (setq display-time-default-load-average nil)
+;; (display-time-mode +1)
+;; (display-battery-mode +1)
+;; (after! doom-modeline
+;;   (doom-modeline-def-modeline 'exwm
+;;     '(bar buffer-info)
+;;     ;; TODO: Better misc-info.
+;;     '(github misc-info battery "  ")))
 
 ;; (defun th/golden-split ()
 ;;   "Splits the current window into two, at a golden-ratio like ratio"
@@ -395,3 +400,30 @@
      ((< dpi 130) 11)
      ((< dpi 160) 12)
      (t 12))))
+
+;;; Polybar
+(defun mb/send-polybar-hook (name number)
+  (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" name number)))
+
+(defun mb/update-polybar-exwm ()
+  (mb/send-polybar-hook "exwm" 1)
+  (mb/send-polybar-hook "exwm-title" 1))
+
+(defun mb/polybar-exwm-workspace ()
+  (pcase exwm-workspace-current-index
+    (0 "(╯°□°)╯︵ ┻━┻")
+    (1 "2")
+    (2 "3")
+    (3 "4")
+    (4 "5")))
+
+(defun mb/polybar-exwm-title ()
+  (with-selected-frame (selected-frame)
+    (with-current-buffer (window-buffer (selected-window))
+      (format "%s %s"
+              (substring-no-properties (all-the-icons-icon-for-buffer))
+              (buffer-name)))))
+
+(add-hook! 'exwm-workspace-switch-hook #'mb/update-polybar-exwm)
+(add-hook! 'doom-switch-buffer-hook #'mb/update-polybar-exwm)
+(add-hook! 'exwm-update-class-hook #'mb/update-polybar-exwm)

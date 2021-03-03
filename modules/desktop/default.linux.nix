@@ -107,8 +107,106 @@
         lockCmd = "${pkgs.i3lock-fancy}/bin/i3lock-fancy -p -t ''";
         inactiveInterval = 20;
       };
+      polybar = {
+        enable = true;
+        script = "polybar top &";
+        package = pkgs.polybar.override { pulseSupport = true; };
+        config = {
+          settings = {
+            screenchange-reload = true;
+            # format-padding = 1;
+          };
+          "bar/top" = {
+            modules-left = "exwm";
+            modules-center = "exwm-title";
+            modules-right = "volume battery gladate syddate";
+            font-0 = "Iosevka";
+            font-1 = "FontAwesome";
+            font-2 = "EmojiOne Color";
+            font-3 = "Unifont";
+            font-4 = "file\\-icons:style=icons";
+            font-5 = "github\\-octicons:style=Regular";
+            font-6 = "all\\-the\\-icons:style=Regular";
+            background = "${config.theme.colours.bg}";
+            foreground = "${config.theme.colours.fg}";
+            enable-ipc = true;
+            width = "100%";
+            height = 25;
+            offset-x = 0;
+            offset-y = 3;
+            fixed-center = true;
+            cursor-click = "pointer";
+            cursor-scroll = "ns-resize";
+          };
+          "module/exwm" = {
+            type = "custom/ipc";
+            hook-0 = ''
+              ${pkgs.emacsGcc}/bin/emacsclient -e "(mb/polybar-exwm-workspace)" | ${pkgs.gnused}/bin/sed -e 's/^"//' -e 's/"$//'
+            '';
+            initial = 1;
+            format-underline = "${config.theme.colours.blue}";
+            format-background = "${config.theme.colours.bgalt}";
+          };
+          "module/exwm-title" = {
+            type = "custom/ipc";
+            hook-0 = ''
+              ${pkgs.emacsGcc}/bin/emacsclient -e "(mb/polybar-exwm-title)" | ${pkgs.gnused}/bin/sed -e 's/^"//' -e 's/"$//'
+            '';
+            # ${pkgs.emacsGcc}/bin/emacsclient -e '(selected-frame)' | ${pkgs.gnused}/bin/sed -r "s/.*e([[:space:]].*)0x.*/\1/"
+            format-foreground = "${config.theme.colours.fg}";
+            initial = 1;
+          };
+          "module/volume" = {
+            type = "internal/pulseaudio";
+            format-volume = "<ramp-volume> <label-volume>";
+            label-muted = "";
+            ramp-volume-0 = "";
+            ramp-volume-1 = "";
+            ramp-volume-2 = "";
+            click-right = "${pkgs.lxqt.pavucontrol-qt}/bin/pavucontrol-qt &";
+          };
+          "module/battery" = {
+            type = "internal/battery";
+            full-at = 95;
+            format-charging = "<animation-charging> <label-charging>";
+            format-charging-foreground = "${config.theme.colours.green}";
+            # format-charging-background = ${colors.base03}
+            format-discharging = "<ramp-capacity> <label-discharging>";
+            format-discharging-foreground = "${config.theme.colours.green}";
+            # format-discharging-background = ${colors.base03}
+            format-full = "<label-full>";
+            format-full-foreground = "${config.theme.colours.green}";
+            # format-full-background = ${colors.base03}
+            label-charging = "%percentage%% ";
+            label-discharging = "%percentage%% ";
+            label-discharging-foreground = "${config.theme.colours.green}";
+            label-full = "  %percentage%% ";
+            ramp-capacity-0 = " ";
+            ramp-capacity-0-foreground = "${config.theme.colours.red}";
+            ramp-capacity-1 = " ";
+            ramp-capacity-1-foreground = "${config.theme.colours.orange}";
+            ramp-capacity-2 = " ";
+            ramp-capacity-3 = " ";
+            ramp-capacity-4 = " ";
+            animation-charging-0 = " ";
+            animation-charging-1 = " ";
+            animation-charging-2 = " ";
+            animation-charging-3 = " ";
+            animation-charging-4 = " ";
+          };
+          "module/syddate" = {
+            type = "internal/date";
+            time = "%H:%M";
+            label = "SYD %time% ";
+          };
+          "module/gladate" = {
+            type = "custom/script";
+            exec =
+              ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +" GLA %H:%M "'';
+          };
+        };
+      };
     };
-
     packages = with pkgs; [
       alsaUtils
       arandr
