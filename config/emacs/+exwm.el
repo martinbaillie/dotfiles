@@ -425,5 +425,6 @@
               (buffer-name)))))
 
 (add-hook! 'exwm-workspace-switch-hook #'mb/update-polybar-exwm)
-(add-hook! 'doom-switch-buffer-hook #'mb/update-polybar-exwm)
 (add-hook! 'exwm-update-class-hook #'mb/update-polybar-exwm)
+(add-hook! 'doom-switch-buffer-hook #'mb/update-polybar-exwm)
+(add-hook! 'doom-switch-window-hook #'mb/update-polybar-exwm)

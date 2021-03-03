@@ -16,7 +16,10 @@ function prompt_martin_setup {
 
   # Set xterm style prompt titles.
   autoload -Uz add-zsh-hook
-  add-zsh-hook -Uz chpwd (){ print -Pn "\e]2;%2~\a" }
+  add-zsh-hook -Uz chpwd (){
+    print -Pn "\e]2;%2~\a"
+    emacsclient -e '(mb/update-polybar-exwm)' &>/dev/null
+  }
 
   # Tell prezto we manage this prompt.
   zstyle ':prezto:module:prompt' managed 'yes'
