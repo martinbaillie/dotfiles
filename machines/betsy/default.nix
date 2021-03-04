@@ -159,6 +159,12 @@
         backend = "glx";
         vSync = true;
       };
+      polybar.config = {
+        "bar/top" = {
+          height = 21;
+          offset-y = 3;
+        };
+      };
     };
   };
 

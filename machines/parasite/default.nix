@@ -78,9 +78,16 @@
       # };
     };
 
-    home.services.polybar.config."module/battery" = {
-      adapter = "ACAD";
-      battery = "BAT1";
+    home.services.polybar.config = {
+      "bar/top" = {
+        dpi = 170;
+        height = 40;
+        offset-y = 8;
+      };
+      "module/battery" = {
+        adapter = "ACAD";
+        battery = "BAT1";
+      };
     };
   };
 

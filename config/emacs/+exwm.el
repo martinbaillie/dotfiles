@@ -412,10 +412,9 @@
 (defun mb/polybar-exwm-workspace ()
   (pcase exwm-workspace-current-index
     (0 "(╯°□°)╯︵ ┻━┻")
-    (1 "2")
-    (2 "3")
-    (3 "4")
-    (4 "5")))
+    (1 "┬─┬﻿ノ(゜-゜ノ)")
+    (2 "(._.) ~ ︵ ┻━┻")
+    (3 "(ﾉಥ益ಥ）ﾉ﻿ ┻━┻")))
 
 (defun mb/polybar-exwm-title ()
   (with-selected-frame (selected-frame)

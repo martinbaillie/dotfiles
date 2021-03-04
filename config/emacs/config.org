@@ -391,9 +391,21 @@ Find in dotfiles.
 
 * Package Customisation
 ** org
+*** Centered buffers
+#+begin_src elisp
+(defun mb/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t
+        display-fill-column-indicator nil)
+  (visual-fill-column-mode 1))
+
+(use-package! visual-fill-column
+  :hook (org-mode . mb/org-mode-visual-fill))
+#+end_src
 *** Tree slide
 #+begin_src elisp
-(setq +org-present-text-scale 5
+(setq +org-present-text-scale 6
+      org-tree-slide-modeline-display nil
       org-tree-slide-slide-in-effect t
       org-tree-slide-indicator '(:next nil
                                  :previous nil

@@ -134,9 +134,6 @@
             foreground = "${config.theme.colours.fg}";
             enable-ipc = true;
             width = "100%";
-            height = 21;
-            offset-x = 0;
-            offset-y = 3;
             fixed-center = true;
             cursor-click = "pointer";
             cursor-scroll = "ns-resize";
