@@ -231,8 +231,8 @@
               	echo $icon
               }
 
-              KEY="d4ec1eb9cd9ed7ad835b8853f6b085ef"
-              CITY="2147714"
+              KEY="${config.my.secrets.openweathermap_api_key}"
+              CITY="2147714" # Erko
               UNITS="metric"
               SYMBOL="°C"
               API="https://api.openweathermap.org/data/2.5"

@@ -367,27 +367,18 @@
   (mb/send-polybar-hook "exwm-title" 1))
 
 (defun mb/polybar-exwm-workspace ()
-  (+workspace-current-name))
-
-;; (defun mb/testy &optional names
-;;        (let ((names (or names (+workspace-list-names)))
-;;              (current-name (+workspace-current-name)))
-;;          (mapconcat
-;;           #'identity
-;;           (cl-loop for name in names
-;;                    for i to (length names)
-;;                    collect
-;;                    (propertize (format " [%d] %s " (1+ i) name)
-;;                                'face (if (equal current-name name)
-;;                                          '+workspace-tab-selected-face
-;;                                        '+workspace-tab-face)))
-;;           " ")))
-
+  (let ((names (+workspace-list-names))
+        (current-name (+workspace-current-name)))
+    (car (cl-loop for name in names
+                  for i to (length names)
+                  when (equal name current-name) collect
+                  (format "[%d] %s" (1+ i) name)))))
 ;; (pcase exwm-workspace-current-index
 ;;   (0 "(╯°□°)╯︵ ┻━┻")
 ;;   (1 "┬─┬﻿ノ(゜-゜ノ)")
 ;;   (2 "(._.) ~ ︵ ┻━┻")
 ;;   (3 "(ﾉಥ益ಥ）ﾉ﻿ ┻━┻")))
+
 (defun mb/polybar-exwm-title ()
   (with-selected-frame (selected-frame)
     (with-current-buffer (window-buffer (selected-window))
@@ -395,7 +386,7 @@
               (substring-no-properties (all-the-icons-icon-for-buffer))
               (buffer-name)))))
 
-;; Ensure polybar gets the latest information from buffer movements.
+;; Ensure polybar gets the latest information from buffer and frame movements.
 (add-hook! 'exwm-workspace-switch-hook #'mb/update-polybar-exwm)
 (add-hook! 'exwm-update-class-hook #'mb/update-polybar-exwm)
 (add-hook! 'doom-switch-buffer-hook #'mb/update-polybar-exwm)
