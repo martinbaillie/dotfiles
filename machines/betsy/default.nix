@@ -161,7 +161,7 @@
       };
       polybar.config = {
         "bar/top" = {
-          height = 21;
+          height = 22;
           offset-y = 3;
         };
       };

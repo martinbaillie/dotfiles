@@ -138,7 +138,7 @@
 
               ;; Switch to the EXWM modeline format.
               ;; (setq-local hide-mode-line-format (doom-modeline-format--exwm))
-              (exwm-layout-toggle-mode-line)))
+              (exwm-layout-hide-mode-line)))
 
   ;; Hide the modeline just on floating X windows.
   (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
@@ -333,49 +333,6 @@
 ;;             :v-adjust -0.1 :height 1.0 :face
 ;;             '(:foreground "#E66000"))
 
-;; And a specialised EXWM modeline.
-;; (setq display-time-default-load-average nil)
-;; (display-time-mode +1)
-;; (display-battery-mode +1)
-;; (after! doom-modeline
-;;   (doom-modeline-def-modeline 'exwm
-;;     '(bar buffer-info)
-;;     ;; TODO: Better misc-info.
-;;     '(github misc-info battery "  ")))
-
-;; (defun th/golden-split ()
-;;   "Splits the current window into two, at a golden-ratio like ratio"
-;;   (interactive)
-;;   (delete-other-windows)
-;;   ;; Add one fifth to make it go from 1/2 to 1/3, ish
-;;   (let* ((width (/ (window-width) 5)))
-;;     (split-window-right)
-;;     (other-window 1)
-;;     (enlarge-window-horizontally width)
-;;     (set-frame-parameter nil 'th/prohibit-balance t)))
-
-;; (defun th/browser-golden ()
-;;   "Splits the current window into a browser at 2/3 of the window"
-;;   (interactive)
-;;   (th/golden-split)
-;;   (th/goto-browser))
-
-;; (defun th/goto-browser ()
-;;   "Run or raise a browser in the current frame.
-;; If there are multiple, complete for them."
-;;   (interactive)
-;;   (let* ((browser-buffers (--map (buffer-name it)
-;;                                  (--filter (s-prefix? "Chromium" (buffer-name it))
-;;                                   (buffer-list)))))
-;;     (cond
-;;      ((= (length browser-buffers) 1)
-;;       (switch-to-buffer (car browser-buffers)))
-;;      ((> (length browser-buffers) 1)
-;;       (switch-to-buffer (switch-to-buffer
-;;                          (completing-read "Select chromium: " browser-buffers))))
-;;      (t
-;;       (start-process-shell-command "chromium" nil "chromium")))))
-
 (defun my-dpi ()
   (let* ((attrs (car (display-monitor-attributes-list)))
          (size (assoc 'mm-size attrs))
@@ -405,17 +362,32 @@
 (defun mb/send-polybar-hook (name number)
   (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" name number)))
 
-(defun mb/update-polybar-exwm ()
+(defun mb/update-polybar-exwm (&rest _)
   (mb/send-polybar-hook "exwm" 1)
   (mb/send-polybar-hook "exwm-title" 1))
 
 (defun mb/polybar-exwm-workspace ()
-  (pcase exwm-workspace-current-index
-    (0 "(╯°□°)╯︵ ┻━┻")
-    (1 "┬─┬﻿ノ(゜-゜ノ)")
-    (2 "(._.) ~ ︵ ┻━┻")
-    (3 "(ﾉಥ益ಥ）ﾉ﻿ ┻━┻")))
+  (+workspace-current-name))
 
+;; (defun mb/testy &optional names
+;;        (let ((names (or names (+workspace-list-names)))
+;;              (current-name (+workspace-current-name)))
+;;          (mapconcat
+;;           #'identity
+;;           (cl-loop for name in names
+;;                    for i to (length names)
+;;                    collect
+;;                    (propertize (format " [%d] %s " (1+ i) name)
+;;                                'face (if (equal current-name name)
+;;                                          '+workspace-tab-selected-face
+;;                                        '+workspace-tab-face)))
+;;           " ")))
+
+;; (pcase exwm-workspace-current-index
+;;   (0 "(╯°□°)╯︵ ┻━┻")
+;;   (1 "┬─┬﻿ノ(゜-゜ノ)")
+;;   (2 "(._.) ~ ︵ ┻━┻")
+;;   (3 "(ﾉಥ益ಥ）ﾉ﻿ ┻━┻")))
 (defun mb/polybar-exwm-title ()
   (with-selected-frame (selected-frame)
     (with-current-buffer (window-buffer (selected-window))
@@ -423,7 +395,10 @@
               (substring-no-properties (all-the-icons-icon-for-buffer))
               (buffer-name)))))
 
+;; Ensure polybar gets the latest information from buffer movements.
 (add-hook! 'exwm-workspace-switch-hook #'mb/update-polybar-exwm)
 (add-hook! 'exwm-update-class-hook #'mb/update-polybar-exwm)
 (add-hook! 'doom-switch-buffer-hook #'mb/update-polybar-exwm)
 (add-hook! 'doom-switch-window-hook #'mb/update-polybar-exwm)
+(add-hook! 'persp-activated-functions  #'mb/update-polybar-exwm)
+(advice-add #'rename-buffer :after #'mb/update-polybar-exwm)

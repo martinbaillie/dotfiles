@@ -11,15 +11,12 @@ function prompt_martin_setup {
   prompt_opts=(cr percent sp subst)
 
   # Bump on an SSH indicator on for those rare occasions where I'm signed in
-  # from another box.
+  # to another box.
   (( ${+SSH_CONNECTION} )) && prompt_host="$(hostname) "
 
   # Set xterm style prompt titles.
   autoload -Uz add-zsh-hook
-  add-zsh-hook -Uz chpwd (){
-    print -Pn "\e]2;%2~\a"
-    emacsclient -e '(mb/update-polybar-exwm)' &>/dev/null
-  }
+  add-zsh-hook -Uz chpwd (){print -Pn "\e]2;%2~\a"}
 
   # Tell prezto we manage this prompt.
   zstyle ':prezto:module:prompt' managed 'yes'

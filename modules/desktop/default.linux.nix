@@ -7,7 +7,13 @@
   # Fonts.
   fonts = {
     enableGhostscriptFonts = true;
-    fonts = with pkgs; [ iosevka noto-fonts emojione font-awesome ];
+    fonts = with pkgs; [
+      iosevka
+      noto-fonts
+      emojione
+      font-awesome
+      weather-icons
+    ];
     fontconfig = {
       enable = true;
       defaultFonts = {
@@ -112,21 +118,20 @@
         script = "polybar top &";
         package = pkgs.polybar.override { pulseSupport = true; };
         config = {
-          settings = {
-            screenchange-reload = true;
-            # format-padding = 1;
-          };
+          settings = { screenchange-reload = true; };
           "bar/top" = {
+            padding = 1;
             modules-left = "exwm";
             modules-center = "exwm-title";
-            modules-right = "volume battery gladate syddate";
+            modules-right = "volume battery gladate syddate weather";
             font-0 = "Iosevka";
             font-1 = "file\\-icons:style=icons";
             font-2 = "all\\-the\\-icons:style=Regular";
             font-3 = "github\\-octicons:style=Regular";
-            font-4 = "FontAwesome";
-            font-5 = "EmojiOne Color";
-            font-6 = "Unifont";
+            font-4 = "Weather Icons:style=Regular";
+            font-5 = "FontAwesome";
+            font-6 = "EmojiOne Color";
+            font-7 = "Unifont";
             background = let stripHash = (s: builtins.substring 1 (-1) s);
             in "#F2${
               stripHash config.theme.colours.bg
@@ -151,7 +156,6 @@
             hook-0 = ''
               ${pkgs.emacsGcc}/bin/emacsclient -e "(mb/polybar-exwm-title)" | ${pkgs.gnused}/bin/sed -e 's/^"//' -e 's/"$//'
             '';
-            # ${pkgs.emacsGcc}/bin/emacsclient -e '(selected-frame)' | ${pkgs.gnused}/bin/sed -r "s/.*e([[:space:]].*)0x.*/\1/"
             format-foreground = "${config.theme.colours.fg}";
             initial = 1;
           };
@@ -159,7 +163,7 @@
             type = "internal/pulseaudio";
             format-volume = "<ramp-volume> <label-volume>";
             label-muted = "";
-            ramp-volume-font = 5;
+            ramp-volume-font = 6;
             ramp-volume-0 = "";
             ramp-volume-1 = "";
             ramp-volume-2 = "";
@@ -194,12 +198,58 @@
           "module/syddate" = {
             type = "internal/date";
             time = "%H:%M";
-            label = "SYD %time%";
+            label = "SYD %time% ";
           };
           "module/gladate" = {
             type = "custom/script";
             exec = ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +"%H:%M"'';
-            label = "%{T5}%{T-} GLA %output% ";
+            label = "%{T6}%{T-} GLA %output% ";
+          };
+          "module/weather" = let
+            polybarWeather = pkgs.writeScriptBin "polybar-weather" ''
+              get_icon() {
+              	case $1 in
+              	01d) icon="" ;;
+              	01n) icon="" ;;
+              	02d) icon="" ;;
+              	02n) icon="" ;;
+              	03*) icon="" ;;
+              	04*) icon="" ;;
+              	09d) icon="" ;;
+              	09n) icon="" ;;
+              	10d) icon="" ;;
+              	10n) icon="" ;;
+              	11d) icon="" ;;
+              	11n) icon="" ;;
+              	13d) icon="" ;;
+              	13n) icon="" ;;
+              	50d) icon="" ;;
+              	50n) icon="" ;;
+              	*) icon="" ;;
+              	esac
+
+              	echo $icon
+              }
+
+              KEY="d4ec1eb9cd9ed7ad835b8853f6b085ef"
+              CITY="2147714"
+              UNITS="metric"
+              SYMBOL="°C"
+              API="https://api.openweathermap.org/data/2.5"
+              CITY_PARAM="id=$CITY"
+              CURL=${pkgs.curl}/bin/curl
+              JQ=${pkgs.jq}/bin/jq
+              CUT=${pkgs.coreutils}/bin/cut
+              weather=$($CURL -sf "$API/weather?appid=$KEY&$CITY_PARAM&units=$UNITS")
+              if [ -n "$weather" ]; then
+              	weather_temp=$(echo "$weather" | $JQ ".main.temp" | $CUT -d "." -f 1)
+              	weather_icon=$(echo "$weather" | $JQ -r ".weather[0].icon")
+              	echo "%{T5}$(get_icon "$weather_icon")%{T-}" "$weather_temp$SYMBOL"
+              fi
+            '';
+          in {
+            type = "custom/script";
+            exec = "${polybarWeather}/bin/polybar-weather";
           };
         };
       };
