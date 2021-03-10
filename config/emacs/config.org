@@ -208,8 +208,6 @@ Load current theme.
   (setq doom-modeline-buffer-state-icon nil)
   ;; But I like file type icons.
   (setq doom-modeline-major-mode-icon t)
-  ;; And GitHub notifications.
-  (setq doom-modeline-github t)
   ;; Re-organise.
   (doom-modeline-def-modeline 'main
     '(bar workspace-name window-number buffer-info word-count
