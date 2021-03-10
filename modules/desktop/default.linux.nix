@@ -241,10 +241,22 @@
               JQ=${pkgs.jq}/bin/jq
               CUT=${pkgs.coreutils}/bin/cut
               weather=$($CURL -sf "$API/weather?appid=$KEY&$CITY_PARAM&units=$UNITS")
+              forecast=$($CURL -sf "$API/forecast?appid=$KEY&$CITY_PARAM&units=$UNITS&cnt=1")
               if [ -n "$weather" ]; then
-              	weather_temp=$(echo "$weather" | $JQ ".main.temp" | $CUT -d "." -f 1)
-              	weather_icon=$(echo "$weather" | $JQ -r ".weather[0].icon")
-              	echo "%{T5}$(get_icon "$weather_icon")%{T-}" "$weather_temp$SYMBOL"
+                weather_temp=$(echo "$weather" | $JQ ".main.temp" | $CUT -d "." -f 1)
+                weather_icon=$(echo "$weather" | $JQ -r ".weather[0].icon")
+
+                forecast_temp=$(echo "$forecast" | $JQ ".list[].main.temp" | $CUT -d "." -f 1)
+                forecast_icon=$(echo "$forecast" | $JQ -r ".list[].weather[0].icon")
+
+                if [ "$weather_temp" -gt "$forecast_temp" ]; then
+                    trend=""
+                elif [ "$forecast_temp" -gt "$weather_temp" ]; then
+                    trend=""
+                else
+                    trend=""
+                fi
+                echo "%{T5}$(get_icon "$weather_icon")%{T-} $weather_temp$SYMBOL %{T5}$trend  $(get_icon "$forecast_icon")%{T-} $forecast_temp$SYMBOL"
               fi
             '';
           in {

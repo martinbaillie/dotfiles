@@ -294,16 +294,16 @@ Miscellaneous.
  :vgni "H-s-," #'+ivy/switch-workspace-buffer
  :vgni "H-s-/" #'ivy-switch-buffer
  :vgni "H-s-." #'+workspace/switch-to
- :n "s-1"   #'+workspace/switch-to-0
- :n "s-2"   #'+workspace/switch-to-1
- :n "s-3"   #'+workspace/switch-to-2
- :n "s-4"   #'+workspace/switch-to-3
- :n "s-5"   #'+workspace/switch-to-4
- :n "s-6"   #'+workspace/switch-to-5
- :n "s-7"   #'+workspace/switch-to-6
- :n "s-8"   #'+workspace/switch-to-7
- :n "s-9"   #'+workspace/switch-to-8
- :n "s-0"   #'+workspace/switch-to-final)
+ :vgni "s-1"   #'+workspace/switch-to-0
+ :vgni "s-2"   #'+workspace/switch-to-1
+ :vgni "s-3"   #'+workspace/switch-to-2
+ :vgni "s-4"   #'+workspace/switch-to-3
+ :vgni "s-5"   #'+workspace/switch-to-4
+ :vgni "s-6"   #'+workspace/switch-to-5
+ :vgni "s-7"   #'+workspace/switch-to-6
+ :vgni "s-8"   #'+workspace/switch-to-7
+ :vgni "s-9"   #'+workspace/switch-to-8
+ :vgni "s-0"   #'+workspace/switch-to-final)
 #+END_SRC
 
 Merge comment (dwim and line).
