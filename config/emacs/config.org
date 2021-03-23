@@ -128,7 +128,7 @@ Various forks and packages of my own.
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
 #+BEGIN_SRC elisp
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type 'visual)
 #+END_SRC
 
 *** Don't truncate lines
@@ -492,7 +492,10 @@ Find in dotfiles.
            :prepend t)))
   )
 #+END_SRC
-
+*** Hugo
+#+begin_src elisp
+(setq org-hugo-export-with-toc t)
+#+end_src
 *** Agenda files
 #+BEGIN_SRC elisp
 (setq org-work-directory (concat org-directory "/work/*/")

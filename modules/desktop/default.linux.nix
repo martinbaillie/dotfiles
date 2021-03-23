@@ -262,6 +262,8 @@
           in {
             type = "custom/script";
             exec = "${polybarWeather}/bin/polybar-weather";
+            label =
+              "%{A1:${pkgs.xdg_utils}/bin/xdg-open https\\://openweathermap.org/city/2147714:}%output%%{A}";
           };
         };
       };
