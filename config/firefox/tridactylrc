@@ -90,7 +90,11 @@ set searchurls.gh https://github.com/search?q=%s
 set searchurls.reddit https://old.reddit.com/r/%s
 " Nix.
 set searchurls.nixopt https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
+set searchurls.nixopts https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
 set searchurls.nixpkg https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
+set searchurls.nixpkgs https://search.nixos.org/packages?from=0&size=15&sort=relevance&channel=unstable&query=%s
+" Emacs.
+set searchurls.doom https://github.com/hlissner/doom-emacs/search?q=%s
 " Rust.
 set searchurls.crate https://crates.io/search?q=%s
 set searchurls.crates https://crates.io/search?q=%s

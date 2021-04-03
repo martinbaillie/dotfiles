@@ -8,10 +8,10 @@
   fonts = {
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
-      iosevka
-      noto-fonts
       emojione
       font-awesome
+      iosevka
+      noto-fonts
       weather-icons
     ];
     fontconfig = {
