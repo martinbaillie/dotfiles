@@ -14,7 +14,7 @@ jobs:
     - name: Install Nix
       uses: cachix/install-nix-action@v11
     - name: Install Cachix
-      uses: cachix/cachix-action@v6
+      uses: cachix/cachix-action@v10
       with:
         name: martinbaillie
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
