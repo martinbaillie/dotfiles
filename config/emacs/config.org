@@ -128,6 +128,7 @@ Various forks and packages of my own.
    )
   )
 (setq +zen-text-scale 1)
+(setq doom-font-increment  3)
 #+END_SRC
 
 *** Display line numbers relative to cursor
@@ -414,54 +415,35 @@ Find in dotfiles.
 (use-package! visual-fill-column
   :hook (org-mode . mb/org-mode-visual-fill))
 #+end_src
-*** Present
+*** Tree slide
 #+begin_src elisp
-;; (defun mb/org-present-prepare-slide ()
-;;   (org-overview)
-;;   (org-show-entry)
-;;   (org-show-children))
+(org-tree-slide-presentation-profile)
 
-;; (defun mb/org-present-hook ()
-;;   (setq-local face-remapping-alist '((default (:height 1.5) variable-pitch)
-;;                                      (header-line (:height 4) variable-pitch)
-;;                                      (org-code (:height 1.5) org-code)
-;;                                      (org-verbatim (:height 1.5) org-verbatim)
-;;                                      (org-block (:height 1.25) org-block)
-;;                                      (org-block-begin-line (:height 0.7) org-block)))
-;;   (setq header-line-format " ")
-;;   (org-display-inline-images)
-;;   (doom-disable-line-numbers-h)
-;;   (mb/org-present-prepare-slide))
+(setq +org-present-text-scale 1
+      org-tree-slide-modeline-display nil
+      org-tree-slide-slide-in-effect t
+      org-tree-slide-cursor-init nil
+      org-tree-slide-heading-emphasis t
+      org-tree-slide-content-margin-top 1
+      org-tree-slide-indicator
+      '(:next nil
+        :previous nil
+        :content nil))
 
-;; (defun mb/org-present-quit-hook ()
-;;   (setq-local face-remapping-alist '((default variable-pitch default)))
-;;   (setq header-line-format nil)
-;;   (org-present-small)
-;;   (org-remove-inline-images)
-;;   (doom-enable-line-numbers-h))
+(defun mb/org-tree-slide-mode-hook ()
+  (setq-local evil-motion-trainer-mode nil)
+  (spell-fu-mode-disable)
+  (writegood-turn-off)
+  (org-display-inline-images)
+  (doom-disable-line-numbers-h))
 
-;; (defun mb/org-present-prev ()
-;;   (interactive)
-;;   (org-present-prev)
-;;   (mb/org-present-prepare-slide))
+(add-hook! 'org-tree-slide-play-hook 'mb/org-tree-slide-mode-hook)
 
-;; (defun mb/org-present-next ()
-;;   (interactive)
-;;   (org-present-next)
-;;   (mb/org-present-prepare-slide))
+(advice-remove 'org-tree-slide--display-tree-with-narrow
+               #'+org-present--narrow-to-subtree-a)
 
-;; (use-package! org-present
-;;   :bind (:map org-present-mode-keymap
-;;          ("C-c C-j" . mb/org-present-next)
-;;          ("C-c C-k" . mb/org-present-prev))
-;;   :hook ((org-present-mode . mb/org-present-hook)
-;;          (org-present-mode-quit . mb/org-present-quit-hook)))
-
-;; ;; ;;     (add-hook 'org-slide-mode-hook #'evil-normalize-keymaps))
-;; ;; ;; (map! :after evil-org
-;; ;; ;;       :map evil-org-mode-map
-;; ;; ;;       :n "<f8>" #'org-tree-slide-mode)
-;; ;; ;;   (map! :map evil-org-mode-map :n "q" #'org-present-quit)
+(map! :map org-tree-slide-mode-map
+      :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
 #+end_src
 *** Scratch buffers
 #+BEGIN_SRC elisp
@@ -585,32 +567,6 @@ Find in dotfiles.
  )
 #+END_SRC
 
-*** Tree slide
-#+begin_src elisp
-(setq +org-present-text-scale 1
-      org-tree-slide-modeline-display nil
-      org-tree-slide-slide-in-effect t
-      org-tree-slide-cursor-init nil
-      org-tree-slide-heading-emphasis t
-      org-tree-slide-content-margin-top 1
-      org-tree-slide-indicator
-      '(:next nil
-        :previous nil
-        :content nil))
-
-(defun mb/org-tree-slide-mode-hook ()
-  (setq-local evil-motion-trainer-mode nil)
-  (org-display-inline-images)
-  (doom-disable-line-numbers-h))
-
-(add-hook! 'org-tree-slide-play-hook 'mb/org-tree-slide-mode-hook)
-
-(advice-remove 'org-tree-slide--display-tree-with-narrow
-               #'+org-present--narrow-to-subtree-a)
-
-(map! :map org-tree-slide-mode-map
-      :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
-#+end_src
 ** projectile
 *** Known directories and search path
 #+BEGIN_SRC elisp
