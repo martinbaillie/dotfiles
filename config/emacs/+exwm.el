@@ -49,9 +49,9 @@
               (list 0 (match-string 1)))))))
 
 (defun mb/setup-window-by-class ()
-  (interactive)
-  (pcase exwm-class-name
-    ("ROOT" (exwm-floating-toggle-floating))))
+  (interactive))
+;; (pcase exwm-class-name
+;;   ("ROOT" (exwm-floating-toggle-floating))))
 ;; Disabled as trialing a single workspace.
 ;; ("Firefox"(exwm-workspace-move-window 2))
 ;; ("Slack" (exwm-workspace-move-window 3))
@@ -161,21 +161,23 @@
   ;;
   ;; These keys should always pass through to Emacs when in line mode.
   (setq exwm-input-prefix-keys
-        '(?\C-h
-          ?\C-w
-          ?\C-g
-          ?\C-\;
-          ?\M-x
-          ?\M-`
-          ?\M-&
-          ?\s-,
-          ?\s-$
-          ?\s-.
-          ?\s-\;
-          ?\s-                          ;
-          ?\s-/
-          ?\s-g
-          ?\C-\ )) ;; Ctrl-space
+        `,@(mapcar (lambda (vector) (aref vector 0))
+                   `(,@(mapcar (lambda (i) (kbd (format "s-%s" i)))
+                               (number-sequence 0 9)) ;; Pass s-[0-9] through.
+                     ,(kbd "C-h")
+                     ,(kbd "C-w")
+                     ,(kbd "C-g")
+                     ,(kbd "C-SPC")
+                     ,(kbd "M-x")
+                     ,(kbd "M-`")
+                     ,(kbd "M-&")
+                     ,(kbd "M-:")
+                     ,(kbd "s-,")
+                     ,(kbd "s-$")
+                     ,(kbd "s-.")
+                     ,(kbd "s-;")
+                     ,(kbd "s-/")
+                     ,(kbd "s-g"))))
 
   ;; Ctrl+Q will enable the next key to be sent directly.
   (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
@@ -186,16 +188,9 @@
           ([?\s-F] . exwm-layout-toggle-fullscreen)
           ([?\s-$] . (lambda (command)
                        (interactive (list (read-shell-command "$ ")))
-                       (start-process-shell-command command nil command)))
-          ;; ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
-          ;; ([?\s-/] . exwm-workspace-switch)
-          ;; ,@(mapcar (lambda (i)
-          ;;             `(,(kbd (format "s-%d" i)) .
-          ;;               (lambda ()
-          ;;                 (interactive)
-          ;;                 (exwm-workspace-switch-create ,i))))
-          ;;           (number-sequence 0 9))
-          ))
+                       (start-process-shell-command command nil command)))))
+  ;; ([?\s-`] . (lambda () (interactive) (exwm-workspace-switch-create 0)))
+  ;; ([?\s-/] . exwm-workspace-switch)
 
   ;; Configure line-mode simulation key bindings.
   (setq exwm-input-simulation-keys
@@ -226,7 +221,7 @@
                          (string= exwm-class-name "Firefox"))
                 (exwm-input-set-local-simulation-keys
                  `(,@exwm-input-simulation-keys
-                   ;; Allow double Emacs double C-c|w chord to send a C-c|w.
+                   ;; Allow Emacs double C-c|w chord to send a C-c|w in Firefox.
                    ([?\C-c ?\C-c] . ?\C-c)
                    ([?\C-w ?\C-w] . ?\C-w))))))
 
@@ -261,21 +256,12 @@
   (exwm-input-set-key (kbd "S-s-<return>")
                       (lambda () (interactive) (mb/split-with-browser)))
 
-  ;; ;; TODO: WIP vital stats function.
-  ;; (exwm-input-set-key (kbd "s-?")
-  ;;                     (lambda () (interactive)
-  ;;                       (message "%s %s"
-  ;;                                (concat (format-time-string "%Y-%m-%d %T (%a w%W)"))
-  ;;                                (battery-format "| %L: %p%% (%t)"
-  ;;                                                (funcall battery-status-function)))))
-
   ;; Allow resizing with mouse, of non-floating windows.
   (setq window-divider-default-bottom-width 2
         window-divider-default-right-width 2)
   (window-divider-mode)
 
-  ;; TODO: Emacs desktop management for non-VM based NixOS.
-  ;;
+  ;; Emacs desktop management for non-VM based NixOS.
   (require 'desktop-environment)
   (desktop-environment-mode)
   (setq desktop-environment-brightness-set-command "light %s")
@@ -360,7 +346,8 @@
 
 ;;; Polybar
 (defun mb/send-polybar-hook (name number)
-  (start-process-shell-command "polybar-msg" nil (format "polybar-msg hook %s %s" name number)))
+  (start-process-shell-command "polybar-msg" nil
+                               (format "polybar-msg hook %s %s" name number)))
 
 (defun mb/update-polybar-exwm (&rest _)
   (mb/send-polybar-hook "exwm" 1)
