@@ -40,9 +40,9 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
+  - [[#proced][proced]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
-  - [[#garbage-collection][Garbage collection]]
 
 * [8/12] Tasks :noexport:
 - [X] A binding for org-babel-remove-result when in Org mode
@@ -74,7 +74,6 @@
 (package! edit-indirect)
 (package! vimrc-mode)
 (package! pinentry)
-(package! deadgrep)
 (package! ripgrep)
 (package! move-text)
 (package! buffer-move)
@@ -84,7 +83,7 @@
 (package! command-log-mode)
 (package! rego-mode)
 (package! git-link)
-(package! org-present)
+(package! proced-narrow)
 
 ;; EXWM related.
 ;; (package! exwm-firefox-evil)
@@ -885,6 +884,47 @@ Automatically resize the viewable windows according to the golden ratio.
          ))
   )
 #+end_src
+** proced
+#+begin_src emacs-lisp
+(use-package! proced
+  :config
+  (setq-default proced-tree-flag t
+                proced-filter 'user))
+
+(map! :leader
+      (:prefix-map ("o" . "open")
+       :desc "Proced" "=" #'proced))
+#+end_src
+*** Narrowing processes
+#+begin_src elisp
+(use-package! proced-narrow
+  :after proced
+  :config
+  (map!
+   :map proced-mode-map
+   :n "/" #'proced-narrow))
+#+end_src
+*** Readable Nix paths
+#+begin_src elisp
+;; WIP Shorten long paths.
+;; (defun +mb/proced-remove-nix-path (oldformat &rest xs)
+;;   (let ((xs (--map (->> it
+;;                      (s-replace-regexp "/nix/store/[^/]+" "{nix}")
+;;                      (s-replace-regexp (template "^/home/<<(user-login-name)>>") "~")
+;;                      )
+;;                    xs)))
+;;     (progn (message xs)
+;;            (apply oldformat xs))))
+;; (defun +mb/proced-remove-nix-path (fn &rest args)
+;;   "Run FN with ARGS then return only the process without the path."
+;;   (let ((parts (split-string (apply fn args) " ")))
+;;     (message (apply fn args))
+;;     ;; (file-name-nondirectory (car parts))
+;;     ;; (s-replace-regexp "/nix/store/[^/]+" "{nix}" parts)
+;;     ))
+
+;; (advice-add #'proced-format-args :around #'+mb/proced-remove-nix-path)
+#+end_src
 ** vterm
 Use system-wide vterm lib when compiling.
 #+BEGIN_SRC elisp
@@ -972,7 +1012,8 @@ Allow stop scroll term sequence.
 
 *** Titles
 #+BEGIN_SRC elisp
-(setq vterm-buffer-name-string "vterm: %s")
+(setq vterm-buffer-name "vterm"
+      vterm-buffer-name-string "vterm: %s")
 #+END_SRC
 
 *** Prompt Outlines
@@ -1102,14 +1143,4 @@ Load my flavour of EXWM when in Linux.
 #+begin_src elisp
 (when IS-LINUX
   (load! "+exwm"))
-#+end_src
-** TODO Garbage collection
-#+begin_src elisp
-(defun +mb/increase-mem ()
-  "Allow Emacs to use up to 1 GB of memory."
-  (setq +lsp--default-gcmh-high-cons-threshold 1073741824
-        gcmh-high-cons-threshold 1073741824))
-(after! lsp-mode (+mb/increase-mem))
-(after! gcmh (+mb/increase-mem))
-(after! gcmh (setq-default gcmh-idle-delay 5))
 #+end_src

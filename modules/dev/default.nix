@@ -8,8 +8,9 @@
     gnumake
     niv
     nixfmt
+    racket
     rnix-lsp
-    shfmt
     shellcheck
+    shfmt
   ];
 }

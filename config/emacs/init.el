@@ -86,6 +86,7 @@
        (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor
        (yaml +lsp)       ; JSON, but readable
+       (racket +xp)      ; always be scheming
 
        :config
        literate
