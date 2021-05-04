@@ -115,7 +115,7 @@
       };
       polybar = {
         enable = true;
-        script = "polybar top &";
+        script = ""; # Manage Polybar lifecycle from within Emacs/EXWM.
         package = pkgs.polybar.override { pulseSupport = true; };
         config = {
           settings = { screenchange-reload = true; };

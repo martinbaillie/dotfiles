@@ -1,17 +1,35 @@
 ;;; +exwm.el -*- lexical-binding: t; -*-
 
+(defun mb/set-wallpaper ()
+  (interactive)
+  (start-process-shell-command
+   "feh" nil  "feh --bg-fill ~/.config/wallpaper"))
+
+(setq mb/panel-process nil)
+
+(defun mb/kill-panel ()
+  (interactive)
+  (when mb/panel-process
+    (ignore-errors
+      (kill-process mb/panel-process)))
+  (setq mb/panel-process nil))
+
+(defun mb/start-panel ()
+  (interactive)
+  (mb/kill-panel)
+  (setq mb/panel-process
+        (start-process-shell-command "polybar" nil "polybar top")))
+
 ;; Runs after EXWM initialises.
 (defun mb/exwm-init ()
   ;; Start at workspace 1.
   ;; (exwm-workspace-switch-create 1)
 
+  ;; Start the panel.
+  (mb/start-panel)
+
   ;; Set a wallpaper.
   (run-at-time "1 sec" nil (lambda () (mb/set-wallpaper))))
-
-(defun mb/set-wallpaper ()
-  (interactive)
-  (start-process-shell-command
-   "feh" nil  "feh --bg-fill ~/.config/wallpaper"))
 
 ;; External monitor handling.
 (defun mb/screen-switch ()
