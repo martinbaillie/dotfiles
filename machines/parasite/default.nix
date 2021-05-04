@@ -80,9 +80,11 @@
 
     home.services.polybar.config = {
       "bar/top" = {
-        dpi = 170;
-        height = 40;
-        offset-y = 8;
+        # dpi = 170;
+        # height = 40;
+        # offset-y = 8;
+        height = 23;
+        offset-y = 5;
       };
       "module/battery" = {
         adapter = "ACAD";

@@ -588,11 +588,16 @@ Silence annoying popup
 *** Disabled modes
 #+BEGIN_SRC elisp
 (setq +format-on-save-enabled-modes
-  '(not elisp-mode
-        sql-mode
-        yaml-mode
-        sgml-xml-mode)
-  )
+      '(not elisp-mode
+            sql-mode
+            yaml-mode
+            sgml-xml-mode)
+      )
+
+(defun mb/format-on-save-disable ()
+  "Disable formatting on save."
+  (interactive)
+  (remove-hook 'before-save-hook #'+format-buffer-h))
 #+END_SRC
 
 ** company
