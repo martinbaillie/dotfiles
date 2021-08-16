@@ -1,19 +1,16 @@
-{ lib, pkgs, ... }:
-let
-  inherit (lib) mkMerge mkIf;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
-    isLinux isDarwin;
+{ config, options, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.web.slack;
 in {
-  my = mkMerge [
-    (mkIf isDarwin { casks = [ "slack" ]; })
-    (mkIf isLinux { packages = with pkgs; [ slack ]; })
-    # REVIEW: Awaiting decent native Electron support for Wayland.
-    # https://github.com/electron/electron/issues/10915
-    #   my.packages = let
-    #     wrapper = with pkgs;
-    #       writeShellScriptBin "slack" ''
-    #         GDK_BACKEND=x11 ${slack}/bin/slack $@
-    #       '';
-    #   in with pkgs; [ wrapper ];
-  ];
+  options.modules.web.slack = { enable = my.mkBoolOpt false; };
+
+  config = mkIf cfg.enable (mkMerge [
+    # Slack @ nixpkgs on Darwin broken.
+    # FIXME: https://github.com/NixOS/nixpkgs/pull/125051
+    (if (builtins.hasAttr "homebrew" options) then {
+      homebrew.casks = [ "slack" ];
+    } else {
+      user.packages = [ pkgs.slack ];
+    })
+  ]);
 }

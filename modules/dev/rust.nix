@@ -1,23 +1,15 @@
-{ pkgs, ... }: {
-  my = {
-    home.xdg.configFile = {
-      "zsh/rc.d/env.rust.zsh".source = <config/rust/env.zsh>;
-    };
-    packages = with pkgs;
-      let
-        rustChannel = pkgs.rustChannelOf {
-          date = "2020-06-08";
-          channel = "nightly";
-        };
+{ config, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.dev.rust;
+in {
+  options.modules.dev.rust = { enable = my.mkBoolOpt false; };
 
-        rust = rustChannel.rust.override {
-          extensions = [
-            "clippy-preview"
-            "rust-analysis"
-            "rls-preview"
-            "rustfmt-preview"
-          ];
-        };
-      in [ rust ];
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [ rustc cargo clippy rustfmt rust-analyzer rls ];
+
+    env = {
+      CARGO_HOME = "$XDG_DATA_HOME/cargo";
+      PATH = [ "$CARGO_HOME/bin" ];
+    };
   };
 }

@@ -1,13 +1,3 @@
-# Machines
-machines/*
-machines/parasite/packer_cache
-
-!machines/tyro
-!machines/parasite
-!machines/betsy
-!machines/aero
-!machines/ci
-
 # Machine-local secrets.
 .secrets
 
@@ -30,3 +20,6 @@ config/emacs/packages.el
 # Vagrant boxes.
 **/*.box
 **/.vagrant
+
+# Tracking improvements.
+TODO.org

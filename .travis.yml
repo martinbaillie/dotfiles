@@ -1,31 +1,31 @@
-env:
-  global:
-    - CACHIX_CACHE=martinbaillie
-sudo: yes
-git:
-  submodules: false
-jobs:
-  include:
-    # - stage: Build (linux)
-    - stage: build
-      language: nix
-      nix: 2.3.4
-    # NOTE: Moved Darwin to GitHub Actions.
-    # - stage: Build (darwin)
-    #   os: osx
-    #   # Fix OSX, see https://travis-ci.community/t/cannot-use-nix-support-on-osx/2927
-    #   language: generic
-    #   before_install:
-    #   - curl https://nixos.org/nix/install | sh
-    #   - source /Users/travis/.nix-profile/etc/profile.d/nix.sh
-script:
-  # Install Cachix.
-  - nix-env --quiet -iA cachix -f https://cachix.org/api/v1/install
-  - make dep
-  - cachix use "${CACHIX_CACHE}"
-  - nix path-info --all | grep -v '.drv$' > store-path-pre-build
-  # Run the CI.
-  - timeout 45m make ci
-after_script:
-  # Push resultant CI binaries to my Cachix cache.
-  - nix path-info --all | grep -v '.drv$' | cat - store-path-pre-build | sort | uniq -u | cachix push "${CACHIX_CACHE}"
+# env:
+#   global:
+#     - CACHIX_CACHE=martinbaillie
+# sudo: yes
+# git:
+#   submodules: false
+# jobs:
+#   include:
+#     # - stage: Build (linux)
+#     - stage: build
+#       language: nix
+#       nix: 2.3.4
+#     # NOTE: Moved Darwin to GitHub Actions.
+#     # - stage: Build (darwin)
+#     #   os: osx
+#     #   # Fix OSX, see https://travis-ci.community/t/cannot-use-nix-support-on-osx/2927
+#     #   language: generic
+#     #   before_install:
+#     #   - curl https://nixos.org/nix/install | sh
+#     #   - source /Users/travis/.nix-profile/etc/profile.d/nix.sh
+# script:
+#   # Install Cachix.
+#   - nix-env --quiet -iA cachix -f https://cachix.org/api/v1/install
+#   - make dep
+#   - cachix use "${CACHIX_CACHE}"
+#   - nix path-info --all | grep -v '.drv$' > store-path-pre-build
+#   # Run the CI.
+#   - timeout 45m make ci
+# after_script:
+#   # Push resultant CI binaries to my Cachix cache.
+#   - nix path-info --all | grep -v '.drv$' | cat - store-path-pre-build | sort | uniq -u | cachix push "${CACHIX_CACHE}"

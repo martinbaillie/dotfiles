@@ -1,11 +1,15 @@
-{ lib, pkgs, ... }:
-let
-  inherit (lib) mkMerge mkIf;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
-    isLinux isDarwin;
+{ config, options, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.web.zoom;
 in {
-  my = mkMerge [
-    (mkIf isDarwin { casks = [ "zoom" ]; })
-    (mkIf isLinux { packages = with pkgs; [ zoom-us ]; })
-  ];
+  options.modules.web.zoom = { enable = my.mkBoolOpt false; };
+
+  config = mkIf cfg.enable (mkMerge [
+    # No Zoom package for Darwin.
+    (if (builtins.hasAttr "homebrew" options) then {
+      homebrew.casks = [ "zoom" ];
+    } else {
+      user.packages = [ pkgs.zoom ];
+    })
+  ]);
 }

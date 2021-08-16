@@ -1,16 +1,19 @@
-{ pkgs, lib, ... }: {
-  imports = let
-    inherit (lib.systems.elaborate { system = builtins.currentSystem; })
-      isLinux;
-  in if isLinux then [ ./default.linux.nix ] else [ ./default.darwin.nix ];
-  my.packages = with pkgs; [
-    cmake
-    gnumake
-    niv
-    nixfmt
-    racket
-    rnix-lsp
-    shellcheck
-    shfmt
-  ];
+{ config, options, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.dev;
+in {
+  options.modules.dev = { enable = my.mkBoolOpt false; };
+
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
+      cmake
+      gnumake
+      niv
+      nixfmt
+      nodePackages.bash-language-server
+      rnix-lsp
+      shellcheck
+      shfmt
+    ];
+  };
 }

@@ -1,26 +1,11 @@
-{ lib, pkgs, ... }:
-with pkgs;
+{ config, lib, pkgs, inputs, ... }:
+with lib;
 let
-  inherit (lib) optionals optionalString mkMerge mkIf makeBinPath;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
-    isLinux isDarwin;
-  myEmacs = if isDarwin then
-  # Emacs Darwin (Sierra/Mojave) native-comp builds.
-    (import (builtins.fetchTarball
-      "https://github.com/twlz0ne/nix-gccemacs-sierra/archive/7f7b0af6a187ed4d7f9ae5310c8d12a63d1b92f3.tar.gz")).emacsGccSierra
-  else
-    emacsGcc;
+  cfg = config.modules.editors.emacs;
+  configDir = "${config.dotfiles.configDir}/emacs";
 
-  myEmacsClient = writeShellScriptBin "emacs.bash" (''
-    ${myEmacs}/bin/emacsclient --no-wait --eval \
-      "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
-    if [[ "$?" -eq 1 ]]; then
-      ${myEmacs}/bin/emacsclient \
-        --quiet --create-frame --alternate-editor="" "$@"
-    else
-      ${myEmacs}/bin/emacsclient --quiet "$@"
-    fi
-  '' + optionalString isDarwin ''
+  # Darwin specific run-or-raise style script.
+  osascript = ''
     command -v osascript > /dev/null 2>&1 && \
         osascript -e 'tell application "Emacs" to activate' 2>/dev/null
     command -v osascript > /dev/null 2>&1 && \
@@ -28,39 +13,64 @@ let
         set frontmost to true
         windows where title contains "Emacs"
         if result is not {} then perform action "AXRaise" of item 1 of result
-    end tell' &> /dev/null || exit 0'');
-in mkMerge [
-  {
-    my = {
-      packages = [
-        # Emacs itself.
-        ((emacsPackagesNgGen myEmacs).emacsWithPackages
-          (epkgs: with epkgs; [ vterm exwm emacsql emacsql-sqlite ]))
-        myEmacsClient
+    end tell' &> /dev/null || exit 0'';
 
-        # Emacs external dependencies.
-        discount
-        editorconfig-core-c
-        emacs-pdf-tools
-        languagetool
-        pandoc
-        zstd
+  # My Emacs and all its needs and wants.
+  emacsWithDeps = with pkgs;
+    [
+      ((emacsPackagesNgGen cfg.package).emacsWithPackages (epkgs:
+        with epkgs;
+        # Use Nix to manage packages with non-trivial userspace dependencies.
+        [ emacsql emacsql-sqlite pdf-tools org-pdftools vterm ]
+        ++ optional (config.modules.desktop.wm == "exwm") exwm))
 
-        (hiPrio clang)
-      ] ++ optionals isLinux [ wkhtmltopdf ];
+      # Use my own bespoke wrapper for `emacsclient`.
+      (writeShellScriptBin "emacs.bash" (''
+        ${cfg.package}/bin/emacsclient --no-wait --eval \
+          "(if (> (length (frame-list)) 0) 't)" 2> /dev/null | grep -q t
+        if [[ "$?" -eq 1 ]]; then
+          ${cfg.package}/bin/emacsclient \
+            --quiet --create-frame --alternate-editor="" "$@"
+        else
+          ${cfg.package}/bin/emacsclient --quiet "$@"
+        fi
+      '' + optionalString config.currentSystem.isDarwin osascript))
 
-      home.xdg.configFile = {
-        "zsh/rc.d/rc.emacs.zsh".source = <config/emacs/rc.zsh>;
-        "zsh/rc.d/env.emacs.zsh".source = <config/emacs/env.zsh>;
-      };
+      discount
+      editorconfig-core-c
+      languagetool
+      # pandoc
+      # (hiPrio clang)
+    ] ++ optional config.currentSystem.isLinux wkhtmltopdf;
+in {
+  options.modules.editors.emacs = {
+    enable = my.mkBoolOpt false;
+    package = mkOption {
+      type = types.package;
+      default = pkgs.emacs;
+      description = ''
+        Emacs derivation to use.
+      '';
     };
+  };
 
-    fonts.fonts = [ emacs-all-the-icons-fonts ];
-  }
+  config = mkIf cfg.enable (mkMerge [
+    {
+      nixpkgs.overlays = [ inputs.emacs-overlay.overlay ];
 
-  (mkIf isLinux {
-    my = {
-      home.xdg = {
+      env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
+
+      home.configFile."zsh/rc.d/rc.emacs.zsh".source = "${configDir}/rc.zsh";
+
+      fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
+    }
+    (mkIf config.currentSystem.isDarwin {
+      environment.systemPackages = emacsWithDeps;
+    })
+    (mkIf config.currentSystem.isLinux {
+      user.packages = emacsWithDeps;
+      home = {
+
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]
           Categories=Development;TextEditor;
@@ -74,7 +84,7 @@ in mkMerge [
           Type=Application
         '';
 
-        mimeApps.defaultApplications = {
+        defaultApplications = {
           # Prefer to use Emacs for file and directory operations.
           "application/octet-stream" = "emacsclient.desktop";
           "application/pdf" = "emacsclient.desktop";
@@ -107,6 +117,6 @@ in mkMerge [
           "text/x-tex" = "emacsclient.desktop";
         };
       };
-    };
-  })
-]
+    })
+  ]);
+}

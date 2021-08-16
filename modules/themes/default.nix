@@ -1,46 +1,57 @@
 { options, config, lib, ... }:
-with lib; {
-  options.theme = {
-    wallpaper = mkOption { type = with types; nullOr (either str path); };
-    icons = mkOption { type = with types; nullOr (either str path); };
-    tridactyl = mkOption { type = types.str; };
+with builtins;
+with lib;
+with lib.my;
+let cfg = config.modules.theme;
+in {
+  options.modules.theme = with types; {
+    mode = mkOption {
+      type = enum [ "light" "dark" ];
+      default = "light";
+      apply = v:
+        # Allow overrides via $THEME_MODE.
+        let theme = getEnv "THEME_MODE";
+        in if theme != "" then theme else v;
+    };
+    wallpaper = mkOption { type = nullOr (either str path); };
+    icons = mkOption { type = nullOr (either str path); };
+    tridactyl = mkStrOpt { };
     colours = {
-      bg = mkOption { type = types.str; };
-      bgalt = mkOption { type = types.str; };
-      base0 = mkOption { type = types.str; };
-      base1 = mkOption { type = types.str; };
-      base2 = mkOption { type = types.str; };
-      base3 = mkOption { type = types.str; };
-      base4 = mkOption { type = types.str; };
-      base5 = mkOption { type = types.str; };
-      base6 = mkOption { type = types.str; };
-      base7 = mkOption { type = types.str; };
-      base8 = mkOption { type = types.str; };
-      fg = mkOption { type = types.str; };
-      fgalt = mkOption { type = types.str; };
-      grey = mkOption { type = types.str; };
-      red = mkOption { type = types.str; };
-      orange = mkOption { type = types.str; };
-      green = mkOption { type = types.str; };
-      teal = mkOption { type = types.str; };
-      yellow = mkOption { type = types.str; };
-      blue = mkOption { type = types.str; };
-      darkblue = mkOption { type = types.str; };
-      magenta = mkOption { type = types.str; };
-      violet = mkOption { type = types.str; };
-      cyan = mkOption { type = types.str; };
-      darkcyan = mkOption { type = types.str; };
+      bg = mkStrOpt { };
+      bgalt = mkStrOpt { };
+      base0 = mkStrOpt { };
+      base1 = mkStrOpt { };
+      base2 = mkStrOpt { };
+      base3 = mkStrOpt { };
+      base4 = mkStrOpt { };
+      base5 = mkStrOpt { };
+      base6 = mkStrOpt { };
+      base7 = mkStrOpt { };
+      base8 = mkStrOpt { };
+      fg = mkStrOpt { };
+      fgalt = mkStrOpt { };
+      grey = mkStrOpt { };
+      red = mkStrOpt { };
+      orange = mkStrOpt { };
+      green = mkStrOpt { };
+      teal = mkStrOpt { };
+      yellow = mkStrOpt { };
+      blue = mkStrOpt { };
+      darkblue = mkStrOpt { };
+      magenta = mkStrOpt { };
+      violet = mkStrOpt { };
+      cyan = mkStrOpt { };
+      darkcyan = mkStrOpt { };
     };
   };
 
   config = {
-    my = {
-      env.ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE =
-        "fg=${config.theme.colours.fg},bg=${config.theme.colours.base4}";
+    modules.shell.zsh.env.ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE =
+      "fg=${cfg.colours.fg},bg=${cfg.colours.base4}";
 
-      home.xdg.configFile."wallpaper".source =
-        let local = "${(builtins.getEnv "XDG_DATA_HOME")}/.wallpaper";
-        in if builtins.pathExists local then local else config.theme.wallpaper;
-    };
+    home.configFile."wallpaper".source =
+      # Allow local overriding of wallpaper.
+      let local = "${(getEnv "XDG_DATA_HOME")}/.wallpaper";
+      in if pathExists local then local else cfg.wallpaper;
   };
 }
