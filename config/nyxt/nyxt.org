@@ -1,0 +1,7 @@
+#+TITLE: Nyxt browser configuration
+
+* Dark mode
+#+begin_src lisp :tangle "init.lisp"
+(define-configuration buffer
+    ((default-modes (append '(emacs-mode) %slot-default%))))
+#+end_src

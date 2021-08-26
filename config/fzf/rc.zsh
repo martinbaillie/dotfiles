@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+# DEPRECATED. Try `ijq`.
 fzf-jq() {
   local input=${1:-}
   if [[ -p /dev/stdin ]]; then
@@ -14,3 +15,9 @@ fzf-jq() {
 
 # Don't group completions.
 zstyle ':completion:*' format ''
+
+# Filename colouring.
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# Case insensitive completions.
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'

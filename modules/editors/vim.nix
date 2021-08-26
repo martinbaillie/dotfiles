@@ -1,8 +1,21 @@
-{ pkgs, ... }: {
-  my = {
-    packages = with pkgs; [ neovim ];
-    env.VIMINIT = "let \\$RC='\\$XDG_CONFIG_HOME/nvim/init.vim'|source \\$RC";
-    home.xdg.configFile = {
+{ config, options, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.editors.vim;
+in {
+  options.modules.editors.vim = { enable = my.mkBoolOpt false; };
+
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [ editorconfig-core-c neovim ];
+
+    modules.shell.zsh.aliases = {
+      vi = "nvim";
+      vim = "nvim";
+    };
+
+    modules.shell.zsh.env.VIMINIT =
+      "let \\$RC='\\$XDG_CONFIG_HOME/nvim/init.vim'|source \\$RC";
+
+    home.configFile = {
       "nvim/init.vim".text = ''
         let g:mapleader  = ','
         syntax sync minlines=256
@@ -67,11 +80,6 @@
         " indenting/dedenting
         vnoremap < <gv
         vnoremap > >gv
-      '';
-
-      "zsh/rc.d/rc.nix.zsh".text = ''
-        alias vim=nvim
-        alias vi=nvim
       '';
     };
   };

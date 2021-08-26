@@ -4,18 +4,18 @@
 * :house_with_garden: [[https://builtwithnix.org][https://img.shields.io/badge/built_with-Nix-5277C3.svg?logo=nixos&labelColor=24292E]]  [[https://travis-ci.org/martinbaillie/dotfiles][https://img.shields.io/travis/martinbaillie/dotfiles/master.svg?label=NixOS&logo=travis&labelColor=24292E]]  [[https://github.com/martinbaillie/dotfiles/actions?query=workflow%3AmacOS][https://github.com/martinbaillie/dotfiles/workflows/macOS/badge.svg]] :TOC_2:noexport:
 - [[#about][About]]
 - [[#installation-notes][Installation Notes]]
-  - [[#nixos][NixOS]]
   - [[#macos][macOS]]
+  - [[#nixos][NixOS]]
 - [[#references][References]]
 
 * About
 Welcome to the [[https://en.wiktionary.org/wiki/bikeshedding][bikeshed]]!
 
-This repository houses all my [[machines][machine configurations]] expressed declaratively using [[https://nixos.org/nix][Nix]]. It covers both my personal and work devices that are running either NixOS or macOS.
+This repository houses all my [[machines][machine configurations]] expressed declaratively using a [[https://nixos.org/nix][Nix]] [[https://nixos.wiki/wiki/Flakes][flake]]. It covers both my personal and work devices that are running either NixOS or macOS.
 
-The expressions are organised into platform-agnostic [[modules][modules]] that leverage the likes of the [[https://github.com/NixOS/nixpkgs][nixpkgs]], [[https://github.com/rycee/home-manager][home-manager]] and [[https://github.com/LnL7/nix-darwin][nix-darwin]] channels to fully configure the OS and userspace from scratch.
+The expressions are organised into platform-agnostic [[modules][modules]] that leverage the likes of the [[https://github.com/NixOS/nixpkgs][nixpkgs]], [[https://github.com/rycee/home-manager][home-manager]] and [[https://github.com/LnL7/nix-darwin][nix-darwin]] to fully configure the OS and userspace from scratch.
 
-These days I am spending the majority of time in either Firefox or Emacs (+[[https://github.com/akermu/emacs-libvterm][vterm]]). On NixOS I am using the [[https://github.com/swaywm/sway][Sway]] Wayland compositor and on macOS I am usually just running native fullscreen, ⌘↹ing between the two previously mentioned apps. Additionally, a simple [[modules/themes][theming]] system is used to switch various things between light and dark versions, and a [[options.nix#L22][secrets]] attribute set (kept encrypted in a private repository) is referenced throughout.
+These days I am spending the majority of time in either Firefox or Emacs (+[[https://github.com/akermu/emacs-libvterm][vterm]]). On NixOS I am using [[https://github.com/ch11ng/exwm][EXWM]] and on macOS I am usually just running native fullscreen, ⌘↹ing between the two previously mentioned apps. Additionally, a simple [[modules/themes][theming]] system is used to switch various things between light and dark versions, and a [[options.nix#L22][secrets]] attribute set (kept encrypted in a private repository) is referenced throughout.
 
 #+BEGIN_QUOTE
 NOTE: Some twisted souls found value in all the ricing of the previous incarnation of this repository. I'll keep archived on this [[../../tree/archive][branch]] for reference.
@@ -27,6 +27,88 @@ The [[Makefile][Makefile]] (in conjunction with some helpful [[default.nix#L58][
 
 * Installation Notes
 Below are some rough platform specific installation notes I use to go from fresh installs to fully configured machine.
+** macOS
+From a fresh macOS install.
+**** Enable SSHd
+#+BEGIN_SRC shell
+sudo systemsetup -setremotelogin on
+#+END_SRC
+**** Install XCode
+#+BEGIN_SRC shell
+sudo xcodebuild -license
+#+END_SRC
+**** Install Homebrew for those macOS GUI apps unmanageable through Nix
+#+BEGIN_SRC shell
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+#+END_SRC
+**** [APPLE SILICON] Install Rosetta2
+#+begin_src shell
+softwareupdate --install-rosetta
+#+end_src
+**** Install Nix (multi-user)
+NOTE: Do not use =sudo= here.
+#+BEGIN_SRC shell
+# curl https://nixos.org/nix/install | sh
+sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume --daemon
+#+END_SRC
+**** Enable Flakes and experimental commands
+Move to experimental.
+#+begin_src shell
+nix-env -iA nixpkgs.nixUnstable
+#+end_src
+
+#+begin_src shell
+cat << EOF | sudo tee -a /etc/nix/nix.conf
+experimental-features = nix-command flakes
+extra-platforms = x86_64-darwin aarch64-darwin
+EOF
+sudo launchctl kickstart -k system/org.nixos.nix-daemon
+#+end_src
+**** [OPTIONAL] Confirm remotely accessible
+#+BEGIN_SRC shell
+ssh $REMOTE nix-daemon --version
+#+END_SRC
+**** [OPTIONAL] Seed Nix store contents from an existing Darwin machine
+#+BEGIN_SRC shell
+nix copy --no-check-sigs --keep-going --to ssh-ng://$REMOTE ~/.nix-profile
+#+END_SRC
+**** Grab dotfiles using forwarded agent
+#+BEGIN_SRC shell
+sudo git clone --recursive git@github.com:martinbaillie/dotfiles.git /etc/dotfiles
+sudo chown -R $USER: /etc/dotfiles
+#+END_SRC
+**** Optionally decrypt secrets one-off
+If not forwarding.
+#+BEGIN_SRC shell
+nix-shell -p gpg
+mkdir -m 700 ~/.gnupg-temp
+<download gpg key>  > ~/.gnupg-temp/temporary.asc
+gpg --homedir ~/.gnupg-temp --import temporary.asc
+gpg --homedir ~/.gnupg-temp -d secrets.nix.gpg > secrets.nix
+gpg-connect-agent --homedir ~/.gnupg-temp KILLAGENT /bye
+rm -r ~/.gnupg-temp
+#+END_SRC
+**** Set up Cachix one-off
+#+BEGIN_SRC shell
+nix-shell -p cachix
+cachix use martinbaillie
+#+END_SRC
+**** Switch to Nix configuration based on hostname
+#+BEGIN_SRC shell
+make switch
+#+END_SRC
+**** Switch login shell to zsh
+#+BEGIN_SRC shell
+chsh -s /run/current-system/sw/bin/zsh $USER
+#+END_SRC
+**** Configure Emacs
+#+BEGIN_SRC shell
+make config-emacs
+#+END_SRC
+**** Configure Casks
+Set Flux, Karabiner, Spectacle, Cursorcerer to start at boot, install kernel
+extensions and so on.
+**** Bump Kernel / User Limits
 ** NixOS
 **** Media
 [[https://nixos.org/nixos/download.html][Download]] and verify latest NixOS minimal ISO:
@@ -167,135 +249,6 @@ gpg --import ~/.gnupg/gpg.asc
 #+BEGIN_SRC shell
 make config-emacs
 #+END_SRC
-** macOS
-From a fresh macOS install.
-**** Enable SSHd
-#+BEGIN_SRC shell
-sudo systemsetup -setremotelogin on
-#+END_SRC
-
-**** Install XCode
-#+BEGIN_SRC shell
-sudo xcodebuild -license
-#+END_SRC
-
-**** Install Nix (multi-user)
-NOTE: Do not use =sudo= here.
-#+BEGIN_SRC shell
-# curl https://nixos.org/nix/install | sh
-sh <(curl https://nixos.org/nix/install) --daemon
-. /etc/bashrc
-#+END_SRC
-
-**** Confirm remotely accessible
-#+BEGIN_SRC shell
-ssh $REMOTE nix-daemon --version
-#+END_SRC
-
-**** Add regular user to Nix
-#+BEGIN_SRC shell
-cat << EOF | sudo tee -a /etc/nix/nix.conf
-trusted-users = $USER @admin
-allowed-users = *
-EOF
-sudo killall nix-daemon
-#+END_SRC
-
-**** Optionally seed contents from an existing Nix Darwin machine
-#+BEGIN_SRC shell
-nix copy --no-check-sigs --keep-going --to ssh-ng://$REMOTE ~/.nix-profile
-#+END_SRC
-
-**** Install Nix Darwin
-#+BEGIN_SRC shell
-nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
-./result/bin/darwin-installer
-. /etc/static/bashrc
-#+END_SRC
-
-**** Add Home Manager
-#+BEGIN_SRC shell
-nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-#+END_SRC
-
-**** Install Homebrew for those macOS GUI apps unmanageable through Nix
-#+BEGIN_SRC shell
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-#+END_SRC
-
-**** Optionally set up temp SSH key out-of-band
-If not forwarding an agent socket.
-#+BEGIN_SRC shell
-mkdir -m 700 ~/.ssh
-<download ssh key> > ~/.ssh/id_ed25519
-ssh-add
-rm -r ~/.ssh
-#+END_SRC
-
-**** Grab dotfiles
-#+BEGIN_SRC shell
-sudo git clone --recursive git@github.com:martinbaillie/dotfiles.git /etc/dotfiles
-sudo chown -R $USER: /etc/dotfiles
-#+END_SRC
-
-**** Optionally decrypt secrets one-off
-If not forwarding.
-#+BEGIN_SRC shell
-nix-shell -p gpg
-mkdir -m 700 ~/.gnupg-temp
-<download gpg key>  > ~/.gnupg-temp/temporary.asc
-gpg --homedir ~/.gnupg-temp --import temporary.asc
-gpg --homedir ~/.gnupg-temp -d secrets.nix.gpg > secrets.nix
-gpg-connect-agent --homedir ~/.gnupg-temp KILLAGENT /bye
-rm -r ~/.gnupg-temp
-#+END_SRC
-
-**** Backup macOS default shell RCs
-#+BEGIN_SRC shell
-sudo mv /etc/shells /etc/shells.before-nix-darwin
-sudo mv /etc/bashrc /etc/bashrc.before-nix-darwin
-sudo mv /etc/zshrc /etc/zshrc.before-nix-darwin
-sudo mv /etc/zprofile /etc/zprofile.before-nix-darwin
-#+END_SRC
-
-**** Set up Cachix one-off
-#+BEGIN_SRC shell
-nix-shell -p cachix
-cachix use martinbaillie
-#+END_SRC
-
-**** Switch to Nix Darwin
-NOTE: Before running, make a new/link existing machine.
-#+BEGIN_SRC shell
-make channels update switch
-#+END_SRC
-
-**** Switch login shell to zsh
-#+BEGIN_SRC shell
-chsh -s /run/current-system/sw/bin/zsh $USER
-#+END_SRC
-
-**** Import GPG key
-#+BEGIN_QUOTE
-NOTE: macOS gpg has a default interactive pinentry so don't be remote.
-#+END_QUOTE
-
-#+BEGIN_SRC shell
-gpg --import ~/.gnupg/gpg.asc
-#+END_SRC
-
-**** Configure Emacs
-#+BEGIN_SRC shell
-make config-emacs
-#+END_SRC
-
-**** Configure Casks
-Set Flux, Karabiner, Spectacle, Cursorcerer to start at boot, install kernel
-extensions and so on.
-
-**** Bump Kernel / User Limits
-
 * References
 - [[https://github.com/hlissner][@hlissner]]
 - [[https://github.com/jwiegley][@jwiegley]]

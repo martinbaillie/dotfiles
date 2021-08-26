@@ -14,23 +14,32 @@ AUTOPAIR_INHIBIT_INIT=1
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_USE_ASYNC=true
 
-# Load zgen plugin manager.
-ZGEN_RESET_ON_CHANGE=(${ZDOTDIR}/.zshrc)
-source "${ZGEN_SRC}/zgen.zsh"
+# Load zgen(om) plugin manager.
+ZGEN_RESET_ON_CHANGE=(${ZDOTDIR}/.zshrc ${XDG_DATA_HOME}/zsh/.zshrc)
+source "${ZGEN_SRC}/zgenom.zsh"
 
-# Load various plugins.
-if ! zgen saved; then
-  zgen prezto
-  zgen load hlissner/zsh-autopair 'autopair.zsh'
-  zgen load junegunn/fzf shell
-  zgen load chisui/zsh-nix-shell nix-shell.plugin.zsh
-  zgen load chriskempson/base16-shell
-  zgen load aperezdc/zsh-fzy
-  zgen load changyuheng/fz
-  zgen load rupa/z
-  zgen load Aloxaf/fzf-tab
-  zgen save
+# Load various plugins I've grown used to over the years.
+if ! zgenom saved; then
+  zgenom prezto
+  zgenom load hlissner/zsh-autopair 'autopair.zsh'
+  zgenom load junegunn/fzf shell
+  zgenom load chisui/zsh-nix-shell nix-shell.plugin.zsh
+  zgenom load chriskempson/base16-shell
+  zgenom load aperezdc/zsh-fzy
+  zgenom load changyuheng/fz
+  zgenom load rupa/z
+  zgenom load Aloxaf/fzf-tab
+  zgenom save
 fi
+
+# Compile.
+# TODO: PR comp fixes to upstream.
+zgenom compile ${ZDOTDIR}/.zshenv
+zgenom compile ${ZDOTDIR}/.zprofile
+zgenom compile ${ZDOTDIR}/.zshrc
+zgenom compile ${ZDOTDIR}/.zlogin
+zgenom compile ${ZDOTDIR}/.zlogout
+zgenom compile ${ZDOTDIR}/.zcompdump
 
 # Init the deferred autopair plugin.
 autopair-init
@@ -40,6 +49,12 @@ setopt clobber
 
 # Allow comments on the command line.
 setopt interactivecomments
+
+# Add to HISTFILE incrementally rather than when the current shell exits.
+setopt incappendhistory
+
+# Remove superfluous blanks before adding to history.
+setopt histreduceblanks
 
 ########################################################################
 # Look and feel.
@@ -78,15 +93,15 @@ case ${TERM} in
 esac
 
 ########################################################################
-# Tool-specific RCs.
-for file in ${ZDOTDIR}/rc.d/rc.*.zsh(N); do
-  source ${file}
-done
-
-########################################################################
 # Input.
 set -o vi
 bindkey -M vicmd v edit-command-line
+
+########################################################################
+# Tool-specific RCs.
+for file in ${ZDOTDIR}/rc.d/rc*.zsh(N); do
+  source ${file}
+done
 
 ########################################################################
 # Local.

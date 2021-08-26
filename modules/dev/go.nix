@@ -1,8 +1,15 @@
-{ config, pkgs, ... }: {
-  my = {
-    packages = with pkgs; [
+{ config, lib, pkgs, ... }:
+with lib;
+let cfg = config.modules.dev.go;
+in {
+  options.modules.dev.go = { enable = my.mkBoolOpt false; };
+
+  config = mkIf cfg.enable {
+    user.packages = with pkgs; [
       delve
       errcheck
+      go
+      go-protobuf
       go2nix
       gocode
       godef
@@ -10,24 +17,23 @@
       golangci-lint
       golint
       gomodifytags
-      go-protobuf
+      gopls
+      gore
       gotags
       gotests
       gotestsum
       gotools
       protobuf
       vgo2nix
-
-      unstable.go
-      unstable.gopls
     ];
 
-    home.xdg.configFile = {
-      "zsh/rc.d/env.go.zsh".source = <config/go/env.zsh>;
+    env = {
+      # Ensure Go modules work with $WORK private (ssh keyed) repositories.
+      GOPRIVATE = config.secrets.work_vcs_host + "/"
+        + config.secrets.work_vcs_path + "/*";
+      GOPATH = "$HOME/Code/go";
+      GOOS = "$(uname -s | tr '[:upper:]' '[:lower:]')";
+      PATH = [ "$GOPATH/bin" ];
     };
-
-    # Ensure Go modules work with $WORK private (ssh keyed) repositories.
-    env.GOPRIVATE = config.my.secrets.work_vcs_host + "/"
-      + config.my.secrets.work_vcs_path + "/*";
   };
 }

@@ -21,7 +21,7 @@
   - [[#org][org]]
   - [[#projectile][projectile]]
   - [[#direnv][direnv]]
-  - [[#deadgrep][deadgrep]]
+  - [[#hl-todo][hl-todo]]
   - [[#format-all][format-all]]
   - [[#company][company]]
   - [[#go][go]]
@@ -30,7 +30,6 @@
   - [[#dired][dired]]
   - [[#avy][avy]]
   - [[#magit][magit]]
-  - [[#kubectx][kubectx]]
   - [[#yaml][yaml]]
   - [[#terraform][terraform]]
   - [[#pinentry][pinentry]]
@@ -44,27 +43,12 @@
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
 
-* [8/12] Tasks :noexport:
-- [X] A binding for org-babel-remove-result when in Org mode
-- [X] A binding for org-insert-todo-heading
-- [X] A binding for quick comment toggles
-- [X] Why does YAML mode remove comments?
-- [X] Still need to solve emacsclient issue for mac
-- [X] Using pipe and filter in vterm causes deletions ;2u
-- [ ] Turn off auto-fill-mode and format-all-mode for HTML
-- [X] Finish motion trainer code
-- [ ] Use 'y' for copy in vterm mouse select mode
-- [ ] Make Ivy swiper work in vterm buffers
-- [ ] Finish vterm buffer expose
-- [X] Fix org-mode ligatures
-
 * Personal
 #+BEGIN_SRC elisp
 (setq user-full-name "Martin Baillie"
       user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
 #+END_SRC
-
 * Packages
 ** Upstream
 #+BEGIN_SRC elisp :tangle packages.el
@@ -74,7 +58,6 @@
 (package! edit-indirect)
 (package! vimrc-mode)
 (package! pinentry)
-(package! ripgrep)
 (package! move-text)
 (package! buffer-move)
 (package! buffer-expose)
@@ -84,16 +67,16 @@
 (package! rego-mode)
 (package! git-link)
 (package! proced-narrow)
+(package! transpose-frame)
+(package! golden-ratio)
 
 ;; EXWM related.
 ;; (package! exwm-firefox-evil)
 ;; (package! exwm-firefox-core)
-(package! exwm-edit)
-(package! transpose-frame)
-(package! desktop-environment)
-(package! golden-ratio)
+(when IS-LINUX
+  (package! exwm-edit)
+  (package! desktop-environment))
 #+END_SRC
-
 ** Mine
 Various forks and packages of my own.
 #+BEGIN_SRC elisp :tangle packages.el
@@ -101,35 +84,27 @@ Various forks and packages of my own.
   (:host github :repo "martinbaillie/evil-motion-trainer"))
 (package! evil-easymotion :pin "e6051245c06354ccd4a57e054cdff80a34f18376" :recipe
   (:host github :repo "martinbaillie/evil-easymotion"))
-(package! kubectx-mode :recipe
-  (:host github :repo "martinbaillie/emacs-kubectx-mode"))
 #+END_SRC
-
 * UI/General
 *** Frame titles
 #+BEGIN_SRC elisp
 (setq frame-title-format '("%b – Emacs"))
 #+END_SRC
-
 *** Welcome screen
 #+BEGIN_SRC elisp
 (setq +doom-dashboard-banner-file
       (expand-file-name "logo.png" doom-private-dir))
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 #+END_SRC
-
 *** Font
 #+BEGIN_SRC elisp
 (when IS-MAC
   (setq
-   doom-font                     (font-spec :family "Iosevka" :size 13 :weight 'light)
-   doom-variable-pitch-font      (font-spec :family "Iosevka" :size 13)
-   )
-  )
+   doom-font                     (font-spec :family "Iosevka" :size 13)
+   doom-variable-pitch-font      (font-spec :family "Iosevka" :size 13)))
 (setq +zen-text-scale 1)
 (setq doom-font-increment  3)
 #+END_SRC
-
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
 #+BEGIN_SRC elisp
@@ -186,11 +161,11 @@ Load current theme.
 
 *** Brighter region highlights for my dark themes
 #+BEGIN_SRC elisp
-(if (eq doom-theme 'doom-dracula)
-    (custom-set-faces
-     '(region ((t (:background "#bd93f9" :foreground "black"))))
-     )
-  )
+;; (if (eq doom-theme 'doom-dracula)
+;;     (custom-set-faces
+;;      '(region ((t (:background "#bd93f9" :foreground "black"))))
+;;      )
+;;   )
 (if (eq doom-theme 'doom-one)
     (custom-set-faces
      '(region ((t (:background "#51afef" :foreground "black"))))
@@ -204,7 +179,7 @@ Load current theme.
       evil-vsplit-window-right t)
 #+END_SRC
 
-*** Simpler modeline
+*** Simpler modeline in EXWM
 #+BEGIN_SRC elisp
 (after! doom-modeline
   ;; Don't care about encoding.
@@ -245,29 +220,32 @@ Load current theme.
   (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
   )
 #+END_SRC
-
 *** Use font smoothing
-  #+BEGIN_SRC elisp
-(when IS-MAC (setq ns-use-thin-smoothing t))
-  #+END_SRC
-
+#+BEGIN_SRC elisp
+;; (when IS-MAC (setq ns-use-thin-smoothing t))
+#+END_SRC
 *** Hide icons in titles
-  #+BEGIN_SRC elisp
+#+BEGIN_SRC elisp
 (when IS-MAC (setq ns-use-proxy-icon nil))
-  #+END_SRC
-
+#+END_SRC
 *** Native macOS titles
 #+BEGIN_SRC elisp
-(when IS-MAC
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
+;; (when IS-MAC
+;;   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 #+END_SRC
-
 *** Native macOS fullscreen
 #+BEGIN_SRC elisp
 ;; (when IS-MAC
 ;; Native macOS fullscreen.
 ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 ;; )
+#+END_SRC
+*** Transparency
+#+BEGIN_SRC elisp
+(when IS-MAC
+  (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
+  (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+  (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 #+END_SRC
 * UI/Linux
 *** Transparency
@@ -278,7 +256,6 @@ Set frame transparency and maximize windows by default.
   (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
   (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 #+end_src
-
 * Keys/General
 Miscellaneous.
 #+BEGIN_SRC elisp
@@ -290,12 +267,13 @@ Miscellaneous.
  :v "V" #'er/contract-region
 
  :vgni "s-x" #'execute-extended-command
- :vgni "s-," #'+ivy/switch-workspace-buffer
- :vgni "s-/" #'ivy-switch-buffer
+ :vgni "s-," #'+vertico/switch-workspace-buffer
+ :vgni "s-/" #'consult-buffer
+ :vgni "s-f" #'consult-line
  :vgni "s-." #'+workspace/switch-to
  :vgni "H-s-x" #'execute-extended-command
- :vgni "H-s-," #'+ivy/switch-workspace-buffer
- :vgni "H-s-/" #'ivy-switch-buffer
+ :vgni "H-s-," #'+vertico/switch-workspace-buffer
+ :vgni "H-s-/" #'consult-buffer
  :vgni "H-s-." #'+workspace/switch-to
  :vgni "s-1"   #'+workspace/switch-to-0
  :vgni "s-2"   #'+workspace/switch-to-1
@@ -358,10 +336,7 @@ Motion training.
 #+BEGIN_SRC elisp
 (use-package! evil-motion-trainer
   :init
-  (global-evil-motion-trainer-mode 1)
-  :config
-  (setq evil-motion-trainer-threshold 5)
-  )
+  (global-evil-motion-trainer-mode 1))
 
 (map!
  :leader
@@ -377,19 +352,15 @@ Find in dotfiles.
   (doom-project-find-file (expand-file-name "/etc/dotfiles")))
 (map! :leader "f ." #'mb/find-in-dotfiles)
 #+end_src
-
 * Keys/Linux
 #+BEGIN_SRC elisp
 (when IS-LINUX
   (map!
    "s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
    "s-v" #'yank
-   "s-f" #'counsel-grep-or-swiper
    "H-s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
    "H-s-v" #'yank
-   "H-s-f" #'counsel-grep-or-swiper
-   )
-  )
+   "H-s-f" #'consult-line))
 #+END_SRC
 
 * Keys/macOS
@@ -578,28 +549,26 @@ Silence annoying popup
 #+BEGIN_SRC elisp
 (setq direnv-always-show-summary nil)
 #+END_SRC
-** deadgrep
-*** Load default bindings
-#+BEGIN_SRC elisp
-(use-package! deadgrep :commands (deadgrep))
+** hl-todo
+*** Enable everywhere
+#+BEGIN_SRC emacs-lisp
+(add-hook 'text-mode-hook #'hl-todo-mode)
 #+END_SRC
-
 ** format-all
 *** Disabled modes
 #+BEGIN_SRC elisp
-(setq +format-on-save-enabled-modes
-      '(not elisp-mode
-            sql-mode
-            yaml-mode
-            sgml-xml-mode)
-      )
+;; (setq +format-on-save-enabled-modes
+;;       '(not elisp-mode
+;;             sql-mode
+;;             yaml-mode
+;;             sgml-xml-mode)
+;;       )
 
-(defun mb/format-on-save-disable ()
-  "Disable formatting on save."
-  (interactive)
-  (remove-hook 'before-save-hook #'+format-buffer-h))
+;; (defun mb/format-on-save-disable ()
+;;   "Disable formatting on save."
+;;   (interactive)
+;;   (remove-hook 'before-save-hook #'+format-buffer-h))
 #+END_SRC
-
 ** company
 *** Keys
 #+BEGIN_SRC elisp
@@ -647,8 +616,7 @@ Silence annoying popup
 *** Keys
 #+BEGIN_SRC elisp
 (map! :map go-mode-map
-      :nv "K"  #'lsp-describe-thing-at-point
-      )
+      :nv "K"  #'lsp-describe-thing-at-point)
 #+END_SRC
 ** python
 Locate the preferred language server.
@@ -657,7 +625,6 @@ Locate the preferred language server.
   (setq lsp-python-ms-executable (executable-find "python-language-server"))
   (set-lsp-priority! 'mspyls 1))
 #+END_SRC
-
 ** nyanmode
 Oh gees.
 #+BEGIN_SRC elisp
@@ -665,8 +632,7 @@ Oh gees.
   :after doom-modeline
   :init
   (setq nyan-bar-length 20)
-   (nyan-mode)
-  )
+   (nyan-mode))
 #+END_SRC
 ** dired
 Dired coloured icons.
@@ -678,40 +644,33 @@ Dired coloured icons.
 #+BEGIN_SRC elisp
 (setq avy-all-windows t)
 #+END_SRC
-
 *** Select the single candidate
 #+BEGIN_SRC elisp
 (setq avy-single-candidate-jump t)
 #+END_SRC
-
 *** Faster timers
 #+BEGIN_SRC elisp
 (setq avy-timeout-seconds 0.35)
 #+END_SRC
-
 ** magit
 *** Avatars
 #+BEGIN_SRC elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 #+END_SRC
-
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
 #+BEGIN_SRC elisp
 (add-hook 'git-commit-mode-hook (lambda () (apply #'git-commit-signoff (git-commit-self-ident))))
 #+END_SRC
-
-** kubectx
-Switch kubectl context and namespace and display current settings in Emacs modeline.
-#+BEGIN_SRC elisp
-;; (use-package! kubectx-mode
-  ;; :init
-  ;; (setq kubectx-mode-line-string-format "")
-  ;;  (setq kubectx-mode-map "")
-  ;; (kubectx-mode 1)
-  ;;)
-#+END_SRC
-
+*** Status buffer
+#+begin_src elisp
+;; Unfold some more displays by default.
+(prependq! magit-section-initial-visibility-alist '((issues . show)
+                                                    (pullreqs . show)
+                                                    (unpushed . show)))
+;; No motion training on status buffers.
+(add-hook 'magit-status-mode-hook (lambda () (evil-motion-trainer-mode -1)))
+#+end_src
 ** yaml
 Get the YAML language server to validate Kubernetes resources.
 #+BEGIN_SRC elisp
@@ -731,7 +690,6 @@ Get the YAML language server to validate Kubernetes resources.
          lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+END_SRC
-
 ** terraform
 Enable LSP for Terraform.
 #+BEGIN_SRC elisp
@@ -743,7 +701,6 @@ Enable LSP for Terraform.
   )
 (add-hook 'terraform-mode-hook #'lsp-deferred)
 #+END_SRC
-
 ** pinentry
 *** Use Emacs pinentry on Linux
 #+BEGIN_SRC elisp
@@ -766,15 +723,13 @@ Enable LSP for Terraform.
   (pinentry-start)
   )
 #+END_SRC
-
 ** treemacs
 *** Keys
 Toggling.
 #+BEGIN_SRC elisp
 (map!
  :n "C-S-e" #'+treemacs/toggle
- (:map evil-treemacs-state-map "C-S-e" #'+treemacs/toggle)
- )
+ (:map evil-treemacs-state-map "C-S-e" #'+treemacs/toggle))
 #+END_SRC
 
 Evil frame movements.
@@ -782,10 +737,8 @@ Evil frame movements.
 (map!
  (:map evil-treemacs-state-map
   "C-h" #'evil-window-left
-  "C-l" #'evil-window-right)
- )
+  "C-l" #'evil-window-right))
 #+END_SRC
-
 ** easy-motion
 *** Better scoped easy-motions
 #+BEGIN_SRC elisp
@@ -796,12 +749,10 @@ Evil frame movements.
     [remap evilem-motion-backward-word-begin] #'evilem-motion-backward-WORD-begin
     )
 #+END_SRC
-
 *** Keys
 #+BEGIN_SRC elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
 #+END_SRC
-
 ** move-text
 *** Keys
 Add additional evil movements for text moves.
@@ -809,7 +760,6 @@ Add additional evil movements for text moves.
 (map! :m "M-j" #'move-text-down
       :m "M-k" #'move-text-up)
 #+END_SRC
-
 ** buffer-move
 *** Keys
 Add evil movements to buffer moves.
@@ -819,7 +769,6 @@ Add evil movements to buffer moves.
       :vgni "M-H" #'buf-move-left
       :vgni "M-L" #'buf-move-right)
 #+END_SRC
-
 ** buffer-expose
 *** Disable scaling
 #+BEGIN_SRC elisp

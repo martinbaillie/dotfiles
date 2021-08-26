@@ -1,0 +1,5 @@
+#+TITLE: Lib
+
+Some of this library of Nix functions are lifted from the legendary Henrik
+Lissner's exceptional dotfiles and subsequently poorly hacked to bits by a Nix
+newb (me). All credit to him.

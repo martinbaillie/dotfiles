@@ -1,22 +1,22 @@
-name: macOS
-on:
-  push:
-    # branches:
-    #   - master
-    # Disable this action for now.
-    # branches-ignore:
-    #   - '**'
-jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install Nix
-      uses: cachix/install-nix-action@v11
-    - name: Install Cachix
-      uses: cachix/cachix-action@v6
-      with:
-        name: martinbaillie
-        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-    - name: Build
-      run: make ci
+# name: macOS
+# on:
+#   push:
+#     # branches:
+#     #   - master
+#     # Disable this action for now.
+#     # branches-ignore:
+#     #   - '**'
+# jobs:
+#   build:
+#     runs-on: macos-latest
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Install Nix
+#       uses: cachix/install-nix-action@v11
+#     - name: Install Cachix
+#       uses: cachix/cachix-action@v6
+#       with:
+#         name: martinbaillie
+#         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+#     - name: Build
+#       run: make ci

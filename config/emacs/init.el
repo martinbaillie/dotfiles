@@ -6,8 +6,7 @@
 (doom! :input
        :completion
        (company +tng)    ; the ultimate code completion backend
-       (ivy +prescient
-            +icons)      ; a search engine for love and life
+       (vertico +icons)  ; the search engine of the future
 
        :ui
        doom              ; what makes DOOM look the way it does
@@ -15,6 +14,7 @@
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
        fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+       minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
        ophints           ; highlight the region an operation acts on
@@ -45,6 +45,9 @@
        undo              ; persistent, smarter undo for your inevitable mistakes
        vc                ; version-control and Emacs, sitting in a tree
 
+       :os
+       (:if IS-MAC macos); improve compatibility with macOS
+
        :term
        vterm             ; the best terminal emulation in Emacs
 
@@ -63,7 +66,7 @@
        (lsp +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
-       pdf               ; pdf enhancements
+       ;; pdf               ; pdf enhancements
        rgb               ; creating color strings
        terraform         ; infrastructure as code
 
@@ -86,7 +89,10 @@
        (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor
        (yaml +lsp)       ; JSON, but readable
-       (racket +xp)      ; always be scheming
+       ;; (racket +xp)      ; always be scheming
+
+       :app
+       everywhere
 
        :config
        literate

@@ -1,107 +1,91 @@
-{ lib, pkgs, config, ... }:
+{ config, options, lib, pkgs, ... }:
+with lib;
 let
-  inherit (lib) mkMerge mkIf;
-  inherit (lib.systems.elaborate { system = builtins.currentSystem; })
-    isLinux isDarwin;
-in mkMerge [
-  {
-    my = {
+  cfg = config.modules.web.browser.firefox;
+  configDir = "${config.dotfiles.configDir}/firefox";
+  inherit (pkgs.stdenv.targetPlatform) isLinux;
+in {
+  options.modules.web.browser.firefox = with my; {
+    enable = mkBoolOpt false;
+    tridactyl = mkBoolOpt false;
+  };
+
+  config = mkIf cfg.enable (mkMerge [
+    {
       env.BROWSER = "firefox";
 
-      home.programs.firefox = {
-        enable = true;
-        profiles = {
-          default = {
-            settings = {
-              # I'll manage the updates thanks.
-              "app.update.auto" = false;
-              "app.update.service.enabled" = false;
-              "app.update.download.promptMaxAttempts" = 0;
-              "app.update.elevation.promptMaxAttempts" = 0;
-              # HTTPs only.
-              "dom.security.https_only_mode" = true;
-              "dom.security.https_only_mode_ever_enabled" = true;
-              # Privacy and fingerprinting.
-              "privacy.trackingprotection.enabled" = true;
-              "privacy.trackingprotection.socialtracking.enabled" = true;
-              "privacy.userContext.enabled" = true;
-              # Disable Pocket.
-              "extensions.pocket.enabled" = false;
-              # Recently used order for tab cycles.
-              "browser.ctrlTab.recentlyUsedOrder" = true;
-              # Catch fat fingered quits.
-              "browser.sessionstore.warnOnQuit" = true;
-              # Compact UI.
-              "browser.uidensity" = 1;
-              # Hide warnings when playing with config.
-              "browser.aboutConfig.showWarning" = false;
-              # Plain new tabs.
-              "browser.newtabpage.enabled" = false;
-              # Locale.
-              "browser.search.region" = "AU";
-              # Allow custom styling.
-              "widget.content.allow-gtk-dark-theme" = true;
-              "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
-              "svg.context-properties.content.enabled" = true;
-              # Don't save passwords or try to fill forms.
-              "signon.rememberSignons" = false;
-              "signon.autofillForms" = false;
-              # Tell Firefox not to trust fake Enterprise-injected certificates.
-              "security.enterprise_roots.auto-enabled" = false;
-              "security.enterprise_roots.enabled" = false;
-              "security.certerrors.mitm.auto_enable_enterprise_roots" = false;
-              # Speed up scroll for Linux/Xorg.
-              "mousewheel.min_line_scroll_amount" = 60;
+      home = {
+        programs.firefox = {
+          enable = true;
+          profiles = {
+            default = {
+              settings = {
+                # I'll manage the updates thanks.
+                "app.update.auto" = false;
+                "app.update.service.enabled" = false;
+                "app.update.download.promptMaxAttempts" = 0;
+                "app.update.elevation.promptMaxAttempts" = 0;
+                # HTTPs only.
+                "dom.security.https_only_mode" = true;
+                "dom.security.https_only_mode_ever_enabled" = true;
+                # Privacy and fingerprinting.
+                "privacy.trackingprotection.enabled" = true;
+                "privacy.trackingprotection.socialtracking.enabled" = true;
+                "privacy.userContext.enabled" = true;
+                # Disable Pocket.
+                "extensions.pocket.enabled" = false;
+                # Recently used order for tab cycles.
+                "browser.ctrlTab.recentlyUsedOrder" = true;
+                # Catch fat fingered quits.
+                "browser.sessionstore.warnOnQuit" = true;
+                # Compact UI.
+                "browser.uidensity" = 1;
+                # Hide warnings when playing with config.
+                "browser.aboutConfig.showWarning" = false;
+                # Plain new tabs.
+                "browser.newtabpage.enabled" = false;
+                # Locale.
+                "browser.search.region" = "AU";
+                # Allow custom styling.
+                "widget.content.allow-gtk-dark-theme" = true;
+                "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+                "svg.context-properties.content.enabled" = true;
+                # Don't save passwords or try to fill forms.
+                "signon.rememberSignons" = false;
+                "signon.autofillForms" = false;
+                # Tell Firefox not to trust fake Enterprise-injected certificates.
+                "security.enterprise_roots.auto-enabled" = false;
+                "security.enterprise_roots.enabled" = false;
+                "security.certerrors.mitm.auto_enable_enterprise_roots" = false;
+                # Speed up scroll for Linux/Xorg.
+                "mousewheel.min_line_scroll_amount" = 60;
+              };
+              userChrome = builtins.readFile "${configDir}/userChrome.css";
             };
-            userChrome = builtins.readFile <config/firefox/userChrome.css>;
           };
         };
-      };
 
-      # Tridactyl
-      packages = [ pkgs.tridactyl-native ];
+        configFile = mkIf cfg.tridactyl {
+          # Base16 colour schemes for Tridactyl.
+          "tridactyl/themes" = {
+            source =
+              builtins.fetchGit "https://github.com/bezmi/base16-tridactyl.git";
+            recursive = true;
+          };
+          "tridactyl/tridactylrc".text = let
+            host = "${config.secrets.work_vcs_host}";
+            path = "${config.secrets.work_vcs_path}";
+          in builtins.readFile "${configDir}/tridactylrc" + ''
+            " Set a custom colour theme.
+            colourscheme ${config.modules.theme.tridactyl}
 
-      home.xdg.configFile = {
-        "tridactyl/tridactylrc".text = let
-          # Use Emacs for long-form Firefox text area edits.
-          #
-          # TODO: Reconsider this plugin in lieu of `exwm-edit`.
-          #
-          # On Linux, just create a new frame but with a name of 'Tridactyl' so I
-          # can tell my tiling window manager du-jour to target and overlay it as
-          # a central floating window above the Firefox window.
-          #
-          # On macOS, just use regular emacsclient but from a zsh context to
-          # ensure correct envirionment and upon success, re-pop to Firefox.
-          emacsclientTridactyl = pkgs.writeScriptBin "emacsclient-tridactyl"
-            (if isLinux then ''
-              emacsclient -q -F '((name . "Tridactyl"))' -c $@
-            '' else ''
-              #!${pkgs.zsh}/bin/zsh
-              emacsclient -q $@ && osascript -e 'tell application "Firefox" to activate'
-            '');
-        in builtins.readFile <config/firefox/tridactylrc> + ''
-
-          " Set a custom colour theme.
-          colourscheme ${config.theme.tridactyl}
-
-          " Emacs as my external editor.
-          set editorcmd ${emacsclientTridactyl}/bin/emacsclient-tridactyl
-        '';
-
-        # Base16 colour schemes for Tridactyl.
-        "tridactyl/themes" = {
-          source =
-            builtins.fetchGit "https://github.com/bezmi/base16-tridactyl.git";
-          recursive = true;
+            " Search work VCS.
+            set searchurls.w https://${host}/search?q=org%3A${path}+%s
+          '';
         };
       };
-    };
-  }
-  (mkIf isLinux {
-    my = {
-      env.XDG_DESKTOP_DIR = "$HOME"; # prevent creation of ~/Desktop
-
+    }
+    (if isLinux then {
       home.xdg.mimeApps.defaultApplications = {
         "application/x-extension-htm" = [ "firefox.desktop" ];
         "application/x-extension-html" = [ "firefox.desktop" ];
@@ -116,26 +100,28 @@ in mkMerge [
         "x-scheme-handler/https" = [ "firefox.desktop" ];
       };
 
-      # REVIEW: home-manager support.
-      home.home.file.".mozilla/native-messaging-hosts" = {
+      # Wire up Tridactyl native for NixOS.
+      home.file.".mozilla/native-messaging-hosts" = {
         source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
         recursive = true;
       };
-    };
-  })
-  (mkIf isDarwin {
-    my = {
-      packages = [ pkgs.my.Firefox ];
+    } else {
+      # Darwin.
+      # Current $WORK forces use of a cask.
+      # homebrew.casks = [ "firefox" ];
+      # Expose my custom Darwin Firefox derivation to the environment and the
+      # home-manager module.
+      environment.systemPackages = [ pkgs.my.firefox ];
       home = {
-        programs.firefox.package = pkgs.my.Firefox;
+        programs.firefox.package = pkgs.my.firefox;
 
-        # REVIEW: home-manager support.
-        home.file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
+        # Wire up Tridactyl native for macOS.
+        file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
           source =
             "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
           recursive = true;
         };
       };
-    };
-  })
-]
+    })
+  ]);
+}
