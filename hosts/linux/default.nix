@@ -22,7 +22,8 @@ with lib.my; {
   system = {
     # NixOS release to track state compatibility against.
     # Pair this with home-manager.
-    stateVersion = users.${config.user.name}.home.stateVersion;
+    stateVersion =
+      config.home-manager.users.${config.user.name}.home.stateVersion;
 
     # Let `nixos-version --json` know about the Git revision of this flake.
     configurationRevision = with inputs; mkIf (self ? rev) self.rev;

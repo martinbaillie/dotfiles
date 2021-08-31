@@ -26,10 +26,10 @@ NIX_REBUILD		:=nix build $(FLAGS)
 NIX_REBUILD		+=.\#darwinConfigurations.$(HOSTNAME).system
 NIX_REBUILD		+=&&
 NIX_REBUILD		+=./result/sw/bin/darwin-rebuild $(FLAGS)
-NIX_REBUILD 	+=--flake .\#$(HOSTNAME)
 else
-NIX_REBUILD 	:=nixos-rebuild $(FLAGS) .\#$(HOSTNAME)
+NIX_REBUILD 	:=sudo nixos-rebuild $(FLAGS)
 endif
+NIX_REBUILD 	+=--flake .\#$(HOSTNAME)
 
 # Make defaults.
 all: switch
