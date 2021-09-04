@@ -86,24 +86,27 @@ in {
       };
     }
     (if isLinux then {
-      home.xdg.mimeApps.defaultApplications = {
-        "application/x-extension-htm" = [ "firefox.desktop" ];
-        "application/x-extension-html" = [ "firefox.desktop" ];
-        "application/x-extension-shtml" = [ "firefox.desktop" ];
-        "application/x-extension-xht" = [ "firefox.desktop" ];
-        "application/x-extension-xhtml" = [ "firefox.desktop" ];
-        "application/xhtml+xml" = [ "firefox.desktop" ];
-        "text/html" = [ "firefox.desktop" ];
-        "x-scheme-handler/chrome" = [ "firefox.desktop" ];
-        "x-scheme-handler/ftp" = [ "firefox.desktop" ];
-        "x-scheme-handler/http" = [ "firefox.desktop" ];
-        "x-scheme-handler/https" = [ "firefox.desktop" ];
-      };
+      home = {
+        defaultApplications = {
+          "application/x-extension-htm" = [ "firefox.desktop" ];
+          "application/x-extension-html" = [ "firefox.desktop" ];
+          "application/x-extension-shtml" = [ "firefox.desktop" ];
+          "application/x-extension-xht" = [ "firefox.desktop" ];
+          "application/x-extension-xhtml" = [ "firefox.desktop" ];
+          "application/xhtml+xml" = [ "firefox.desktop" ];
+          "text/html" = [ "firefox.desktop" ];
+          "x-scheme-handler/chrome" = [ "firefox.desktop" ];
+          "x-scheme-handler/ftp" = [ "firefox.desktop" ];
+          "x-scheme-handler/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/https" = [ "firefox.desktop" ];
+        };
 
-      # Wire up Tridactyl native for NixOS.
-      home.file.".mozilla/native-messaging-hosts" = {
-        source = "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
-        recursive = true;
+        # Wire up Tridactyl native for NixOS.
+        file.".mozilla/native-messaging-hosts" = {
+          source =
+            "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+          recursive = true;
+        };
       };
     } else {
       # Darwin.

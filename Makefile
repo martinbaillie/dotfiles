@@ -27,7 +27,7 @@ NIX_REBUILD		+=.\#darwinConfigurations.$(HOSTNAME).system
 NIX_REBUILD		+=&&
 NIX_REBUILD		+=./result/sw/bin/darwin-rebuild $(FLAGS)
 else
-NIX_REBUILD 	:=sudo nixos-rebuild $(FLAGS)
+NIX_REBUILD 	:=sudo -E nixos-rebuild $(FLAGS)
 endif
 NIX_REBUILD 	+=--flake .\#$(HOSTNAME)
 
@@ -131,7 +131,9 @@ endif
 ifeq ($(SYSTEM),Linux)
 	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
 		$(ZDOTDIR)/theme.zsh
-	emacsclient -a "" -n -e "(mb/set-wallpaper)" &>/dev/null
+	emacsclient -a "" -n \
+		-e "(progn (mb/set-wallpaper) (mb/start-panel))" \
+		&>/dev/null
 endif
 	echo "(setq doom-theme '$(EMACS_THEME))" >$(XDG_CONFIG_HOME)/doom/+theme.el
 ifeq ($(SYSTEM),Darwin)
@@ -139,7 +141,6 @@ ifeq ($(SYSTEM),Darwin)
 		>>$(XDG_CONFIG_HOME)/doom/+theme.el
 endif
 	emacsclient -a "" -n \
-		-e "(setq doom-theme '$(EMACS_THEME))" \
-		-e "(doom/reload-theme)" \
+		-e "(progn (setq doom-theme '$(EMACS_THEME)) (doom/reload-theme))" \
 		&>/dev/null
 .PHONY: dark

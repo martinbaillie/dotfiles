@@ -30,12 +30,7 @@ in {
           "");
       };
 
-      user.packages = with pkgs;
-        [
-          gnupg
-          # TODO: Broken on aarch64
-          # pinentry
-        ];
+      user.packages = [ pkgs.gnupg ];
 
       env.GNUPGHOME = "$XDG_CONFIG_HOME/gnupg";
     }
@@ -47,14 +42,15 @@ in {
           enableSshSupport = true;
         };
       };
+      user.packages = [ pkgs.pinentry ];
 
       # NOTE: Fresh installs currently require the following imperative one-offs:
-      # gpg --import ~/.config/gnupg/gpg.asc
-      # gpg --edit-key <id> RET trust RET 5
       # chown -R $(whoami) ~/.config/gnupg
       # find ~/.config/gnupg -type f -exec chmod 600 {} \;
       # chmod 700 ~/.config/gnupg
       # find ~/.config/gnupg -type d -exec chmod 700 {} \;
+      # gpg --import ~/.config/gnupg/gpg.asc
+      # gpg --edit-key <id> RET trust RET 5
       #
       # ssh-add $HOME/.ssh/id_rsa
       # ssh-add $HOME/.ssh/id_ed25519

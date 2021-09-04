@@ -8,6 +8,7 @@ with darwin.lib; {
     let
       isNixOS = strings.hasInfix "linux" system;
       theme = "${(builtins.getEnv "XDG_DATA_HOME")}/theme.nix";
+      hardware = /etc/nixos/hardware-configuration.nix;
       commonModules = [
         rec {
           networking.hostName =
@@ -15,13 +16,14 @@ with darwin.lib; {
           environment.variables.HOSTNAME = networking.hostName;
         }
         (filterAttrs (n: v: !elem n [ "system" ]) attrs)
+
+        # Host-specific settings.
         ../hosts # 1. All hosts (i.e. Darwin AND Linux, aarch64 AND x86_64).
         (dirOf (dirOf path)) # 2. Current platform (i.e. Darwin OR Linux)
         (dirOf path) # 3. Current architecture (e.g. aarch64, x86_64).
         (import path) # 4. Current host.
-      ] ++
-        # Current host theme.
-        (optional (pathExists theme) theme);
+      ] ++ (mapModulesRec' ../modules import) # Make all my modules available.
+        ++ (optional (pathExists theme) theme); # Current host theme.
       specialArgs = {
         inherit lib inputs;
         pkgs = pkgs.${system};
@@ -29,15 +31,19 @@ with darwin.lib; {
     in if isNixOS then
       nixosSystem {
         inherit system specialArgs;
-        modules = [{ nixpkgs.pkgs = pkgs.${system}; }] ++ commonModules;
+        modules = [
+          ({            nixpkgs.pkgs = pkgs.${system};})  # Needed?
+          ({ config, pkgs, ... }: { # Needed?
+            imports = [ inputs.home-manager.nixosModules.home-manager ];
+          })
+        ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
       }
     else
       darwinSystem {
         inherit specialArgs;
         modules = [
           ({ config, pkgs, ... }: {
-            imports = [ inputs.home-manager.darwinModules.home-manager ]
-              ++ (mapModulesRec' ../modules import);
+            imports = [ inputs.home-manager.darwinModules.home-manager ];
           })
         ] ++ commonModules;
       };

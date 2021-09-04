@@ -3,22 +3,6 @@
 
 with lib;
 with lib.my; {
-  imports = let
-    inherit (lib) optional;
-    inherit (builtins) toPath pathExists;
-
-    # Generated NixOS hardware configuration.
-    hardware = /etc/nixos/hardware-configuration.nix;
-  in [
-    # Import home manager.
-    inputs.home-manager.nixosModules.home-manager
-  ]
-  # Import any generated hardware configuration.
-  ++ (optional (pathExists hardware) hardware)
-  # Make all my modules available to the configuration.
-  ++ (mapModulesRec' (toPath ../../modules) import);
-
-  # NixOS version.
   system = {
     # NixOS release to track state compatibility against.
     # Pair this with home-manager.
@@ -41,38 +25,33 @@ with lib.my; {
     };
   };
 
+  # Needs must.
+  nixpkgs.config.allowUnfree = true;
+
   # Boot and console.
   boot = {
     # Use the latest Linux kernel.
     kernelPackages = mkDefault pkgs.linuxPackages_5_10;
 
-    # TODO: Temp loader
     loader = {
-      grub = {
+      # Allow the NixOS installation to modify EFI boot variables.
+      efi.canTouchEfiVariables = true;
+
+      # Choose the default generation faster.
+      timeout = 1;
+
+      # Simplistic boot loader.
+      # Or, how I learned to give up and accept systemd.
+      systemd-boot = {
         enable = true;
-        version = 2;
-        device = "/dev/sda";
+
+        # Only show the last 10 generations that haven't been GCd.
+        configurationLimit = 10;
+
+        # Fix a security hole in place for the sake of backwards compatibility.
+        editor = false;
       };
     };
-    # loader = {
-    #   # Allow the NixOS installation to modify EFI boot variables.
-    #   efi.canTouchEfiVariables = true;
-
-    #   # Choose the default generation faster.
-    #   timeout = 1;
-
-    #   # Simplistic boot loader.
-    #   # Or, how I learned to give up and accept systemd.
-    #   systemd-boot = {
-    #     enable = true;
-
-    #     # Only show the last 10 generations that haven't been GCd.
-    #     configurationLimit = 10;
-
-    #     # Fix a security hole in place for the sake of backwards compatibility.
-    #     editor = false;
-    #   };
-    # };
 
     # Pretty boot loading screens.
     plymouth.enable = true;
