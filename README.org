@@ -115,19 +115,19 @@ extensions and so on.
 
 #+NAME: nixos-ver
 #+BEGIN_SRC emacs-lisp :cache yes
-"19.09"
+"21.05"
 #+END_SRC
 
-#+RESULTS[13b0b58868c32fc283fe08bd6c617fa4d58d6984]: nixos-ver
-: 19.09
+#+RESULTS[8f7a4f3511d5d6152ec17fdf52addc1eecd1a880]: nixos-ver
+: 21.05
 
 #+NAME: nixos-rel
 #+BEGIN_SRC emacs-lisp :cache yes :var nixos-ver=nixos-ver
-(format "%s.1685.e9ef090eb54" nixos-ver)
+(format "%s.2796.110a2c9ebbf" nixos-ver)
 #+END_SRC
 
-#+RESULTS[bdc5fd96e1751d6f7b31bf0435c24d27bbb4c02c]: nixos-rel
-: 19.09.1685.e9ef090eb54
+#+RESULTS[d02522c67a569b479981b108c6d2236d90a80aec]: nixos-rel
+: 21.05.2796.110a2c9ebbf
 
 #+NAME: nixos-url
 #+BEGIN_SRC emacs-lisp :cache yes :var nixos-ver=nixos-ver
@@ -135,7 +135,7 @@ extensions and so on.
 #+END_SRC
 
 #+RESULTS[6ea8b95b40577283983b31f1862093ba872ded97]: nixos-url
-: https://releases.nixos.org/nixos/19.09
+: https://releases.nixos.org/nixos/21.05
 
 #+BEGIN_SRC shell :exports code :var NIXOS_REL=nixos-rel NIXOS_URL=nixos-url
 curl -O ${NIXOS_URL}/nixos-${NIXOS_REL}/nixos-minimal-${NIXOS_REL}-x86_64-linux.iso
@@ -151,10 +151,14 @@ dd if=nixos-minimal-${NIXOS_REL}-x86_64-linux.iso of=/dev/rdisk2 bs=4m
 diskutil unmountDisk /dev/disk2
 #+END_SRC
 
+Create a bootable NixOS USB (NixOS example):
+#+BEGIN_SRC shell :exports code :var NIXOS_REL=nixos-rel NIXOS_URL=nixos-url
+lsblk -i # Locate the device.
+cp nixos-minimal-${NIXOS_REL}-x86_64-linux.iso /dev/sdX # Target whole disk.
+#+END_SRC
 **** BIOS Tweaks (ThinkPad)
 - [X] Disable Secure Boot
 - [X] Enable CSM Support
-
 **** Boot
 Setup networking:
 #+BEGIN_SRC shell
@@ -173,7 +177,6 @@ Conduct rest of install from other laptop for convenience:
 #+BEGIN_SRC shell
 ssh nixos@<addr>
 #+END_SRC
-
 **** Partition
 Create a =500M= boot partition:
 #+BEGIN_SRC shell
@@ -204,7 +207,6 @@ mkfs.fat -F 32 /dev/nvme0n1p1
 mkfs.ext4 -L root /dev/vg/root
 mkswap -L swap /dev/vg/swap
 #+END_SRC
-
 **** Install
 Mount the partitions just created under /mnt:
 #+BEGIN_SRC shell
@@ -223,9 +225,7 @@ nix-shell -p git --run \
     /mnt/etc/dotfiles
 make -C /mnt/etc/dotfiles install
 #+END_SRC
-
 **** Iterative Troubleshooting
-
 If system doesn't boot:
 #+BEGIN_SRC shell
 cryptsetup luksOpen /dev/nvme0n1p2 enc-pv
@@ -239,12 +239,10 @@ systemctl start wpa_supplicant
 #+END_SRC
 
 Try again.
-
 **** Import GPG key
 #+BEGIN_SRC shell
 gpg --import ~/.gnupg/gpg.asc
 #+END_SRC
-
 **** Configure Emacs
 #+BEGIN_SRC shell
 make config-emacs
