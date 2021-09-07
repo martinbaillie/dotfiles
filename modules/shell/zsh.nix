@@ -18,8 +18,12 @@ in {
   config = with pkgs;
     mkIf cfg.enable (mkMerge [
       {
-        # Add zsh to the list of permissable login shells.
-        environment.shells = [ zsh ];
+        environment = {
+          # Add zsh to the list of permissable login shells.
+          shells = [ zsh ];
+          # Ensure completion for system packages.
+          pathsToLink = [ "/share/zsh" ];
+        };
 
         # Handy completions for Nix.
         user.packages = [ nix-zsh-completions ];

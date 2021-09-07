@@ -1,8 +1,16 @@
 ########################################################################
-# Functions.
-fpath=( ${ZDOTDIR}/zfuncs "${fpath[@]}" )
+# Functions (incl. completions).
 autoload -Uz fkill fshow fbranch
-typeset -g cdpath fpath mailpath path
+
+fpath+=${ZDOTDIR}/zfuncs
+for profile in ''${(z)NIX_PROFILES}; do
+  fpath+=$profile/share/zsh/site-functions
+  fpath+=$profile/share/zsh/${ZSH_VERSION}/functions
+  fpath+=$profile/share/zsh/vendor-completions
+done
+
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
 
 ########################################################################
 # Plugins.
