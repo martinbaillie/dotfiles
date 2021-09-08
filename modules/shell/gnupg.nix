@@ -31,8 +31,6 @@ in {
       };
 
       user.packages = [ pkgs.gnupg ];
-
-      env.GNUPGHOME = "$XDG_CONFIG_HOME/gnupg";
     }
 
     (mkIf config.currentSystem.isLinux {
