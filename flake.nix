@@ -19,6 +19,7 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
     # TODO: pin "github:nix-community/emacs-overlay?rev=67fe74d6e73e3c8a983b09a76d809acc730ad911";
 
+    # Hardware definitions.
     nixos-hardware.url = "github:nixos/nixos-hardware";
   };
 
@@ -32,7 +33,7 @@
 
       supportedSystems = rec {
         darwin = [ "x86_64-darwin" "aarch64-darwin" ];
-        linux = [ "x86_64-linux" ];
+        linux = [ "x86_64-linux" "aarch64-linux" ];
         all = darwin ++ linux;
       };
 
@@ -99,5 +100,11 @@
       # Nix Darwin host configurations.
       darwinConfigurations =
         mapConfigurations supportedSystems.darwin ./hosts/darwin;
+
+      # `nix develop`.
+      devShell =
+        let forAllSupportedSystems = f: genAttrs supportedSystems.all (s: f s);
+        in forAllSupportedSystems
+        (system: with pkgs.${system}; import ./shell.nix { inherit pkgs; });
     };
 }

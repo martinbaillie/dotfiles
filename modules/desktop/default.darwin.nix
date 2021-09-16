@@ -36,8 +36,14 @@ in {
   };
   config = mkIf cfg.enable {
     # macOS Apps that aren't in nixpkgs.
-    homebrew.casks =
-      [ "font-iosevka" "karabiner-elements" "rectangle" "flux" "cursorcerer" ];
+    homebrew.casks = [
+      "font-iosevka"
+      "karabiner-elements"
+      "rectangle"
+      "flux"
+      "cursorcerer"
+      "raycast"
+    ];
 
     home = {
       activation = {

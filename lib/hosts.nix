@@ -29,17 +29,17 @@ with darwin.lib; {
         pkgs = pkgs.${system};
       };
     in if isNixOS then
-      nixosSystem {
+      makeOverridable nixosSystem {
         inherit system specialArgs;
         modules = [
-          ({            nixpkgs.pkgs = pkgs.${system};})  # Needed?
+          ({ nixpkgs.pkgs = pkgs.${system}; }) # Needed?
           ({ config, pkgs, ... }: { # Needed?
             imports = [ inputs.home-manager.nixosModules.home-manager ];
           })
         ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
       }
     else
-      darwinSystem {
+      makeOverridable darwinSystem {
         inherit specialArgs;
         modules = [
           ({ config, pkgs, ... }: {
