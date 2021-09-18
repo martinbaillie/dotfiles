@@ -48,5 +48,5 @@
     };
   };
 
-  homebrew.casks = [ "transmission-remote-gui" ];
+  homebrew.casks = [ "transmission-remote-gui" "workflowy" "spotify" ];
 }

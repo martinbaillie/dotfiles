@@ -86,9 +86,13 @@ Various forks and packages of my own.
   (:host github :repo "martinbaillie/evil-easymotion"))
 #+END_SRC
 * UI/General
-*** Frame titles
+*** Frame titles and toolbar
 #+BEGIN_SRC elisp
+;; Set a standard title.
 (setq frame-title-format '("%b – Emacs"))
+
+;; Hide the toolbar.
+(tool-bar-mode 0)
 #+END_SRC
 *** Welcome screen
 #+BEGIN_SRC elisp
