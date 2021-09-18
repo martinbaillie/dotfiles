@@ -162,20 +162,14 @@ cp nixos-minimal-${NIXOS_REL}-x86_64-linux.iso /dev/sdX # Target whole disk.
 **** Boot
 Setup networking:
 #+BEGIN_SRC shell
-wpa_passhrase SSID PASSWORD > /etc/wpa_supplicant.conf
-systemctl start wpa_supplicant
+sudo su
+wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
 ip addr
 #+END_SRC
 
-Enable SSHd for remote (LAN) install and ssh-agent forwarding:
+Conduct rest of install from other laptop for convenience (+SSH agent forwarding):
 #+BEGIN_SRC shell
-systemctl start sshd
-passwd # So we can login via SSH
-#+END_SRC
-
-Conduct rest of install from other laptop for convenience:
-#+BEGIN_SRC shell
-ssh nixos@<addr>
+ssh -A root@<addr>
 #+END_SRC
 **** Partition
 Create a =500M= boot partition:
@@ -223,7 +217,11 @@ sudo su - martin
 nix-shell -p git --run \
     git clone --recursive git@github.com:martinbaillie/dotfiles.git \
     /mnt/etc/dotfiles
-make -C /mnt/etc/dotfiles install
+
+nix-shell -p nixUnstable -p git
+sudo -E nixos-install --option pure-eval no --flake .\#$HOSTNAME
+
+# make -C /mnt/etc/dotfiles install
 #+END_SRC
 **** Iterative Troubleshooting
 If system doesn't boot:
@@ -234,8 +232,8 @@ lvchange -a y /dev/vg/root
 mount /dev/vg/root /mnt
 mount /dev/nvme0n1p1 /mnt/boot
 swapon /dev/vg/swap
-wpa_passhrase SSID PASSWORD > /etc/wpa_supplicant.conf
-systemctl start wpa_supplicant
+wpa_supplicant -B -i interface -c <(wpa_passphrase 'SSID' 'key')
+nixos-enter
 #+END_SRC
 
 Try again.
