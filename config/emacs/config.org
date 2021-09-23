@@ -344,6 +344,8 @@ Motion training.
 
 (map!
  :leader
+ (:prefix-map ("T" . "toggle")
+  :desc "Evil motion trainer (global)" "T" #'global-evil-motion-trainer-mode)
  (:prefix-map ("t" . "toggle")
   :desc "Evil motion trainer" "t" #'evil-motion-trainer-mode))
 #+END_SRC
