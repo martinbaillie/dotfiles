@@ -80,4 +80,13 @@ with lib; {
     dark = "make -B -C /etc/dotfiles nix-switch-theme NIX_THEME=dark";
     light = "make -B -C /etc/dotfiles nix-switch-theme NIX_THEME=light";
   };
+
+  modules.shell.zsh.rc = ''
+    # Init a Nix flake with direnv support at my current system nixpkgs version
+    nix-direnv-flake-init() {
+      nix flake init -t github:nix-community/nix-direnv
+      local sysnix=$(jq -r '.nodes.nixpkgs.locked.rev' /etc/dotfiles/flake.lock)
+      sed -i 's/\/nixpkgs-unstable/\?rev='$sysnix'/' flake.nix
+    }
+  '';
 }
