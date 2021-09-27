@@ -82,7 +82,8 @@ with lib; {
   };
 
   modules.shell.zsh.rc = ''
-    # Init a Nix flake with direnv support at my current system nixpkgs version
+    # Helper to initialise a new Nix flake with direnv support with nixpkgs
+    # codified to my current system version.
     nix-direnv-flake-init() {
       nix flake init -t github:nix-community/nix-direnv
       local sysnix=$(jq -r '.nodes.nixpkgs.locked.rev' /etc/dotfiles/flake.lock)

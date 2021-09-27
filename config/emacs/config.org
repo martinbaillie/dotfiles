@@ -275,6 +275,7 @@ Miscellaneous.
  :vgni "s-/" #'consult-buffer
  :vgni "s-f" #'consult-line
  :vgni "s-." #'+workspace/switch-to
+ :vgni "C-<tab>" #'mode-line-other-buffer
  :vgni "H-s-x" #'execute-extended-command
  :vgni "H-s-," #'+vertico/switch-workspace-buffer
  :vgni "H-s-/" #'consult-buffer
