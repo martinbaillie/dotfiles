@@ -42,6 +42,7 @@
   - [[#proced][proced]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
+  - [[#temp][TEMP]]
 
 * Personal
 #+BEGIN_SRC elisp
@@ -984,7 +985,6 @@ Allow stop scroll term sequence.
 ;; New uber minimal prompt:
 (setq-hook! 'vterm-mode-hook outline-regexp "^; .*")
 #+END_SRC
-
 *** Copy mode
 Exclude prompts when exiting copy mode.
 #+BEGIN_SRC elisp
@@ -1104,4 +1104,9 @@ Load my flavour of EXWM when in Linux.
 #+begin_src elisp
 (when IS-LINUX
   (load! "+exwm"))
+#+end_src
+** TEMP
+Work around https://github.com/hlissner/doom-emacs/issues/5529
+#+begin_src elisp
+(add-hook! vterm-mode (persp-add-buffer (current-buffer)))
 #+end_src
