@@ -23,7 +23,10 @@
       vim.enable = true;
     };
 
-    dev = { enable = true; };
+    dev = {
+      enable = true;
+      go.enable = true;
+    };
 
     services.dropbox.enable = true;
 

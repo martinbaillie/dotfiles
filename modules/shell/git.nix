@@ -35,6 +35,8 @@ in {
       file."Code/work/.gitconfig".text = ''
         [user]
             email = ${config.secrets.work_email}
+        [init]
+            defaultBranch = master
       '';
     };
   };

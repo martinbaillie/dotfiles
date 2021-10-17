@@ -37,7 +37,6 @@ in {
   config = mkIf cfg.enable {
     # macOS Apps that aren't in nixpkgs.
     homebrew.casks = [
-      "blackhole-16ch" # Zero latency audio mux (https://git.io/JVQ4B).
       "cursorcerer" # Hide pointer when typing.
       "flux" # Still better than macOS NightShift.
       "font-iosevka" # Emacs font.

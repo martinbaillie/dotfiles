@@ -4,6 +4,8 @@
 	email = martin@baillie.id
 [github]
 	user = martinbaillie
+[init]
+	defaultBranch = main
 [alias]
 	st = status
 [pull]
