@@ -21,6 +21,12 @@ else
 FLAGS			+=--option pure-eval no
 endif
 
+# TODO:
+# - Helper for individual input updates:
+# nix flake lock --update-input darwin
+# - Darwin/launchctl service for `cachix watch-store martinbaillie`
+#
+
 ifeq ($(SYSTEM),Darwin)
 NIX_REBUILD		:=nix build $(FLAGS)
 NIX_REBUILD		+=.\#darwinConfigurations.$(HOSTNAME).system

@@ -88,6 +88,7 @@ with lib; {
       nix flake init -t github:nix-community/nix-direnv
       local sysnix=$(jq -r '.nodes.nixpkgs.locked.rev' /etc/dotfiles/flake.lock)
       sed -i 's/\/nixpkgs-unstable/\?rev='$sysnix'/' flake.nix
+      echo "/.direnv" >> .gitignore
     }
   '';
 }

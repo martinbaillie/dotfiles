@@ -66,6 +66,7 @@
 (package! flycheck-golangci-lint)
 (package! command-log-mode)
 (package! rego-mode)
+(package! graphql-mode)
 (package! git-link)
 (package! proced-narrow)
 (package! transpose-frame)

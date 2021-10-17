@@ -37,12 +37,13 @@ in {
   config = mkIf cfg.enable {
     # macOS Apps that aren't in nixpkgs.
     homebrew.casks = [
-      "font-iosevka"
-      "karabiner-elements"
-      "rectangle"
-      "flux"
-      "cursorcerer"
-      "raycast"
+      "blackhole-16ch" # Zero latency audio mux (https://git.io/JVQ4B).
+      "cursorcerer" # Hide pointer when typing.
+      "flux" # Still better than macOS NightShift.
+      "font-iosevka" # Emacs font.
+      "karabiner-elements" # CapsLock as CTRL when held, ESC when tapped.
+      "raycast" # A better Spotlight.
+      "rectangle" # Spectacle-like but for Apple Silicon.
     ];
 
     home = {

@@ -66,5 +66,6 @@
 
   homebrew.casks = [
     "licecap" # Screen recordings to GIF (supports arm64).
+    "drawio" # Pretty boxes and lines.
   ];
 }
