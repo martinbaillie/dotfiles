@@ -53,27 +53,35 @@ in {
           WGETRC = "$XDG_CONFIG_HOME/wgetrc";
         };
 
-        home.configFile = {
-          # Link all externally declared zsh config recursively.
-          "zsh" = {
-            source = "${configDir}";
-            recursive = true;
+        home = {
+          programs.nix-index = {
+            # FIXME: Use unstable until aarch64-darwin makes it mainline.
+            # enable = true;
+            # package = pkgs.unstable.nix-index;
           };
 
-          # Merge Nix aliases, rc and env attribute sets to be read by zsh.
-          "zsh/rc.d/rc.zsh".text = let
-            aliasLines =
-              mapAttrsToList (n: v: ''alias ${n}="${v}"'') cfg.aliases;
-          in ''
-            ${concatStringsSep "\n" aliasLines}
-            ${cfg.rc}
-          '';
+          configFile = {
+            # Link all externally declared zsh config recursively.
+            "zsh" = {
+              source = "${configDir}";
+              recursive = true;
+            };
 
-          "zsh/rc.d/env.zsh".text = let
-            envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg.env;
-          in ''
-            ${concatStringsSep "\n" envLines}
-          '';
+            # Merge Nix aliases, rc and env attribute sets to be read by zsh.
+            "zsh/rc.d/rc.zsh".text = let
+              aliasLines =
+                mapAttrsToList (n: v: ''alias ${n}="${v}"'') cfg.aliases;
+            in ''
+              ${concatStringsSep "\n" aliasLines}
+              ${cfg.rc}
+            '';
+
+            "zsh/rc.d/env.zsh".text = let
+              envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg.env;
+            in ''
+              ${concatStringsSep "\n" envLines}
+            '';
+          };
         };
       }
       (if isLinux then {

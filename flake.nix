@@ -50,11 +50,8 @@
         in (lib.optionalAttrs isAppleSilicon {
           # FIXME: These are all currently broken on aarch64.
           inherit (intelPkgs)
-            haskell
-            haskellPackages # https://github.com/NixOS/nixpkgs/pull/126195
-            llvmPackages_5 wireshark # Marked as broken + Qt/Pulseaudio issues.
-
-            ssm-session-manager-plugin;
+          # wireshark: just broken everywhere due to LLVM.
+            ssm-session-manager-plugin; # Waiting on AWS to fix upstream.
         });
 
       pkgs = genAttrs supportedSystems.all

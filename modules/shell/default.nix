@@ -47,7 +47,7 @@ in {
         tree
         unzip
         wget
-        wireshark
+        # unstable.wireshark
         xar
         yq-go
         zip

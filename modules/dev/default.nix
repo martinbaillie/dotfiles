@@ -8,7 +8,6 @@ in {
     user.packages = with pkgs; [
       cmake
       gnumake
-      niv
       nixfmt
       nodePackages.bash-language-server
       rnix-lsp

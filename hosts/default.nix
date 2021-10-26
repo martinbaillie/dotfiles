@@ -46,7 +46,11 @@ with lib; {
   };
 
   environment = {
-    systemPackages = with pkgs; [ cachix neofetch ];
+    systemPackages = with pkgs; [
+      cachix
+      neofetch
+      # TODO unstable.nix-output-monitor
+    ];
     variables = {
       # Force XDG defaults as soon as possible.
       XDG_CONFIG_HOME = "$HOME/.config";

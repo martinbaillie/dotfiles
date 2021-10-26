@@ -53,7 +53,7 @@
 * Packages
 ** Upstream
 #+BEGIN_SRC elisp :tangle packages.el
-(package! dap-mode)
+;; (package! dap-mode)
 (package! nyan-mode)
 (package! org-fancy-priorities)
 (package! edit-indirect)
@@ -614,11 +614,11 @@ Silence annoying popup
 #+BEGIN_SRC elisp
 ;; (setq godoc-at-point-function 'godoc-gogetdoc)
 ;; debugger configuration
-(require 'dap-go)
-(dap-go-setup)
-(dap-mode 1)
-(dap-ui-mode 1)
-(dap-tooltip-mode 1)
+;; (require 'dap-go)
+;; (dap-go-setup)
+;; (dap-mode 1)
+;; (dap-ui-mode 1)
+;; (dap-tooltip-mode 1)
 (tooltip-mode 1)
 #+END_SRC
 
@@ -768,6 +768,9 @@ Add additional evil movements for text moves.
 #+BEGIN_SRC elisp
 (map! :m "M-j" #'move-text-down
       :m "M-k" #'move-text-up)
+(when IS-MAC
+  (map! :m "s-j" #'move-text-down
+        :m "s-k" #'move-text-up))
 #+END_SRC
 ** buffer-move
 *** Keys
@@ -777,6 +780,11 @@ Add evil movements to buffer moves.
       :vgni "M-K" #'buf-move-up
       :vgni "M-H" #'buf-move-left
       :vgni "M-L" #'buf-move-right)
+(when IS-MAC
+    (map! :vgni "s-J" #'buf-move-down
+          :vgni "s-K" #'buf-move-up
+          :vgni "s-H" #'buf-move-left
+          :vgni "s-L" #'buf-move-right))
 #+END_SRC
 ** buffer-expose
 *** Disable scaling

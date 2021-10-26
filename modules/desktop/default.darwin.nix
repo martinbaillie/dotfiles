@@ -11,13 +11,16 @@ let
         echo >&2 "enabling sudo touch ID..."
         # Enable sudo Touch ID authentication, if not already enabled
         if ! grep 'pam_tid.so' ${file} > /dev/null; then
+          chflags nouchg ${file}
           sed -i "" '2i\
         auth       sufficient     pam_tid.so # nix-darwin: ${option}
           ' ${file}
         fi
+        chflags uchg ${file}
       '' else ''
         echo >&2 "disabling sudo touch ID..."
         # Disable sudo Touch ID authentication, if added by nix-darwin
+        chflags nouchg ${file}
         if grep '${option}' ${file} > /dev/null; then
           sed -i "" '/${option}/d' ${file}
         fi
