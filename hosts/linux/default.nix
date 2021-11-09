@@ -33,29 +33,6 @@ with lib.my; {
     # Use the latest Linux kernel.
     kernelPackages = mkDefault pkgs.linuxPackages_5_10;
 
-    loader = {
-      # Allow the NixOS installation to modify EFI boot variables.
-      efi.canTouchEfiVariables = true;
-
-      # Choose the default generation faster.
-      timeout = 1;
-
-      # Simplistic boot loader.
-      # Or, how I learned to give up and accept systemd.
-      systemd-boot = {
-        enable = true;
-
-        # Only show the last 10 generations that haven't been GCd.
-        configurationLimit = 10;
-
-        # Fix a security hole in place for the sake of backwards compatibility.
-        editor = false;
-      };
-    };
-
-    # Pretty boot loading screens.
-    plymouth.enable = true;
-
     # Cattle not pets.
     tmpOnTmpfs = true;
 
@@ -72,10 +49,7 @@ with lib.my; {
     };
   };
 
-  console = {
-    keyMap = "us";
-    # font = "Lat2-Terminus16";
-  };
+  console.keyMap = "us";
 
   # Fix early console display.
   hardware.video.hidpi.enable = config.modules.desktop.hidpi;
@@ -114,15 +88,6 @@ with lib.my; {
 
     # Prevent replacing the running kernel without reboot.
     protectKernelImage = true;
-  };
-
-  # DBus.
-  programs.dconf.enable = true;
-  services = {
-    dbus.packages = with pkgs; [ gnome3.dconf ];
-
-    # DBus service that allows applications to update firmware.
-    fwupd.enable = true;
   };
 
   # Linux user and homedir settings.

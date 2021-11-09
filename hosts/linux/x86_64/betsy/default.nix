@@ -1,4 +1,8 @@
-{ pkgs, ... }: {
+{ pkgs, inputs, ... }: {
+  # NOTE: Lenovo's T490 appears to be the closest to my E490.
+  # REVIEW: Check https://github.com/NixOS/nixos-hardware for updates.
+  imports = [ inputs.nixos-hardware.nixosModules.lenovo-thinkpad-t490 ];
+
   modules = {
     desktop = {
       enable = true;
@@ -13,7 +17,7 @@
     editors = {
       emacs = {
         enable = true;
-        package = pkgs.emacs; # TODO: Flick to emacsGcc.
+        package = pkgs.emacsGcc;
       };
 
       vim.enable = true;
@@ -25,7 +29,7 @@
 
     services = {
       ssh.enable = true;
-      docker.enable = true;
+      #docker.enable = true;
     };
 
     shell = {
@@ -44,10 +48,10 @@
           enable = true;
           tridactyl = true;
         };
-        chromium.enable = true;
-        #nyxt.enable = true;
+        #  chromium.enable = true;
+        #  #nyxt.enable = true;
       };
-      zoom.enable = true;
+      #zoom.enable = true;
     };
   };
 
@@ -77,6 +81,29 @@
   };
 
   boot = {
+    loader = {
+      # Allow the NixOS installation to modify EFI boot variables.
+      efi.canTouchEfiVariables = true;
+
+      # Choose the default generation faster.
+      timeout = 1;
+
+      # Simplistic EFI boot loader.
+      # Or, how I learned to give up and accept systemd.
+      systemd-boot = {
+        enable = true;
+
+        # Only show the last 10 generations that haven't been GCd.
+        configurationLimit = 10;
+
+        # Fix a security hole in place for the sake of backwards compatibility.
+        editor = false;
+      };
+    };
+
+    # Pretty boot loading screens.
+    plymouth.enable = true;
+
     # Betsy's LUKS crypted root.
     initrd.luks.devices = {
       root = {
@@ -120,7 +147,6 @@
   programs.light.enable = true;
 
   # Networking.
-  networking.hostName = "betsy";
   networking.wireless = {
     enable = true;
     interfaces = [ "wlp5s0" ];
@@ -149,6 +175,15 @@
   #     (7, 78, 32767)
   #   '';
   # };
+
+  # DBus.
+  programs.dconf.enable = true;
+  services = {
+    dbus.packages = with pkgs; [ gnome3.dconf ];
+
+    # DBus service that allows applications to update firmware.
+    fwupd.enable = true;
+  };
 
   home.services = {
     # Compositor.

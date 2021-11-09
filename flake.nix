@@ -21,12 +21,15 @@
 
     # Hardware definitions.
     nixos-hardware.url = "github:nixos/nixos-hardware";
+
+    # Remote deploys
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   # NOTE: Flake interface found at:
   # https://github.com/NixOS/nix/blob/master/src/nix/flake.cc
-  outputs =
-    inputs@{ self, nixpkgs, nixpkgs-unstable, darwin, emacs-overlay, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, darwin, deploy-rs
+    , emacs-overlay, ... }:
     let
       inherit (lib) genAttrs;
       inherit (lib.my) mapModules mapModulesRec mapHosts mapConfigurations;
@@ -103,5 +106,23 @@
         let forAllSupportedSystems = f: genAttrs supportedSystems.all (s: f s);
         in forAllSupportedSystems
         (system: with pkgs.${system}; import ./shell.nix { inherit pkgs; });
+
+      # Remotely deployed hosts.
+      deploy.nodes.zuul = {
+        sshOpts = [ "-p" "22" ];
+        hostname = "zuul";
+        fastConnection = true;
+        profiles = {
+          system = {
+            sshUser = "mbaillie";
+            path = deploy-rs.lib.x86_64-linux.activate.nixos
+              self.nixosConfigurations.zuul;
+            user = "root";
+          };
+        };
+      };
+
+      # checks = builtins.mapAttrs
+      #   (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
 }

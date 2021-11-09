@@ -8,7 +8,7 @@ with darwin.lib; {
     let
       isNixOS = strings.hasInfix "linux" system;
       theme = "${(builtins.getEnv "XDG_DATA_HOME")}/theme.nix";
-      hardware = /etc/nixos/hardware-configuration.nix;
+      hardware = "${path}/hardware-configuration.nix";
       commonModules = [
         rec {
           networking.hostName =
@@ -30,10 +30,9 @@ with darwin.lib; {
       };
     in if isNixOS then
       makeOverridable nixosSystem {
-        inherit system specialArgs;
+        inherit specialArgs;
         modules = [
-          ({ nixpkgs.pkgs = pkgs.${system}; }) # Needed?
-          ({ config, pkgs, ... }: { # Needed?
+          ({ config, pkgs, ... }: {
             imports = [ inputs.home-manager.nixosModules.home-manager ];
           })
         ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;

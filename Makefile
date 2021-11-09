@@ -135,7 +135,7 @@ dark: darwin-wallpaper
 		-e 'end tell' &
 endif
 ifeq ($(SYSTEM),Linux)
-	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell-master/scripts/$(TERM_THEME) \
+	ln -sf $(ZGEN_DIR)/chriskempson/base16-shell/___/scripts/$(TERM_THEME) \
 		$(ZDOTDIR)/theme.zsh
 	emacsclient -a "" -n \
 		-e "(progn (mb/set-wallpaper) (mb/start-panel))" \

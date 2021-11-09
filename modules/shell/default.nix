@@ -40,6 +40,7 @@ in {
         nmap
         perl
         ripgrep
+        screen
         sqlite
         stunnel
         tcpdump

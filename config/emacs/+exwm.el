@@ -252,9 +252,10 @@
                                                 "xrandr" nil  "xrandr --auto")))
 
   ;; Rofi-styled launcher.
-  (setq counsel-linux-app-format-function ;; Make the launcher list pretty.
-        #'counsel-linux-app-format-function-name-pretty)
-  (exwm-input-set-key (kbd "s-SPC") #'counsel-linux-app)
+  ;; (setq counsel-linux-app-format-function ;; Make the launcher list pretty.
+  ;;       #'counsel-linux-app-format-function-name-pretty)
+  ;; (exwm-input-set-key (kbd "s-SPC") #'counsel-linux-app)
+  (exwm-input-set-key (kbd "s-SPC") #'app-launcher-run-app)
 
   ;; Try to fix C-click.
   ;; (exwm-input-set-key (kbd "<s-mouse-1>") #'fake-C-down-mouse-1)
@@ -378,6 +379,13 @@
                   for i to (length names)
                   when (equal name current-name) collect
                   (format "[%d] %s" (1+ i) name)))))
+
+(defun mb/exwm-buffer-list ()
+  (cl-remove-if-not
+   (lambda (buffer)
+     (eq (buffer-local-value 'major-mode buffer) 'exwm-mode))
+     (buffer-list)))
+
 ;; (pcase exwm-workspace-current-index
 ;;   (0 "(╯°□°)╯︵ ┻━┻")
 ;;   (1 "┬─┬﻿ノ(゜-゜ノ)")

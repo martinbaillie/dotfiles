@@ -77,7 +77,9 @@
 ;; (package! exwm-firefox-core)
 (when IS-LINUX
   (package! exwm-edit)
-  (package! desktop-environment))
+  (package! desktop-environment)
+  (package! app-launcher
+    :recipe (:type git :host github :repo "SebastienWae/app-launcher")))
 #+END_SRC
 ** Mine
 Various forks and packages of my own.
