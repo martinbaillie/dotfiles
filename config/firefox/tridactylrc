@@ -110,6 +110,9 @@ set searchurls.gopkg https://golang.org/pkg/%s
 blacklistadd mail.google.com
 blacklistadd protonmail.com
 blacklistadd office.com
+blacklistadd excalidraw.com
+blacklistadd draw.io
+blacklistadd app.diagrams.net
 
 " Scroll smoothly and slowly.
 set smoothscroll true

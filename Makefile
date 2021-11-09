@@ -60,7 +60,7 @@ update: update-flake update-homebrew
 # Runtime targets.
 gc:
 ifeq ($(SYSTEM),Darwin)
-	$(BREW) bundle cleanup --zap -f
+	brew bundle cleanup --zap -f
 endif
 	nix-collect-garbage -d
 .PHONY:	gc

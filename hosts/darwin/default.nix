@@ -13,7 +13,13 @@
     # Keep things deterministic.
     autoUpdate = false;
 
-    # Properly uninstall things.
+    # Use the Brewfile in the Nix store everywhere.
+    global = {
+      brewfile = true;
+      noLock = true;
+    };
+
+    # Properly uninstall all things not managed by Nix homebrew.
     cleanup = "zap";
 
     extraConfig = ''
