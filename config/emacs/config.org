@@ -599,17 +599,21 @@ Silence annoying popup
   (defun lsp-go-install-save-hooks ()
     (add-hook 'before-save-hook #'lsp-organize-imports t t))
   (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-  (setq gofmt-command "gofumpt")
-  )
+  (setq gofmt-command "gofumpt"
+        lsp-go-link-target "pkg.go.dev"
+        lsp-go-codelenses '((generate . t)
+                            (gc_details . t)
+                            (regenerate_cgo . t)
+                            (tidy . t)
+                            (vendor . t)
+                            (upgrade_dependency . t))))
 
 (after! lsp-mode
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)
      ("gopls.completionDocumentation" t t)
-     )
-   )
-  )
+     ("gopls.codelenses" lsp-go-codelenses))))
 #+END_SRC
 
 *** DAP
