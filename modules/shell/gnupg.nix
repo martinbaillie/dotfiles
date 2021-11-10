@@ -14,9 +14,9 @@ in {
         enableSSHSupport = config.modules.shell.ssh.enable;
       };
 
-      home.configFile = {
-        "gnupg/gpg.asc".text = config.secrets.gpg;
-        "gnupg/gpg-agent.conf".text = ''
+      home.file = {
+        ".gnupg/gpg.asc".text = config.secrets.gpg;
+        ".gnupg/gpg-agent.conf".text = ''
           default-cache-ttl ${toString cfg.cacheTTL}
           default-cache-ttl ${toString cfg.cacheTTL}
           default-cache-ttl-ssh ${toString cfg.cacheTTL}
@@ -34,20 +34,20 @@ in {
     }
 
     (mkIf config.currentSystem.isLinux {
-      home = {
-        services.gpg-agent = {
-          enable = true;
-          enableSshSupport = true;
-        };
-      };
+      # home = {
+      #   services.gpg-agent = {
+      #     enable = true;
+      #     enableSshSupport = true;
+      #   };
+      # };
       user.packages = [ pkgs.pinentry ];
 
       # NOTE: Fresh installs currently require the following imperative one-offs:
-      # chown -R $(whoami) ~/.config/gnupg
-      # find ~/.config/gnupg -type f -exec chmod 600 {} \;
-      # chmod 700 ~/.config/gnupg
-      # find ~/.config/gnupg -type d -exec chmod 700 {} \;
-      # gpg --import ~/.config/gnupg/gpg.asc
+      # chown -R $(whoami) ~/.gnupg
+      # find ~/.gnupg -type f -exec chmod 600 {} \;
+      # chmod 700 ~/.gnupg
+      # find ~/.gnupg -type d -exec chmod 700 {} \;
+      # gpg --import ~/.gnupg/gpg.asc
       # gpg --edit-key <id> RET trust RET 5
       #
       # ssh-add $HOME/.ssh/id_rsa

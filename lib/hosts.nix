@@ -11,9 +11,11 @@ with darwin.lib; {
       hardware = "${path}/hardware-configuration.nix";
       commonModules = [
         rec {
-          networking.hostName =
-            mkDefault (removeSuffix ".nix" (baseNameOf path));
-          environment.variables.HOSTNAME = networking.hostName;
+          networking.hostName = mkDefault (baseNameOf path);
+          environment = {
+            variables.HOSTNAME = networking.hostName;
+            systemPackages = [ inputs.deploy-rs.defaultPackage.${system} ];
+          };
         }
         (filterAttrs (n: v: !elem n [ "system" ]) attrs)
 

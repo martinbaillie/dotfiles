@@ -14,12 +14,14 @@ SYSTEM 		:=$(shell uname -s)
 ifdef DEBUG
 FLAGS			+=--verbose
 FLAGS			+=--show-trace
+DEPLOY_FLAGS 	+=--debug-logs
 endif
 ifeq ($(SYSTEM),Darwin)
 FLAGS			+=--impure
 else
 FLAGS			+=--option pure-eval no
 endif
+DEPLOY_FLAGS 	+=--skip-checks
 
 # TODO:
 # - Helper for individual input updates:
@@ -64,6 +66,10 @@ ifeq ($(SYSTEM),Darwin)
 endif
 	nix-collect-garbage -d
 .PHONY:	gc
+
+# Deploy targets.
+deploy-zuul: ; deploy '$(WORKDIR)#zuul' $(DEPLOY_FLAGS) -- $(FLAGS)
+.PHONY: deploy-zuul
 
 # Emacs configuration.
 $(XDG_CONFIG_HOME)/emacs:

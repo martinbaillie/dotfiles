@@ -93,36 +93,31 @@
           mapModules ./packages (p: pkgs.${system}.callPackage p { });
       in genAttrs supportedSystems.all mkPackages;
 
-      # NixOS host configurations.
-      nixosConfigurations =
-        mapConfigurations supportedSystems.linux ./hosts/linux;
-
-      # Nix Darwin host configurations.
-      darwinConfigurations =
-        mapConfigurations supportedSystems.darwin ./hosts/darwin;
-
       # `nix develop`.
       devShell =
         let forAllSupportedSystems = f: genAttrs supportedSystems.all (s: f s);
         in forAllSupportedSystems
         (system: with pkgs.${system}; import ./shell.nix { inherit pkgs; });
 
-      # Remotely deployed hosts.
-      deploy.nodes.zuul = {
-        sshOpts = [ "-p" "22" ];
-        hostname = "zuul";
+      # Nix Darwin host configurations.
+      darwinConfigurations =
+        mapConfigurations supportedSystems.darwin ./hosts/darwin;
+
+      # NixOS host configurations.
+      nixosConfigurations =
+        mapConfigurations supportedSystems.linux ./hosts/linux;
+
+      # Make NixOS host configurations remotely deployable.
+      deploy.nodes = (builtins.mapAttrs (hostname: attr: {
+        inherit hostname;
         fastConnection = true;
         profiles = {
           system = {
-            sshUser = "mbaillie";
-            path = deploy-rs.lib.x86_64-linux.activate.nixos
+            path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
               self.nixosConfigurations.zuul;
             user = "root";
           };
         };
-      };
-
-      # checks = builtins.mapAttrs
-      #   (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
+      }) self.nixosConfigurations);
     };
 }
