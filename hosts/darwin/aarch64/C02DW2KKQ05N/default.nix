@@ -23,7 +23,10 @@
       vim.enable = true;
     };
 
-    services.docker.enable = true;
+    services = {
+      cachix.enable = true;
+      docker.enable = true;
+    };
 
     dev = {
       enable = true;

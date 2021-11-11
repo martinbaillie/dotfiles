@@ -15,27 +15,29 @@ ifdef DEBUG
 FLAGS			+=--verbose
 FLAGS			+=--show-trace
 DEPLOY_FLAGS 	+=--debug-logs
+else
+NIX_FLAGS 		+=--no-warn-dirty
 endif
+
 ifeq ($(SYSTEM),Darwin)
 FLAGS			+=--impure
-else
+else # NixOS:
 FLAGS			+=--option pure-eval no
 endif
+
 DEPLOY_FLAGS 	+=--skip-checks
 
 # TODO:
 # - Helper for individual input updates:
 # nix flake lock --update-input darwin
-# - Darwin/launchctl service for `cachix watch-store martinbaillie`
-#
 
 ifeq ($(SYSTEM),Darwin)
-NIX_REBUILD		:=nix build $(FLAGS)
+NIX_REBUILD		:=nix build $(NIX_FLAGS) $(FLAGS)
 NIX_REBUILD		+=.\#darwinConfigurations.$(HOSTNAME).system
 NIX_REBUILD		+=&&
 NIX_REBUILD		+=./result/sw/bin/darwin-rebuild $(FLAGS)
 else
-NIX_REBUILD 	:=sudo -E nixos-rebuild $(FLAGS)
+NIX_REBUILD 	:=sudo -E nixos-rebuild $(NIX_FLAGS) $(FLAGS)
 endif
 NIX_REBUILD 	+=--flake .\#$(HOSTNAME)
 

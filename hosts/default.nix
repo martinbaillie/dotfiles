@@ -30,7 +30,7 @@ with lib; {
       experimental-features = nix-command flakes
     '';
 
-    # Use the Flakes edition of nixpkgs.
+    # Use the Flakes edition of Nix.
     package = pkgs.nixFlakes;
 
     nixPath = (mapAttrsToList (n: v: "${n}=${v}") filteredInputs) ++ [

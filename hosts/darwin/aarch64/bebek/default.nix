@@ -28,7 +28,10 @@
       go.enable = true;
     };
 
-    services.dropbox.enable = true;
+    services = {
+      cachix.enable = true;
+      dropbox.enable = true;
+    };
 
     shell = {
       enable = true;

@@ -28,6 +28,7 @@
     dev = { enable = true; };
 
     services = {
+      cachix.enable = true;
       ssh.enable = true;
       #docker.enable = true;
     };
