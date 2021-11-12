@@ -3,7 +3,8 @@ with lib;
 let
   cfg = config.modules.shell.git;
   configDir = "${config.dotfiles.configDir}/git";
-in {
+in
+{
   options.modules.shell.git = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

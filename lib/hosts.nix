@@ -25,20 +25,22 @@ with darwin.lib; {
         (dirOf path) # 3. Current architecture (e.g. aarch64, x86_64).
         (import path) # 4. Current host.
       ] ++ (mapModulesRec' ../modules import) # Make all my modules available.
-        ++ (optional (pathExists theme) theme); # Current host theme.
+      ++ (optional (pathExists theme) theme); # Current host theme.
       specialArgs = {
         inherit lib inputs;
         pkgs = pkgs.${system};
       };
-    in if isNixOS then
-      makeOverridable nixosSystem {
-        inherit specialArgs;
-        modules = [
-          ({ config, pkgs, ... }: {
-            imports = [ inputs.home-manager.nixosModules.home-manager ];
-          })
-        ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
-      }
+    in
+    if isNixOS then
+      makeOverridable nixosSystem
+        {
+          inherit specialArgs;
+          modules = [
+            ({ config, pkgs, ... }: {
+              imports = [ inputs.home-manager.nixosModules.home-manager ];
+            })
+          ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
+        }
     else
       makeOverridable darwinSystem {
         inherit specialArgs;
@@ -60,5 +62,5 @@ with darwin.lib; {
 
   mapConfigurations = supportedSystems: basePath:
     foldAttrs (a: b: a // b) { }
-    (forEach supportedSystems (system: (mkConfiguration basePath system)));
+      (forEach supportedSystems (system: (mkConfiguration basePath system)));
 }

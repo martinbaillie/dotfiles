@@ -4,7 +4,8 @@ let
   cfg = config.modules.shell.zsh;
   configDir = "${config.dotfiles.configDir}/zsh";
   inherit (systems.elaborate { system = builtins.currentSystem; }) isLinux;
-in {
+in
+{
   options.modules.shell.zsh = with my;
     with types; {
       enable = mkBoolOpt false;
@@ -68,19 +69,23 @@ in {
             };
 
             # Merge Nix aliases, rc and env attribute sets to be read by zsh.
-            "zsh/rc.d/rc.zsh".text = let
-              aliasLines =
-                mapAttrsToList (n: v: ''alias ${n}="${v}"'') cfg.aliases;
-            in ''
-              ${concatStringsSep "\n" aliasLines}
-              ${cfg.rc}
-            '';
+            "zsh/rc.d/rc.zsh".text =
+              let
+                aliasLines =
+                  mapAttrsToList (n: v: ''alias ${n}="${v}"'') cfg.aliases;
+              in
+              ''
+                ${concatStringsSep "\n" aliasLines}
+                ${cfg.rc}
+              '';
 
-            "zsh/rc.d/env.zsh".text = let
-              envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg.env;
-            in ''
-              ${concatStringsSep "\n" envLines}
-            '';
+            "zsh/rc.d/env.zsh".text =
+              let
+                envLines = mapAttrsToList (n: v: ''export ${n}="${v}"'') cfg.env;
+              in
+              ''
+                ${concatStringsSep "\n" envLines}
+              '';
           };
         };
       }

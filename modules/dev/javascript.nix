@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.dev.javascript;
-in {
+in
+{
   options.modules.dev.javascript = {
     enable = my.mkBoolOpt false;
     typescript.enable = my.mkBoolOpt false;

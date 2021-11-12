@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.web.browser.chromium;
-in {
+in
+{
   options.modules.web.browser.chromium = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable (mkMerge [

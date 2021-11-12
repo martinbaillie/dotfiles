@@ -3,7 +3,8 @@ with builtins;
 with lib;
 with lib.my;
 let cfg = config.modules.theme;
-in {
+in
+{
   options.modules.theme = with types; {
     mode = mkOption {
       type = enum [ "light" "dark" ];

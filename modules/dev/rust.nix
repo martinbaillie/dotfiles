@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.dev.rust;
-in {
+in
+{
   options.modules.dev.rust = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

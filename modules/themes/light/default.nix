@@ -2,7 +2,8 @@
 with lib;
 with lib.my;
 let cfg = config.modules.theme;
-in {
+in
+{
   config = mkIf (cfg.mode == "light") {
     modules.theme = {
       wallpaper = ./dj_nobu_light.jpg;

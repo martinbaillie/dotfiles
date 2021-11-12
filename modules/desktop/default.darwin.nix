@@ -6,7 +6,8 @@ let
     let
       file = "/etc/pam.d/sudo";
       option = "modules.desktop.sudoTouchID";
-    in ''
+    in
+    ''
       ${if isEnabled then ''
         echo >&2 "enabling sudo touch ID..."
         # Enable sudo Touch ID authentication, if not already enabled
@@ -27,7 +28,8 @@ let
       ''}
     '';
   inherit (inputs.home-manager.lib.hm) dag;
-in {
+in
+{
   options.modules.desktop = {
     sudoTouchID = mkOption {
       type = types.bool;
@@ -98,19 +100,24 @@ in {
       };
 
       defaults = {
+        SoftwareUpdate.AutomaticallyInstallMacOSUpdates = false;
+
         dock = {
           autohide = true;
+          expose-animation-duration = "0.0";
+          minimize-to-application = true;
           mru-spaces = false;
           orientation = "left";
+          show-recents = false;
           showhidden = true;
           tilesize = 32;
-          expose-animation-duration = "0.0";
         };
 
         finder = {
           AppleShowAllExtensions = true;
           QuitMenuItem = true;
           FXEnableExtensionChangeWarning = false;
+          _FXShowPosixPathInTitle = true;
         };
 
         trackpad = {
@@ -121,7 +128,7 @@ in {
         NSGlobalDomain = {
           AppleKeyboardUIMode = 3;
           ApplePressAndHoldEnabled = false;
-          InitialKeyRepeat = 25;
+          InitialKeyRepeat = 20;
           KeyRepeat = 1;
           NSAutomaticCapitalizationEnabled = false;
           NSAutomaticDashSubstitutionEnabled = false;

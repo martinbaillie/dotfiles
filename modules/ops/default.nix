@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.ops;
-in {
+in
+{
   options.modules.ops = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

@@ -1,17 +1,20 @@
 { config, options, lib, home-manager, ... }:
 let inherit (lib.my) mkOpt mkOpt' mkSecret;
-in with lib; {
+in
+with lib; {
   options = with types; {
-    dotfiles = let t = either str path;
-    in {
-      # Allow for dotfile location flexibility, defaulting to parent dir.
-      dir = mkOpt t (findFirst pathExists (toString ../.)
-        [ "${config.user.home}/.config/dotfiles" ]);
-      configDir = mkOpt t "${config.dotfiles.dir}/config";
-      modulesDir = mkOpt t "${config.dotfiles.dir}/modules";
-      privateDir = mkOpt t "${config.dotfiles.dir}/.private";
-      themesDir = mkOpt t "${config.dotfiles.modulesDir}/themes";
-    };
+    dotfiles =
+      let t = either str path;
+      in
+      {
+        # Allow for dotfile location flexibility, defaulting to parent dir.
+        dir = mkOpt t (findFirst pathExists (toString ../.)
+          [ "${config.user.home}/.config/dotfiles" ]);
+        configDir = mkOpt t "${config.dotfiles.dir}/config";
+        modulesDir = mkOpt t "${config.dotfiles.dir}/modules";
+        privateDir = mkOpt t "${config.dotfiles.dir}/.private";
+        themesDir = mkOpt t "${config.dotfiles.modulesDir}/themes";
+      };
 
     home = {
       file = mkOpt' attrs { } "Files to place directly in $HOME";
@@ -64,31 +67,35 @@ in with lib; {
     # Elaborate the current system for convenience elsewhere.
     currentSystem =
       mkOpt' attrs (systems.elaborate { system = builtins.currentSystem; })
-      "Elaborated description of the current system";
+        "Elaborated description of the current system";
   };
 
   config = {
-    user = let
-      user = builtins.getEnv "USER";
-      name = if elem user [ "" "root" ] then "mbaillie" else user;
-    in {
-      inherit name;
-      description = "Martin Baillie";
-    } // optionalAttrs config.currentSystem.isLinux {
-      uid = 1000;
-      extraGroups = [ "wheel" ];
-      group = "users";
-      home = "/home/${name}";
-      isNormalUser = true;
-    }
-    // optionalAttrs config.currentSystem.isDarwin { home = "/Users/${name}"; };
+    user =
+      let
+        user = builtins.getEnv "USER";
+        name = if elem user [ "" "root" ] then "mbaillie" else user;
+      in
+      {
+        inherit name;
+        description = "Martin Baillie";
+      } // optionalAttrs config.currentSystem.isLinux {
+        uid = 1000;
+        extraGroups = [ "wheel" ];
+        group = "users";
+        home = "/home/${name}";
+        isNormalUser = true;
+      }
+      // optionalAttrs config.currentSystem.isDarwin { home = "/Users/${name}"; };
 
     users.users.${config.user.name} = mkAliasDefinitions options.user;
-    nix = let users = [ "root" config.user.name ];
-    in {
-      trustedUsers = users;
-      allowedUsers = users;
-    };
+    nix =
+      let users = [ "root" config.user.name ];
+      in
+      {
+        trustedUsers = users;
+        allowedUsers = users;
+      };
 
     home-manager = {
       useUserPackages = true;
@@ -131,7 +138,8 @@ in with lib; {
 
     # Secrets.
     # TODO: Evaluate `agenix` and other Nix store encryption options.
-    secrets = let path = "${(builtins.getEnv "XDG_DATA_HOME")}/secrets.nix";
-    in if pathExists path then import path else { };
+    secrets =
+      let path = "${(builtins.getEnv "XDG_DATA_HOME")}/secrets.nix";
+      in if pathExists path then import path else { };
   };
 }

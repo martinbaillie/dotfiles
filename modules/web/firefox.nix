@@ -4,7 +4,8 @@ let
   cfg = config.modules.web.browser.firefox;
   configDir = "${config.dotfiles.configDir}/firefox";
   inherit (pkgs.stdenv.targetPlatform) isLinux;
-in {
+in
+{
   options.modules.web.browser.firefox = with my; {
     enable = mkBoolOpt false;
     tridactyl = mkBoolOpt false;
@@ -72,16 +73,18 @@ in {
               builtins.fetchGit "https://github.com/bezmi/base16-tridactyl.git";
             recursive = true;
           };
-          "tridactyl/tridactylrc".text = let
-            host = "${config.secrets.work_vcs_host}";
-            path = "${config.secrets.work_vcs_path}";
-          in builtins.readFile "${configDir}/tridactylrc" + ''
-            " Set a custom colour theme.
-            colourscheme ${config.modules.theme.tridactyl}
+          "tridactyl/tridactylrc".text =
+            let
+              host = "${config.secrets.work_vcs_host}";
+              path = "${config.secrets.work_vcs_path}";
+            in
+            builtins.readFile "${configDir}/tridactylrc" + ''
+              " Set a custom colour theme.
+              colourscheme ${config.modules.theme.tridactyl}
 
-            " Search work VCS.
-            set searchurls.w https://${host}/search?q=org%3A${path}+%s
-          '';
+              " Search work VCS.
+              set searchurls.w https://${host}/search?q=org%3A${path}+%s
+            '';
         };
       };
     }

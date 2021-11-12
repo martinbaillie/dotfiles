@@ -3,7 +3,8 @@ with lib;
 let
   cfg = config.modules.ops.aws;
   awscli2 = pkgs.unstable.awscli2; # Python issues on stable (aarch64).
-in {
+in
+{
   options.modules.ops.aws = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

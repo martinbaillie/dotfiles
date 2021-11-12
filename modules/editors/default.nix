@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.editors;
-in {
+in
+{
   options.modules.editors = { default = my.mkOpt types.str "nvim"; };
 
   config = mkIf (cfg.default != null) {

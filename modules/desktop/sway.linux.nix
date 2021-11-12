@@ -56,7 +56,8 @@ let
   '';
 
   stripHash = (s: builtins.substring 1 (-1) s);
-in {
+in
+{
   config = mkIf (cfg.wm == "sway") {
 
     # Wayland/Sway Qt5 compat.

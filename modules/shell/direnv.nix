@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.shell.direnv;
-in {
+in
+{
   options.modules.shell.direnv = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

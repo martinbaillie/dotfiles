@@ -3,7 +3,8 @@ with pkgs;
 with lib;
 with lib.my;
 let cfg = config.modules.theme;
-in {
+in
+{
   config = mkIf (cfg.mode == "dark") {
     user.packages =
       [ arc-theme arc-icon-theme paper-gtk-theme paper-icon-theme ];

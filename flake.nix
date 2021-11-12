@@ -28,8 +28,15 @@
 
   # NOTE: Flake interface found at:
   # https://github.com/NixOS/nix/blob/master/src/nix/flake.cc
-  outputs = inputs@{ self, nixpkgs, nixpkgs-unstable, darwin, deploy-rs
-    , emacs-overlay, ... }:
+  outputs =
+    inputs@{ self
+    , nixpkgs
+    , nixpkgs-unstable
+    , darwin
+    , deploy-rs
+    , emacs-overlay
+    , ...
+    }:
     let
       inherit (lib) genAttrs;
       inherit (lib.my) mapModules mapModulesRec mapHosts mapConfigurations;
@@ -42,6 +49,7 @@
 
       mkPkgs = pkgs: extraOverlays: system:
         import pkgs {
+
           inherit system;
           overlays = extraOverlays ++ (lib.attrValues self.overlays);
         };
@@ -50,10 +58,11 @@
         let
           isAppleSilicon = with old.stdenv.hostPlatform; isDarwin && isAarch64;
           intelPkgs = nixpkgs.legacyPackages.x86_64-darwin;
-        in (lib.optionalAttrs isAppleSilicon {
+        in
+        (lib.optionalAttrs isAppleSilicon {
           # FIXME: These are all currently broken on aarch64.
           inherit (intelPkgs)
-          # wireshark: just broken everywhere due to LLVM.
+            # wireshark: just broken everywhere due to LLVM.
             ssm-session-manager-plugin; # Waiting on AWS to fix upstream.
         });
 
@@ -68,7 +77,8 @@
           lib = self;
         };
       });
-    in {
+    in
+    {
       lib = lib.my;
 
       # Default modules usable in dependant flakes.
@@ -88,16 +98,19 @@
         };
       overlays = mapModules ./overlays import;
 
-      packages = let
-        mkPackages = system:
-          mapModules ./packages (p: pkgs.${system}.callPackage p { });
-      in genAttrs supportedSystems.all mkPackages;
+      packages =
+        let
+          mkPackages = system:
+            mapModules ./packages (p: pkgs.${system}.callPackage p { });
+        in
+        genAttrs supportedSystems.all mkPackages;
 
       # `nix develop`.
       devShell =
         let forAllSupportedSystems = f: genAttrs supportedSystems.all (s: f s);
-        in forAllSupportedSystems
-        (system: with pkgs.${system}; import ./shell.nix { inherit pkgs; });
+        in
+        forAllSupportedSystems
+          (system: with pkgs.${system}; import ./shell.nix { inherit pkgs; });
 
       # Nix Darwin host configurations.
       darwinConfigurations =
@@ -108,16 +121,18 @@
         mapConfigurations supportedSystems.linux ./hosts/linux;
 
       # Make NixOS host configurations remotely deployable.
-      deploy.nodes = (builtins.mapAttrs (hostname: attr: {
-        inherit hostname;
-        fastConnection = true;
-        profiles = {
-          system = {
-            path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
-              self.nixosConfigurations.zuul;
-            user = "root";
+      deploy.nodes = (builtins.mapAttrs
+        (hostname: attr: {
+          inherit hostname;
+          fastConnection = true;
+          profiles = {
+            system = {
+              path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
+                self.nixosConfigurations.zuul;
+              user = "root";
+            };
           };
-        };
-      }) self.nixosConfigurations);
+        })
+        self.nixosConfigurations);
     };
 }

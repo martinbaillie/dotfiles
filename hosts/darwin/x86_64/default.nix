@@ -2,6 +2,4 @@
 # UPDATE: I don't own any anymore!
 { config, lib, pkgs, ... }:
 
-{
-
-}
+{ }

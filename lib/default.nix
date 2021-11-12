@@ -15,5 +15,6 @@ let
   mylib = makeExtensible (self:
     with self;
     mapModules ./.
-    (file: import file { inherit self lib pkgs inputs darwin; }));
-in mylib.extend (self: super: foldr (a: b: a // b) { } (attrValues super))
+      (file: import file { inherit self lib pkgs inputs darwin; }));
+in
+mylib.extend (self: super: foldr (a: b: a // b) { } (attrValues super))

@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.services.dropbox;
-in {
+in
+{
   options.modules.services.dropbox = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable (mkMerge [

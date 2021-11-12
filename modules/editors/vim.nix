@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.editors.vim;
-in {
+in
+{
   options.modules.editors.vim = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

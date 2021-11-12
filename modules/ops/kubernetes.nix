@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.ops.kubernetes;
-in {
+in
+{
   options.modules.ops.kubernetes = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {

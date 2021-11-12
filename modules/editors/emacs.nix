@@ -42,7 +42,8 @@ let
       # pandoc
       # (hiPrio clang)
     ] ++ optional config.currentSystem.isLinux wkhtmltopdf;
-in {
+in
+{
   options.modules.editors.emacs = {
     enable = my.mkBoolOpt false;
     package = mkOption {

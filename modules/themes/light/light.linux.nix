@@ -3,7 +3,8 @@ with pkgs;
 with lib;
 with lib.my;
 let cfg = config.modules.theme;
-in {
+in
+{
   config = mkIf (cfg.mode == "light") {
     user.packages = [
       solarc-gtk-theme

@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.shell;
-in {
+in
+{
   options.modules.shell = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {
@@ -56,15 +57,15 @@ in {
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
       ] ++ (if config.currentSystem.isLinux then
       # Exclusive to Linux.
-      [
-        psmisc
-        kitty
-      ] else
+        [
+          psmisc
+          kitty
+        ] else
       # Exclusive to Darwin.
-      [
-        pstree
-        unixtools.watch
-      ]);
+        [
+          pstree
+          unixtools.watch
+        ]);
 
     # Miscellaneous aliases.
     modules.shell.zsh.aliases = {

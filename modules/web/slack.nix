@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.web.slack;
-in {
+in
+{
   options.modules.web.slack = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable (mkMerge [

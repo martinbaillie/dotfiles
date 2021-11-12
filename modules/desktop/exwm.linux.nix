@@ -4,7 +4,8 @@ let
   cfg = config.modules.desktop;
   theme = config.modules.theme;
   secrets = config.secrets;
-in {
+in
+{
   config = mkIf (cfg.wm == "exwm") {
     services.xserver = {
       enable = true;
@@ -20,26 +21,28 @@ in {
       enableCtrlAltBackspace = true;
       dpi = cfg.dpi;
 
-      windowManager.session = let
-        # Allow for per-host injected desktop-related Emacs configuration.
-        extraConfig = pkgs.writeText "emacs-extra-config" ''
-          (setq mb/system-settings
-            '((desktop/dpi . ${(toString cfg.dpi)})
-              (desktop/hidpi . ${if cfg.hidpi then "t" else "nil"})))
-        '';
-      in singleton {
-        name = "exwm";
-        start = ''
-          # Ensure Emacs env is up-to-date.
-          if type doom &>/dev/null; then
-            rm -f $XDG_CONFIG_HOME/emacs/.local/env
-            doom env
-          fi
-          # Launch a fullscreen DBused Emacs.
-          ${pkgs.dbus.dbus-launch} --exit-with-session emacs -mm --fullscreen \
-            -l "${extraConfig}"
-        '';
-      };
+      windowManager.session =
+        let
+          # Allow for per-host injected desktop-related Emacs configuration.
+          extraConfig = pkgs.writeText "emacs-extra-config" ''
+            (setq mb/system-settings
+              '((desktop/dpi . ${(toString cfg.dpi)})
+                (desktop/hidpi . ${if cfg.hidpi then "t" else "nil"})))
+          '';
+        in
+        singleton {
+          name = "exwm";
+          start = ''
+            # Ensure Emacs env is up-to-date.
+            if type doom &>/dev/null; then
+              rm -f $XDG_CONFIG_HOME/emacs/.local/env
+              doom env
+            fi
+            # Launch a fullscreen DBused Emacs.
+            ${pkgs.dbus.dbus-launch} --exit-with-session emacs -mm --fullscreen \
+              -l "${extraConfig}"
+          '';
+        };
 
       displayManager = {
         lightdm = {
@@ -117,8 +120,9 @@ in {
             font-5 = "FontAwesome";
             font-6 = "EmojiOne Color";
             font-7 = "Unifont";
-            background = let stripHash = (s: builtins.substring 1 (-1) s);
-            in "#F2${stripHash theme.colours.bg}"; # 95% Alpha transparency.
+            background =
+              let stripHash = (s: builtins.substring 1 (-1) s);
+              in "#F2${stripHash theme.colours.bg}"; # 95% Alpha transparency.
             foreground = "${theme.colours.fg}";
             enable-ipc = true;
             width = "100%";
@@ -188,66 +192,68 @@ in {
             exec = ''TZ=Europe/Glasgow ${pkgs.coreutils}/bin/date +"%H:%M"'';
             label = "%{T6}%{T-} GLA %output% ";
           };
-          "module/weather" = let
-            polybarWeather = pkgs.writeScriptBin "polybar-weather" ''
-              get_icon() {
-              	case $1 in
-              	01d) icon="" ;;
-              	01n) icon="" ;;
-              	02d) icon="" ;;
-              	02n) icon="" ;;
-              	03*) icon="" ;;
-              	04*) icon="" ;;
-              	09d) icon="" ;;
-              	09n) icon="" ;;
-              	10d) icon="" ;;
-              	10n) icon="" ;;
-              	11d) icon="" ;;
-              	11n) icon="" ;;
-              	13d) icon="" ;;
-              	13n) icon="" ;;
-              	50d) icon="" ;;
-              	50n) icon="" ;;
-              	*) icon="" ;;
-              	esac
+          "module/weather" =
+            let
+              polybarWeather = pkgs.writeScriptBin "polybar-weather" ''
+                get_icon() {
+                  case $1 in
+                  01d) icon="" ;;
+                  01n) icon="" ;;
+                  02d) icon="" ;;
+                  02n) icon="" ;;
+                  03*) icon="" ;;
+                  04*) icon="" ;;
+                  09d) icon="" ;;
+                  09n) icon="" ;;
+                  10d) icon="" ;;
+                  10n) icon="" ;;
+                  11d) icon="" ;;
+                  11n) icon="" ;;
+                  13d) icon="" ;;
+                  13n) icon="" ;;
+                  50d) icon="" ;;
+                  50n) icon="" ;;
+                  *) icon="" ;;
+                  esac
 
-              	echo $icon
-              }
+                  echo $icon
+                }
 
-              KEY="${secrets.openweathermap_api_key}"
-              CITY="2147714" # Erko
-              UNITS="metric"
-              SYMBOL="°C"
-              API="https://api.openweathermap.org/data/2.5"
-              CITY_PARAM="id=$CITY"
-              CURL=${pkgs.curl}/bin/curl
-              JQ=${pkgs.jq}/bin/jq
-              CUT=${pkgs.coreutils}/bin/cut
-              weather=$($CURL -sf "$API/weather?appid=$KEY&$CITY_PARAM&units=$UNITS")
-              forecast=$($CURL -sf "$API/forecast?appid=$KEY&$CITY_PARAM&units=$UNITS&cnt=1")
-              if [ -n "$weather" ]; then
-                weather_temp=$(echo "$weather" | $JQ ".main.temp" | $CUT -d "." -f 1)
-                weather_icon=$(echo "$weather" | $JQ -r ".weather[0].icon")
+                KEY="${secrets.openweathermap_api_key}"
+                CITY="2147714" # Erko
+                UNITS="metric"
+                SYMBOL="°C"
+                API="https://api.openweathermap.org/data/2.5"
+                CITY_PARAM="id=$CITY"
+                CURL=${pkgs.curl}/bin/curl
+                JQ=${pkgs.jq}/bin/jq
+                CUT=${pkgs.coreutils}/bin/cut
+                weather=$($CURL -sf "$API/weather?appid=$KEY&$CITY_PARAM&units=$UNITS")
+                forecast=$($CURL -sf "$API/forecast?appid=$KEY&$CITY_PARAM&units=$UNITS&cnt=1")
+                if [ -n "$weather" ]; then
+                  weather_temp=$(echo "$weather" | $JQ ".main.temp" | $CUT -d "." -f 1)
+                  weather_icon=$(echo "$weather" | $JQ -r ".weather[0].icon")
 
-                forecast_temp=$(echo "$forecast" | $JQ ".list[].main.temp" | $CUT -d "." -f 1)
-                forecast_icon=$(echo "$forecast" | $JQ -r ".list[].weather[0].icon")
+                  forecast_temp=$(echo "$forecast" | $JQ ".list[].main.temp" | $CUT -d "." -f 1)
+                  forecast_icon=$(echo "$forecast" | $JQ -r ".list[].weather[0].icon")
 
-                if [ "$weather_temp" -gt "$forecast_temp" ]; then
-                    trend=""
-                elif [ "$forecast_temp" -gt "$weather_temp" ]; then
-                    trend=""
-                else
-                    trend=""
+                  if [ "$weather_temp" -gt "$forecast_temp" ]; then
+                      trend=""
+                  elif [ "$forecast_temp" -gt "$weather_temp" ]; then
+                      trend=""
+                  else
+                      trend=""
+                  fi
+                  echo "%{T5}$(get_icon "$weather_icon")%{T-} $weather_temp$SYMBOL %{T5}$trend  $(get_icon "$forecast_icon")%{T-} $forecast_temp$SYMBOL"
                 fi
-                echo "%{T5}$(get_icon "$weather_icon")%{T-} $weather_temp$SYMBOL %{T5}$trend  $(get_icon "$forecast_icon")%{T-} $forecast_temp$SYMBOL"
-              fi
-            '';
-          in {
-            type = "custom/script";
-            exec = "${polybarWeather}/bin/polybar-weather";
-            label =
-              "%{A1:${pkgs.xdg_utils}/bin/xdg-open https\\://openweathermap.org/city/2147714:}%output%%{A}";
-          };
+              '';
+            in
+            {
+              type = "custom/script";
+              exec = "${polybarWeather}/bin/polybar-weather";
+              label =
+                "%{A1:${pkgs.xdg_utils}/bin/xdg-open https\\://openweathermap.org/city/2147714:}%output%%{A}";
+            };
         };
       };
     };

@@ -40,6 +40,7 @@
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
   - [[#proced][proced]]
+  - [[#nix][nix]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
   - [[#temp][TEMP]]
@@ -901,6 +902,11 @@ Automatically resize the viewable windows according to the golden ratio.
 ;;     ))
 
 ;; (advice-add #'proced-format-args :around #'+mb/proced-remove-nix-path)
+#+end_src
+** nix
+#+begin_src elisp
+;; TODO is there a more standard way to trigger LSP?
+(add-hook! 'nix-mode-hook #'lsp!)
 #+end_src
 ** vterm
 Use system-wide vterm lib when compiling.

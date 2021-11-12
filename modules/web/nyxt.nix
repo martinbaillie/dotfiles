@@ -3,7 +3,8 @@ with lib;
 let
   cfg = config.modules.web.browser.nyxt;
   configDir = "${config.dotfiles.configDir}/nyxt";
-in {
+in
+{
   options.modules.web.browser.nyxt = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable {
@@ -11,7 +12,8 @@ in {
 
     home.configFile."nyxt/init.org" =
       let target = "${(builtins.getEnv "XDG_CONFIG_HOME")}/nyxt/init.org";
-      in {
+      in
+      {
         source = "${configDir}/nyxt.org";
         onChange = ''
           emacs --batch --eval "(require 'org)" \

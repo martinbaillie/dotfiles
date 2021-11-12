@@ -1,7 +1,8 @@
 { config, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.desktop;
-in {
+in
+{
   config = mkIf cfg.enable {
     fonts = {
       enableGhostscriptFonts = true;

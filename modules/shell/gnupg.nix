@@ -1,7 +1,8 @@
 { config, options, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.shell.gnupg;
-in {
+in
+{
   options.modules.shell.gnupg = with types; {
     enable = my.mkBoolOpt false;
     cacheTTL = my.mkOpt int 86400;
@@ -26,7 +27,7 @@ in {
           allow-loopback-pinentry
         '' + (if config.modules.shell.ssh.enable then ''
           enable-ssh-support
-                    '' else
+        '' else
           "");
       };
 

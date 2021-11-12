@@ -3,7 +3,8 @@ with lib;
 let
   cfg = config.modules.services.ssh;
   inherit (pkgs.stdenv.targetPlatform) isLinux;
-in {
+in
+{
   options.modules.services.ssh = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable (mkMerge [

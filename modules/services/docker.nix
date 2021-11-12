@@ -1,7 +1,8 @@
 { options, config, lib, pkgs, ... }:
 with lib;
 let cfg = config.modules.services.docker;
-in {
+in
+{
   options.modules.services.docker = { enable = my.mkBoolOpt false; };
 
   config = mkIf cfg.enable (mkMerge [
