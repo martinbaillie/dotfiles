@@ -39,6 +39,7 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
+  - [[#web-mode][web-mode]]
   - [[#proced][proced]]
   - [[#nix][nix]]
   - [[#vterm][vterm]]
@@ -862,6 +863,10 @@ Automatically resize the viewable windows according to the golden ratio.
          ))
   )
 #+end_src
+** web-mode
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.vtl" . web-mode))
+#+end_src
 ** proced
 #+begin_src emacs-lisp
 (use-package! proced
@@ -913,7 +918,6 @@ Use system-wide vterm lib when compiling.
 #+BEGIN_SRC elisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 #+END_SRC
-
 *** Mode handling
 Handle escape between Emacs and vterm.
 #+BEGIN_SRC elisp

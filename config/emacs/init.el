@@ -90,6 +90,8 @@
        (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor
        (yaml +lsp)       ; JSON, but readable
        ;; (racket +xp)      ; always be scheming
+       (web +css
+            +html)
 
        :app
        everywhere
