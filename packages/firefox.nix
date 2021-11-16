@@ -3,7 +3,7 @@
 # Predictable Firefox for Darwin, controllable with home-manager.
 stdenv.mkDerivation rec {
   pname = "Firefox";
-  version = "93.0";
+  version = "94.0";
 
   buildInputs = [ undmg ];
   sourceRoot = ".";
@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
     name = "Firefox-${version}.dmg";
     url =
       "https://download-installer.cdn.mozilla.net/pub/firefox/releases/${version}/mac/sco/Firefox%20${version}.dmg";
-    sha256 = "QjS5wD5/cX+VeEc1ZI6Cd5YYFdM5Kr3rPkggZ15ZRUM=";
+    sha256 = "1JEwbrN8wndut//9Ms6rcDqtPtl6pOzUAOD4zL6X0hQ=";
   };
 
   meta = with lib; {

@@ -80,7 +80,7 @@ bindurl reddit.com gu urlparent 3
 bind ;c hint -c [class*="expand"],[class="togg"]
 
 " Search engine and shortcuts.
-set searchengine g
+set searchengine ddg
 " General.
 set searchurls.g https://www.google.com.au/search?q=%s
 set searchurls.ddg https://duckduckgo.com/html?q=%s

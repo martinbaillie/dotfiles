@@ -41,10 +41,16 @@ in
                 "browser.sessionstore.warnOnQuit" = true;
                 # Compact UI.
                 "browser.uidensity" = 1;
+                "browser.compactmode.show" = true;
                 # Hide warnings when playing with config.
                 "browser.aboutConfig.showWarning" = false;
                 # Plain new tabs.
                 "browser.newtabpage.enabled" = false;
+                # Search.
+                "browser.urlbar.placeholderName" = "DuckDuckGo";
+                "browser.urlbar.placeholderName.private" = "DuckDuckGo";
+                "browser.search.defaultenginename" = "DuckDuckGo";
+                "browser.search.selectedEngine" = "DuckDuckGo";
                 # Locale.
                 "browser.search.region" = "AU";
                 # Allow custom styling.

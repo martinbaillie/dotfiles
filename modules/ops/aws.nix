@@ -16,6 +16,10 @@ in
       # ssm-session-manager-plugin
       nodePackages.cdktf-cli
 
+      # TODO: awsls and awsrm
+      # https://github.com/jckuester/awsls
+      # https://github.com/jckuester/awsrm
+
       # Broken everywhere. Using homebrew for now.
       # unstable.aws-sam-cli (aarch64).
     ];
