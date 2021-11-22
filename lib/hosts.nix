@@ -43,7 +43,7 @@ with darwin.lib; {
         }
     else
       makeOverridable darwinSystem {
-        inherit specialArgs;
+        inherit specialArgs system;
         modules = [
           ({ config, pkgs, ... }: {
             imports = [ inputs.home-manager.darwinModules.home-manager ];
