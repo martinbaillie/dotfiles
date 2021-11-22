@@ -20,6 +20,7 @@
 - [[#package-customisation][Package Customisation]]
   - [[#org][org]]
   - [[#org-roam][org-roam]]
+  - [[#pomm][pomm]]
   - [[#projectile][projectile]]
   - [[#direnv][direnv]]
   - [[#hl-todo][hl-todo]]
@@ -74,6 +75,7 @@
 (package! proced-narrow)
 (package! transpose-frame)
 (package! golden-ratio)
+(package! pomm)
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
@@ -194,7 +196,7 @@ Load current theme.
       evil-vsplit-window-right t)
 #+END_SRC
 
-*** Simpler modeline in EXWM
+*** Simpler modeline
 #+BEGIN_SRC elisp
 (after! doom-modeline
   ;; Don't care about encoding.
@@ -203,13 +205,14 @@ Load current theme.
   (setq doom-modeline-buffer-state-icon nil)
   ;; But I like file type icons.
   (setq doom-modeline-major-mode-icon t)
-  ;; Re-organise.
-  (doom-modeline-def-modeline 'main
-    '(bar workspace-name window-number buffer-info word-count
-          remote-host parrot modals buffer-position selection-info)
-    '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
-                  input-method indent-info buffer-encoding major-mode
-                  process vcs checker matches)))
+  ;; Re-organise and simplify when in EXWM.
+  (when IS-LINUX
+    (doom-modeline-def-modeline 'main
+      '(bar workspace-name window-number buffer-info word-count
+            remote-host parrot modals buffer-position selection-info)
+      '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
+                    input-method indent-info buffer-encoding major-mode
+                    process vcs checker matches))))
 #+END_SRC
 
 *** Default modes
@@ -578,6 +581,65 @@ Find in dotfiles.
 (after! org-roam
   (setq org-roam-directory (file-truename (concat org-directory "/" "roam")))
   (mkdir-if-missing org-roam-directory))
+#+end_src
+** pomm
+Transient Pomodoro implementation with Slack status updates and terrible sounds.
+#+begin_src elisp
+;; NOTE: Get this in a browser by going to `my.slack.com/customize` and running
+;; window.prompt("Slack token: ", TS.boot_data.api_token)
+(defun mb/slack-token ()
+  "Return the Slack token from auth source."
+  (auth-source-pick-first-password :host "api.slack.com" :user "token"))
+
+;; NOTE: Get this from the `d` cookie at `my.slack.com/customize` and URL encode it.
+(defun mb/slack-cookie ()
+  "Return the Slack cookie from auth source."
+  (auth-source-pick-first-password :host "api.slack.com" :user "cookie"))
+
+(defun mb/slack-set-presence (presence)
+  "Set the presence to PRESENCE on Slack."
+  (let ((token (mb/slack-token))
+        (url-request-extra-headers
+         `(("cookie" . ,(format "d=%s; " (mb/slack-cookie))))))
+    (progn
+      (url-retrieve (format "https://slack.com/api/users.setPresence?token=%s&presence=%s"
+                            token presence)
+                    (lambda (&rest _))
+                    `(,(current-time))
+                    'silent
+                    'inhibit-cookies) nil)))
+
+(defun mb/slack-set-away ()
+  "Set the Slack presence to away."
+  (mb/slack-set-presence "away"))
+
+(defun mb/slack-set-auto ()
+  "Set the slack presence to auto."
+  (mb/slack-set-presence "auto"))
+
+(defun mb/pomm-slack-dispatch ()
+  "Dispatch an appropriate presence status to Slack."
+  (cond
+   ((eq (alist-get 'status pomm--state) 'stopped)
+    (mb/slack-set-auto))
+   ((eq (alist-get 'status pomm--state) 'running)
+    (mb/slack-set-away))))
+
+(use-package! pomm
+  :config
+  (pomm-mode-line-mode t)
+  (when IS-MAC
+   (setq pomm-audio-player-executable "/usr/bin/afplay"))
+  (setq
+   pomm-audio-enabled t
+   pomm-audio-files (mapcar
+                     (lambda (x)
+                       (if (eq (nth 0 x) 'tick)
+                           '(tick . nil)
+                         x))
+                     pomm-audio-files))
+  (add-hook! 'pomm-on-status-changed-hook 'mb/pomm-slack-dispatch)
+  (map! :leader :desc "Pomodoro" "P" #'pomm))
 #+end_src
 ** projectile
 *** Known directories and search path

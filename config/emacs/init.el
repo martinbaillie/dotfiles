@@ -84,7 +84,6 @@
         +hugo
         +noter
         +pandoc
-        +pomodoro
         +present
         +pretty
         +roam2)
