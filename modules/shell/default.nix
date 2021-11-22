@@ -30,6 +30,7 @@ in
         gnumake
         gnuplot
         gnused
+        graphviz
         gron
         htop
         ijq
@@ -49,10 +50,11 @@ in
         tree
         unzip
         wget
-        # unstable.wireshark
         xar
         yq-go
         zip
+
+        # unstable.wireshark
 
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
       ] ++ (if config.currentSystem.isLinux then

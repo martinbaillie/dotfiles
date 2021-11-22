@@ -19,6 +19,7 @@
 - [[#keysmacos][Keys/macOS]]
 - [[#package-customisation][Package Customisation]]
   - [[#org][org]]
+  - [[#org-roam][org-roam]]
   - [[#projectile][projectile]]
   - [[#direnv][direnv]]
   - [[#hl-todo][hl-todo]]
@@ -73,6 +74,10 @@
 (package! proced-narrow)
 (package! transpose-frame)
 (package! golden-ratio)
+
+;; Let roam-ui manage org-roam
+(unpin! org-roam)
+(package! org-roam-ui)
 
 ;; EXWM related.
 ;; (package! exwm-firefox-evil)
@@ -219,7 +224,6 @@ Load current theme.
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
-
 * UI/macOS
 *** Source a clean shell environment
 #+BEGIN_SRC elisp
@@ -386,6 +390,11 @@ Find in dotfiles.
 #+END_SRC
 
 * Package Customisation
+#+begin_src elisp
+(defun mkdir-if-missing (path)
+  (if (not (file-exists-p (expand-file-name path)))
+    (make-directory (expand-file-name path t))))
+#+end_src
 ** org
 *** Centered buffers
 #+begin_src elisp
@@ -549,13 +558,37 @@ Find in dotfiles.
   )
  )
 #+END_SRC
+** org-roam
+#+begin_src elisp
+(use-package! websocket
+    :after org-roam)
 
+(use-package! org-roam-ui
+    :after org-roam ;; or :after org
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
+
+(after! org-roam
+  (setq org-roam-directory (file-truename (concat org-directory "/" "roam")))
+  (mkdir-if-missing org-roam-directory))
+#+end_src
 ** projectile
 *** Known directories and search path
 #+BEGIN_SRC elisp
 (projectile-add-known-project "~/Dropbox/org")
 (projectile-add-known-project "/etc/dotfiles")
-(setq projectile-project-search-path '("~/Code/work" "~/Code/personal" "~/Code/upstream"))
+
+(setq projectile-project-search-path '("~/Code/work"
+                                       "~/Code/personal"
+                                       "~/Code/upstream"))
+(mapc 'mkdir-if-missing projectile-project-search-path)
 #+END_SRC
 ** direnv
 Silence annoying popup

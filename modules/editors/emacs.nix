@@ -41,7 +41,9 @@ let
       languagetool
       # pandoc
       # (hiPrio clang)
-    ] ++ optional config.currentSystem.isLinux wkhtmltopdf;
+    ]
+    ++ optional config.currentSystem.isDarwin my.orgprotocolclient
+    ++ optional config.currentSystem.isLinux wkhtmltopdf;
 in
 {
   options.modules.editors.emacs = {
@@ -69,9 +71,20 @@ in
       environment.systemPackages = emacsWithDeps;
     })
     (mkIf config.currentSystem.isLinux {
-      user.packages = emacsWithDeps;
-      home = {
+      user.packages = [
+        emacsWithDeps
 
+        (pkgs.makeDesktopItem {
+          name = "org-protocol";
+          exec = "${cfg.package}/bin/emacsclient %u";
+          comment = "Org protocol";
+          desktopName = "org-protocol";
+          type = "Application";
+          mimeType = "x-scheme-handler/org-protocol";
+        })
+      ];
+
+      home = {
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]
           Categories=Development;TextEditor;

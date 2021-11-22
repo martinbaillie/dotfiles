@@ -79,12 +79,15 @@
        markdown          ; writing docs for people to ignore
        nix               ; I hereby declare "nix geht mehr!"
        (org              ; organize your plain life in plain text
+        +dragndrop
         +gnuplot
         +hugo
         +noter
         +pandoc
+        +pomodoro
         +present
-        +pretty)
+        +pretty
+        +roam2)
        (python +lsp)     ; beautiful is better than ugly
        (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor

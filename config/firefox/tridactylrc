@@ -70,6 +70,10 @@ setnull searchurls.twitter
 setnull searchurls.wikipedia
 setnull searchurls.yahoo
 
+" Org-roam capture
+command org_roam js javascript:location.href='org-protocol://roam-ref?template=r&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+bind X org_roam
+
 " New reddit design is just fucking _terrible_.
 autocmd DocStart https://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
 
