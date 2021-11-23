@@ -27,6 +27,7 @@ in
         fzy
         gawk
         gettext
+        gnugrep
         gnumake
         gnuplot
         gnused
