@@ -15,6 +15,8 @@ in
 
         nodePackages.node2nix
         nodePackages.prettier
+        nodePackages.stylelint
+        nodePackages.js-beautify
 
         # FIXME: Various things still call this `json-ls` so alias required.
         nodePackages.vscode-json-languageserver-bin
