@@ -69,6 +69,25 @@ in
     }
     (mkIf config.currentSystem.isDarwin {
       environment.systemPackages = emacsWithDeps;
+
+      user.packages =
+        let
+          # Pasting images to Emacs on macOS.
+          pngpaste = with pkgs; stdenv.mkDerivation rec {
+            src = fetchFromGitHub {
+              owner = "jcsalterego";
+              repo = "pngpaste";
+              rev = "67c39829fedb97397b691617f10a68af75cf0867";
+              sha256 = "089rqjk7khphs011hz3f355c7z6rjd4ydb4qfygmb4x54z2s7xms";
+            };
+            name = "pngpaste";
+            buildInputs = [ pkgs.darwin.apple_sdk.frameworks.Cocoa ];
+            installPhase = ''
+              mkdir -p $out/bin
+              cp pngpaste $out/bin/
+            '';
+          }; in
+        [ pngpaste ];
     })
     (mkIf config.currentSystem.isLinux {
       user.packages = [
