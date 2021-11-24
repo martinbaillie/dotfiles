@@ -161,9 +161,12 @@ Disable for terminal buffers since there can be issues completion/interactive sh
 
 *** Remove whitespace at end of lines on save
 #+BEGIN_SRC elisp
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(defun mb/delete-trailing-whitespace ()
+  "Deletes trailing whitespace in writable buffers"
+  (interactive)
+  (if (not buffer-read-only) (delete-trailing-whitespace)))
+(add-hook 'before-save-hook 'mb/delete-trailing-whitespace)
 #+END_SRC
-
 *** Themes
 Load current theme.
 #+BEGIN_SRC elisp
@@ -585,6 +588,11 @@ Find in dotfiles.
 ** pomm
 Transient Pomodoro implementation with Slack status updates and terrible sounds.
 #+begin_src elisp
+(defconst slack-dnd-end-dnd-url "https://slack.com/api/dnd.endDnd")
+(defconst slack-dnd-set-snooze-url "https://slack.com/api/dnd.setSnooze")
+(defconst slack-set-presence-url "https://slack.com/api/users.setPresence")
+(defconst slack-users-profile-url "https://slack.com/api/users.profile.set")
+
 ;; NOTE: Get this in a browser by going to `my.slack.com/customize` and running
 ;; window.prompt("Slack token: ", TS.boot_data.api_token)
 (defun mb/slack-token ()
@@ -602,34 +610,100 @@ Transient Pomodoro implementation with Slack status updates and terrible sounds.
         (url-request-extra-headers
          `(("cookie" . ,(format "d=%s; " (mb/slack-cookie))))))
     (progn
-      (url-retrieve (format "https://slack.com/api/users.setPresence?token=%s&presence=%s"
-                            token presence)
+      (url-retrieve
+       (format "%s?token=%s&presence=%s" slack-set-presence-url token presence)
+       (lambda (&rest _))
+       `(,(current-time))
+       'silent
+       'inhibit-cookies) nil)))
+
+(defun mb/slack-set-dnd (&optional dur)
+  "Set the Slack do-not-disturb to DUR minutes.
+Removes the do-not-disturb status if DUR is not provided."
+  (let ((token (mb/slack-token))
+        (url-request-extra-headers
+         `(("cookie" . ,(format "d=%s; " (mb/slack-cookie))))))
+    (progn
+      (if (equal dur nil)
+          (url-retrieve
+           (format "%s?token=%s" slack-dnd-end-dnd-url token)
+           (lambda (&rest _))
+           `(,(current-time))
+           'silent
+           'inhibit-cookies)
+        (url-retrieve
+         (format "%s?token=%s&num_minutes=%s" slack-dnd-set-snooze-url token dur)
+         (lambda (&rest _))
+         `(,(current-time))
+         'silent
+         'inhibit-cookies)) nil)))
+
+(defun mb/slack-set-status (text emoji dur)
+  "Set the Slack status to EMOJI: TEXT for DUR minutes from now.
+Removes the status if EMOJI and TEXT are nil."
+  (let* ((expir (truncate (+ (time-to-seconds) (* 60 dur))))
+         (url-request-method "POST")
+         (url-request-data
+          (json-encode `(("profile" .
+                          (("status_text" . ,text)
+                           ("status_emoji" . ,emoji)
+                           ("status_expiration" . ,expir))))))
+         (url-request-extra-headers
+          `(("Content-Type" . "application/json;charset=utf-8")
+            ("Authorization" . ,(format "Bearer %s" (mb/slack-token)))
+            ("Cookie" . ,(format "d=%s; " (mb/slack-cookie))))))
+    (progn
+      (url-retrieve slack-users-profile-url
                     (lambda (&rest _))
-                    `(,(current-time))
+                    nil
                     'silent
                     'inhibit-cookies) nil)))
 
+(defun mb/slack-clear-status ()
+  "Set the Slack to empty."
+  (interactive)
+  (mb/slack-set-status "" "" 0))
+
+(defun mb/slack-dnd-snooze (dur)
+  "Set the Slack do-not-disturb to snooze for DUR minutes."
+  (interactive)
+  (mb/slack-set-dnd dur))
+
+(defun mb/slack-dnd-end ()
+  "Set the Slack do-not-disturb to ended."
+  (interactive)
+  (mb/slack-set-dnd))
+
 (defun mb/slack-set-away ()
   "Set the Slack presence to away."
+  (interactive)
   (mb/slack-set-presence "away"))
 
 (defun mb/slack-set-auto ()
   "Set the slack presence to auto."
+  (interactive)
   (mb/slack-set-presence "auto"))
+(defalias 'mb/slack-set-back 'mb/slack-set-auto)
 
 (defun mb/pomm-slack-dispatch ()
-  "Dispatch an appropriate presence status to Slack."
+  "Dispatch an appropriate Pomodoro status to Slack."
   (cond
    ((eq (alist-get 'status pomm--state) 'stopped)
-    (mb/slack-set-auto))
+    (mb/slack-dnd-end)
+    (mb/slack-clear-status))
    ((eq (alist-get 'status pomm--state) 'running)
-    (mb/slack-set-away))))
+    (let ((mins (/ (pomm--get-time-remaning) 60)))
+      (progn (mb/slack-set-dnd mins)
+             (mb/slack-set-status
+              (format "Will check Slack around %s"
+                      (format-time-string "%H:%M%p" (+ (time-to-seconds) (* mins 60))))
+              ":tomato:" mins))))))
 
 (use-package! pomm
   :config
   (pomm-mode-line-mode t)
   (when IS-MAC
-   (setq pomm-audio-player-executable "/usr/bin/afplay"))
+    (setq pomm-audio-player-executable "/usr/bin/afplay"))
   (setq
    pomm-audio-enabled t
    pomm-audio-files (mapcar
