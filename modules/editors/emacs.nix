@@ -21,7 +21,19 @@ let
       ((emacsPackagesNgGen cfg.package).emacsWithPackages (epkgs:
         with epkgs;
         # Use Nix to manage packages with non-trivial userspace dependencies.
-        [ emacsql emacsql-sqlite pdf-tools org-pdftools vterm ]
+        [
+          emacsql
+          emacsql-sqlite
+
+          # FIXME: Currently building `epdinfo` on macOS like so:
+          # ; nix-shell -p pkg-config poppler automake libtool libpng autoconf
+          # ; autoreconf -i -f
+          # ; ./autobuild -i /Users/mbaillie/.config/emacs/.local/straight/build-29.0.50/pdf-tools --os nixos
+          pdf-tools
+
+          org-pdftools
+          vterm
+        ]
         ++ optional (config.modules.desktop.wm == "exwm") exwm))
 
       # Use my own bespoke wrapper for `emacsclient`.

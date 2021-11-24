@@ -66,7 +66,7 @@
        (lsp +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
-       ;; pdf               ; pdf enhancements
+       pdf               ; pdf enhancements
        rgb               ; creating color strings
        terraform         ; infrastructure as code
 
