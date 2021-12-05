@@ -102,9 +102,7 @@ in
         [ pngpaste ];
     })
     (mkIf config.currentSystem.isLinux {
-      user.packages = [
-        emacsWithDeps
-
+      user.packages = emacsWithDeps ++ [
         (pkgs.makeDesktopItem {
           name = "org-protocol";
           exec = "${cfg.package}/bin/emacsclient %u";

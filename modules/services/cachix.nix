@@ -23,13 +23,15 @@ in
         systemd.services.cachix-watch-store = {
           description = "Cachix store watcher service";
           wantedBy = [ "multi-user.target" ];
-          after = [ "network.target" ];
+          after = [ "network-online.target" ];
           serviceConfig = {
-            Type = "notify";
             Restart = "always";
+            RestartSec = 5;
+            TimeoutSec = 5;
             CacheDirectory = "cachix-watch-store";
             ExecStart = cachix;
           };
+          unitConfig.StartLimitIntervalSec = 0;
         } // common;
       } else {
         launchd.user.agents.cachix-watch-store = {

@@ -56,6 +56,8 @@
     };
   };
 
+  user.packages = with pkgs; [ transmission-remote-gtk ];
+
   hardware = {
     bluetooth.enable = true;
 
