@@ -68,7 +68,7 @@
   };
 
   homebrew.casks = [
-    "blackhole-16ch" # Zero latency audio mux (https://git.io/JVQ4B).
+    # "blackhole-16ch" # Zero latency audio mux (https://git.io/JVQ4B).
     "drawio" # Pretty boxes and lines.
     "licecap" # Screen recordings to GIF (supports arm64).
   ];

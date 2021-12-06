@@ -10,6 +10,7 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       awscli2
+      (mkIf config.modules.services.docker.enable amazon-ecr-credential-helper)
 
       # FIXME: Waiting on an answer from AWS re. aarch64.
       # https://github.com/aws/session-manager-plugin/issues/9

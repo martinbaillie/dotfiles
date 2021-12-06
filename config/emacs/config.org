@@ -604,6 +604,11 @@ Transient Pomodoro implementation with Slack status updates and terrible sounds.
   "Return the Slack cookie from auth source."
   (auth-source-pick-first-password :host "api.slack.com" :user "cookie"))
 
+(defun mb/slack-response-callback (status start-time)
+  (message "The request is completed in %f seconds"
+           (float-time (time-subtract nil start-time)))
+  (display-buffer (current-buffer)))
+
 (defun mb/slack-set-presence (presence)
   "Set the presence to PRESENCE on Slack."
   (let ((token (mb/slack-token))
@@ -612,7 +617,7 @@ Transient Pomodoro implementation with Slack status updates and terrible sounds.
     (progn
       (url-retrieve
        (format "%s?token=%s&presence=%s" slack-set-presence-url token presence)
-       (lambda (&rest _))
+       'mb/slack-response-callback
        `(,(current-time))
        'silent
        'inhibit-cookies) nil)))

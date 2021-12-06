@@ -74,8 +74,8 @@ setnull searchurls.yahoo
 command org_roam js javascript:location.href='org-protocol://roam-ref?template=r&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
 bind X org_roam
 
-" New reddit design is just fucking _terrible_.
-autocmd DocStart https://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
+" New reddit design is just fucking _terrible_. Use the old one.
+autocmd DocStart ^http(s?)://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
 
 " Make gu take you back to subreddit from comments
 bindurl reddit.com gu urlparent 3
@@ -87,7 +87,7 @@ bind ;c hint -c [class*="expand"],[class="togg"]
 set searchengine ddg
 " General.
 set searchurls.g https://www.google.com.au/search?q=%s
-set searchurls.ddg https://duckduckgo.com/html?q=%s
+set searchurls.ddg https://duckduckgo.com/?q=%s
 set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
 set searchurls.yt https://youtube.com/results?search_query=%s
 set searchurls.gh https://github.com/search?q=%s
@@ -112,11 +112,18 @@ set searchurls.gopkg https://golang.org/pkg/%s
 
 " Disable.
 blacklistadd mail.google.com
+blacklistadd docs.google.com
 blacklistadd protonmail.com
 blacklistadd office.com
 blacklistadd excalidraw.com
 blacklistadd draw.io
 blacklistadd app.diagrams.net
+
+" Really disable
+autocmd DocStart docs.google.com mode ignore
+autocmd TabEnter docs.google.com mode ignore
+autocmd TabEnter mail.google.com/mail/u/ mode ignore
+autocmd DocStart mail.google.com/mail/u/ mode ignore
 
 " Scroll smoothly and slowly.
 set smoothscroll true
@@ -126,3 +133,7 @@ bind k scrollline -3
 " Use scroll keys similar to Vimium.
 bind d scrollline 10
 bind u scrollline -10
+
+" Detach tabs into new windows.
+bind gd tabdetach
+bind gD composite tabduplicate | tabdetach
