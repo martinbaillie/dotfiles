@@ -4,9 +4,15 @@ sanitise tridactyllocal tridactylsync
 " Plain old, new tabs.
 set newtab about:blank
 
-" Slack unread and thread shortcuts.
-bind gsu composite js document.getElementsByClassName("p-channel_sidebar__link--unread")[0].click()
+" Slack shortcuts.
+" Jump to unread.
+bind gsu composite js document.getElementsByClassName("p-channel_sidebar__link--page_punreads")[0].click()
+" Mark all unreads as read.
+bind gsr composite js document.getElementsByClassName("p-unreads_view__footer")[0].firstChild.click()
+" Jump to threads.
 bind gst composite js document.getElementsByClassName("p-channel_sidebar__link--all-threads")[0].click()
+" Jump to DMs
+bind gsd composite js document.getElementsByClassName("p-channel_sidebar__link--page_pdms")[0].click()
 
 " Make Tridactyl work on more sites at the expense of some security.
 jsb browser.webRequest.onHeadersReceived.addListener(tri.request.clobberCSP,{urls:["<all_urls>"],types:["main_frame"]},["blocking","responseHeaders"])
@@ -73,6 +79,12 @@ setnull searchurls.yahoo
 " Org-roam capture
 command org_roam js javascript:location.href='org-protocol://roam-ref?template=r&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
 bind X org_roam
+
+" Pop to other persistent tabs
+unbind S
+bind S buffer slack.com
+bind M buffer outlook.com
+bind C buffer soundcloud.com
 
 " New reddit design is just fucking _terrible_. Use the old one.
 autocmd DocStart ^http(s?)://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")

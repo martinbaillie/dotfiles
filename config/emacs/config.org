@@ -21,6 +21,7 @@
   - [[#org][org]]
   - [[#org-roam][org-roam]]
   - [[#pomm][pomm]]
+  - [[#evil][evil]]
   - [[#projectile][projectile]]
   - [[#direnv][direnv]]
   - [[#hl-todo][hl-todo]]
@@ -565,6 +566,94 @@ Find in dotfiles.
  )
 #+END_SRC
 ** org-roam
+The king of plain-text personal knowledge management. A Zettelkasten system in Emacs.
+#+begin_src elisp
+(after! org-roam
+  (setq org-roam-completion-everywhere t
+        org-roam-mode-section-functions
+        (list #'org-roam-backlinks-section
+              #'org-roam-reflinks-section
+              #'org-roam-unlinked-references-section)
+        org-roam-directory (file-truename (concat org-directory "/" "roam"))
+
+        org-roam-capture-templates
+        '(("d" "default" plain
+           "%?"
+           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t))
+
+        org-roam-capture-ref-templates
+        '(("r" "ref" plain
+           "%?"
+           :if-new (file+head "${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t)
+          ("w" "web" plain
+           "%?"
+           :if-new (file+head "web/${slug}.org"
+                              "#+title: ${title}\n")
+           :unnarrowed t)))
+
+  ;; Ensure the roam directory exists.
+  (mkdir-if-missing org-roam-directory)
+
+  ;; Make the default roam buffer a little smaller.
+  (set-popup-rules!
+    `((,(regexp-quote org-roam-buffer) ; persistent org-roam buffer
+       :side right :width .25 :height .5 :ttl nil :modeline nil :quit nil :slot 1)
+      ("^\\*org-roam: " ; node dedicated org-roam buffer
+       :side right :width .25 :height .5 :ttl nil :modeline nil :quit nil :slot 2))))
+
+;; Make roam bindings easily accessible.
+(map!
+ :leader
+ (:prefix-map ("r" . "roam")
+  :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory))
+  :desc "Open random node"           "a" #'org-roam-node-random
+  :desc "Find node"                  "f" #'org-roam-node-find
+  :desc "Find ref"                   "F" #'org-roam-ref-find
+  :desc "Show graph"                 "g" #'org-roam-graph
+  :desc "Insert node"                "i" #'org-roam-node-insert
+  :desc "Capture to node"            "n" #'org-roam-capture
+  :desc "Toggle roam buffer"         "r" #'org-roam-buffer-toggle
+  :desc "Launch roam buffer"         "R" #'org-roam-buffer-display-dedicated
+  :desc "Sync database"              "s" #'org-roam-db-sync
+  (:prefix ("d" . "by date")
+   :desc "Goto previous note"        "b" #'org-roam-dailies-goto-previous-note
+   :desc "Goto date"                 "d" #'org-roam-dailies-goto-date
+   :desc "Capture date"              "D" #'org-roam-dailies-capture-date
+   :desc "Goto next note"            "f" #'org-roam-dailies-goto-next-note
+   :desc "Goto tomorrow"             "m" #'org-roam-dailies-goto-tomorrow
+   :desc "Capture tomorrow"          "M" #'org-roam-dailies-capture-tomorrow
+   :desc "Capture today"             "n" #'org-roam-dailies-capture-today
+   :desc "Goto today"                "t" #'org-roam-dailies-goto-today
+   :desc "Capture today"             "T" #'org-roam-dailies-capture-today
+   :desc "Goto yesterday"            "y" #'org-roam-dailies-goto-yesterday
+   :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
+   :desc "Find directory"            "-" #'org-roam-dailies-find-directory)))
+
+;; Allow mouse clicks in the roam buffer.
+(define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
+
+;; Show node modification times in Marginalia.
+;; (setq org-roam-node-display-template
+;;       (concat "${title:80} " (propertize "${tags:20}" 'face 'org-tag))
+;;       org-roam-node-annotation-function
+;;       (lambda (node) (marginalia--time (org-roam-node-file-mtime node))))
+
+;; Show node hierarchy in Marginalia.
+(cl-defmethod org-roam-node-hierarchy ((node org-roam-node))
+  (let ((level (org-roam-node-level node)))
+    (concat
+     (when (> level 0) (concat (org-roam-node-file-title node) " > "))
+     (when (> level 1) (concat (string-join (org-roam-node-olp node) " > ") " > "))
+     (org-roam-node-title node))))
+
+(setq org-roam-node-display-template "${hierarchy:*} ${tags:20}")
+#+end_src
+
+I use org-roam UI to quickly visualise my Zettelkasten.
 #+begin_src elisp
 (use-package! websocket
     :after org-roam)
@@ -580,10 +669,6 @@ Find in dotfiles.
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
-
-(after! org-roam
-  (setq org-roam-directory (file-truename (concat org-directory "/" "roam")))
-  (mkdir-if-missing org-roam-directory))
 #+end_src
 ** pomm
 Transient Pomodoro implementation with Slack status updates and terrible sounds.
@@ -719,6 +804,30 @@ Removes the status if EMOJI and TEXT are nil."
                      pomm-audio-files))
   (add-hook! 'pomm-on-status-changed-hook 'mb/pomm-slack-dispatch)
   (map! :leader :desc "Pomodoro" "P" #'pomm))
+#+end_src
+** evil
+Evil is a little too like Vim. Make it better.
+#+begin_src elisp
+(setq
+ ;; Do not move the cursor back one after insert mode.
+ ;; evil-move-cursor-back nil
+ ;; Keep yank (kill) content after pasting.
+ evil-kill-on-visual-paste nil
+ ;; Synchronise Evil Visual selections with Emacs' concept of Regions.
+ evil-visual-region-expanded t)
+
+;; Move forward Evil symbols instead of Evil words.
+(defalias #'forward-evil-word #'forward-evil-symbol)
+
+;; Put highlighted text as a higher priority than search highlights.
+(defadvice! my-evil-visual-highlight-a (&rest _)
+  "Make the visual overlay have higher priority than the search highlight."
+  :after '(evil-visual-highlight evil-visual-highlight-block)
+  (when evil-visual-overlay
+    (overlay-put evil-visual-overlay 'priority 1010))
+  (when evil-visual-block-overlays
+    (dolist (overlay evil-visual-block-overlays)
+        (overlay-put overlay 'priority 1010))))
 #+end_src
 ** projectile
 *** Known directories and search path
