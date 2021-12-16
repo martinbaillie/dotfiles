@@ -38,11 +38,13 @@
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
+  - [[#undo-tree][undo-tree]]
   - [[#move-text][move-text]]
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
   - [[#web-mode][web-mode]]
+  - [[#keycast-mode][keycast-mode]]
   - [[#proced][proced]]
   - [[#nix][nix]]
   - [[#vterm][vterm]]
@@ -71,6 +73,7 @@
 (package! flycheck-golangci-lint)
 (package! keycast)
 (package! rego-mode)
+(package! protobuf-mode)
 (package! graphql-mode)
 (package! git-link)
 (package! proced-narrow)
@@ -103,7 +106,7 @@ Various forks and packages of my own.
 *** Frame titles and toolbar
 #+BEGIN_SRC elisp
 ;; Set a standard title.
-(setq frame-title-format '("%b – Emacs"))
+(setq frame-title-format '("%b — Emacs"))
 
 ;; Hide the toolbar.
 (tool-bar-mode 0)
@@ -878,27 +881,80 @@ Silence annoying popup
 #+END_SRC
 
 ** go
-*** LSP
-#+BEGIN_SRC elisp
-(after! go-mode
-  (defun lsp-go-install-save-hooks ()
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
-  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-  (setq gofmt-command "gofumpt"
-        lsp-go-link-target "pkg.go.dev"
-        lsp-go-codelenses '((generate . t)
-                            (gc_details . t)
-                            (regenerate_cgo . t)
-                            (tidy . t)
-                            (vendor . t)
-                            (upgrade_dependency . t))))
+*** LSP (Eglot)
+I'm trialling Eglot after a lot of annoyances over time with lsp-mode.
 
-(after! lsp-mode
-  (lsp-register-custom-settings
-   '(("gopls.completeUnimported" t t)
-     ("gopls.staticcheck" t t)
-     ("gopls.completionDocumentation" t t)
-     ("gopls.codelenses" lsp-go-codelenses))))
+Fix backslashes in Eglot documentation.
+SEE: https://github.com/joaotavora/eglot/issues/333
+#+begin_src elisp
+(defun mb/gfm-unescape-string (string)
+  "Remove backslash-escape of punctuation characters in STRING."
+  ;; https://github.github.com/gfm/#backslash-escapes
+  (replace-regexp-in-string "[\\\\]\\([][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-]\\)" "\\1" string))
+
+(advice-add 'eglot--format-markup :filter-return 'mb/gfm-unescape-string)
+#+end_src
+
+Run the organise imports LSP action upon save.
+#+begin_src elisp
+(defun mb/eglot-interactively-organize-imports ()
+  (ignore-errors (eglot-code-action-organize-imports (point-min))))
+
+;; The depth of -10 places this before eglot's willSave notification,
+;; so that notification reports the actual contents that will be saved.
+(defun eglot-go-save-hook ()
+  (add-hook 'before-save-hook #'mb/eglot-interactively-organize-imports -10 t))
+
+(after! go-mode
+  (add-hook! 'go-mode-hook #'eglot-go-save-hook))
+
+(setq-default eglot-workspace-configuration
+              ;; Turn on a bunch of stuff despite patchy Eglot support.
+              '((:gopls . ((usePlaceholders . t)
+                           (hoverKind ."FullDocumentation")
+                           (linksInHover . t)
+                           (allExperiments . t)
+                           (staticcheck . t)
+                           (gofumpt . t)
+                           (analyses . ((nilness . t)
+                                        (fieldalignment . t)
+                                        (shadow . t)
+                                        (unusedparams . t)
+                                        (unusedwrite . t)))
+                           (matcher . "Fuzzy")))))
+
+(setq-default eglot-workspace-configuration
+              '((:gopls . ((gofumpt . t)))))
+
+;; (setq-default eglot-workspace-configuration
+;;               '((:gopls .
+;;                  ((staticcheck . t)
+;;                   (gofumpt . t)))))
+
+;; (hoverKind ."FullDocumentation")
+;; (usePlaceholders . t)
+#+end_src
+
+#+BEGIN_SRC elisp
+;; (after! go-mode
+;;   (defun lsp-go-install-save-hooks ()
+;;     (add-hook 'before-save-hook #'lsp-organize-imports t t))
+;;   (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+;;   (setq gofmt-command "gofumpt"
+;;         lsp-go-link-target "pkg.go.dev"
+;;         lsp-go-codelenses '((generate . t)
+;;                             (gc_details . t)
+;;                             (regenerate_cgo . t)
+;;                             (tidy . t)
+;;                             (vendor . t)
+;;                             (upgrade_dependency . t))))
+
+;; (after! lsp-mode
+;;   (lsp-register-custom-settings
+;;    '(("gopls.completeUnimported" t t)
+;;      ("gopls.staticcheck" t t)
+;;      ("gopls.completionDocumentation" t t)
+;;      ("gopls.codelenses" lsp-go-codelenses))))
 #+END_SRC
 
 *** DAP
@@ -916,7 +972,8 @@ Silence annoying popup
 *** Keys
 #+BEGIN_SRC elisp
 (map! :map go-mode-map
-      :nv "K"  #'lsp-describe-thing-at-point)
+      :nv "K"  #'eldoc-doc-buffer)
+      ;; :nv "K"  #'lsp-describe-thing-at-point)
 #+END_SRC
 ** python
 Locate the preferred language server.

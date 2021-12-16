@@ -63,7 +63,7 @@
        editorconfig      ; let someone else argue about tabs vs spaces
        (eval +overlay)   ; run code, run (also, repls)
        lookup            ; navigate your code and its documentation
-       (lsp +peek)
+       (lsp +peek +eglot)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        pdf               ; pdf enhancements
@@ -76,6 +76,7 @@
        (go +lsp)         ; the hipster dialect
        (json +lsp)       ; At least it ain't XML
        (javascript +lsp) ; all(hope(abandon(ye(who(enter(here))))))
+       (lua +lsp)        ; one-based indices? one-based indices
        markdown          ; writing docs for people to ignore
        nix               ; I hereby declare "nix geht mehr!"
        (org              ; organize your plain life in plain text
