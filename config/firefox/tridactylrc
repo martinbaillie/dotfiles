@@ -83,7 +83,7 @@ bind X org_roam
 " Pop to other persistent tabs
 unbind S
 bind S buffer slack.com
-bind M buffer outlook.com
+bind M buffer outlook.office.com
 bind C buffer soundcloud.com
 
 " New reddit design is just fucking _terrible_. Use the old one.
