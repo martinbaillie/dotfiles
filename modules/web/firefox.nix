@@ -46,6 +46,8 @@ in
                 "browser.aboutConfig.showWarning" = false;
                 # Plain new tabs.
                 "browser.newtabpage.enabled" = false;
+                # Smaller tab widths.
+                "browser.tabs.tabMinWidth" = 50;
                 # Search.
                 "browser.urlbar.placeholderName" = "DuckDuckGo";
                 "browser.urlbar.placeholderName.private" = "DuckDuckGo";
