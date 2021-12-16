@@ -69,7 +69,7 @@
 (package! buffer-expose)
 (package! exec-path-from-shell)
 (package! flycheck-golangci-lint)
-(package! command-log-mode)
+(package! keycast)
 (package! rego-mode)
 (package! graphql-mode)
 (package! git-link)
@@ -1149,6 +1149,41 @@ Automatically resize the viewable windows according to the golden ratio.
 ** web-mode
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.vtl" . web-mode))
+#+end_src
+** keycast-mode
+#+begin_src elisp
+(after! keycast
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast--update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast)))
+      (remove-hook 'pre-command-hook 'keycast--update)
+      (setq global-mode-string (remove '("" mode-line-keycast) global-mode-string))))
+
+  ;; `emacs-doom-themes' doesn't yet support `keycast' faces.
+  (custom-set-faces!
+    '(keycast-command :inherit mode-line-emphasis)
+    '(keycast-key :inherit mode-line-highlight
+                  :weight bold))
+
+  ;; Prettier insert events.
+  (dolist (input '(self-insert-command
+                   org-self-insert-command))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Typing...")))
+
+  ;; Remove mouse scroll events.
+  (dolist (event '(mwheel-scroll
+                   mouse-event-p
+                   mouse-movement-p))
+    (add-to-list 'keycast-substitute-alist `(,event nil))))
+
+(map!
+ :leader
+ (:prefix-map ("T" . "toggle")
+  :desc "Keycast mode" "k" #'keycast-mode))
 #+end_src
 ** proced
 #+begin_src emacs-lisp
