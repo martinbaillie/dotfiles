@@ -1053,6 +1053,10 @@ Evil frame movements.
 #+BEGIN_SRC elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
 #+END_SRC
+** undo-tree
+#+begin_src elisp
+(after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
+#+end_src
 ** move-text
 *** Keys
 Add additional evil movements for text moves.
