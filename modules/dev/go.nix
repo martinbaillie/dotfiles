@@ -14,11 +14,9 @@ in
       go2nix
       gocode
       godef
-      gofumpt
       golangci-lint
       golint
       gomodifytags
-      gopls
       gore
       gotags
       gotests
@@ -26,6 +24,9 @@ in
       gotools
       protobuf
       vgo2nix
+
+      unstable.gofumpt
+      unstable.gopls
     ];
 
     env = {
