@@ -97,7 +97,7 @@
             +html)
 
        :app
-       everywhere
+       ;; everywhere
 
        :config
        literate

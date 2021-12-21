@@ -1,8 +1,8 @@
-#+TITLE: Literate Emacs Configuration
-#+AUTHOR: Martin Baillie
-#+EMAIL: martin@baillie.id
-#+LANGUAGE: en
-#+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
+#+title: Literate Emacs Configuration
+#+author: Martin Baillie
+#+email: martin@baillie.id
+#+language: en
+#+property: header-args :tangle yes :cache yes :results silent :padline no
 
 [[file:unicorn.jpg]]
 
@@ -39,10 +39,12 @@
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
   - [[#undo-tree][undo-tree]]
+  - [[#snippets][snippets]]
   - [[#move-text][move-text]]
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
+  - [[#rainbow-mode][rainbow-mode]]
   - [[#web-mode][web-mode]]
   - [[#keycast-mode][keycast-mode]]
   - [[#proced][proced]]
@@ -52,14 +54,14 @@
   - [[#temp][TEMP]]
 
 * Personal
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq user-full-name "Martin Baillie"
       user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
-#+END_SRC
+#+end_src
 * Packages
 ** Upstream
-#+BEGIN_SRC elisp :tangle packages.el
+#+begin_src elisp :tangle packages.el
 ;; (package! dap-mode)
 (package! nyan-mode)
 (package! org-fancy-priorities)
@@ -80,6 +82,7 @@
 (package! transpose-frame)
 (package! golden-ratio)
 (package! pomm)
+(package! emacs-everywhere)
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
@@ -93,98 +96,98 @@
   (package! desktop-environment)
   (package! app-launcher
     :recipe (:type git :host github :repo "SebastienWae/app-launcher")))
-#+END_SRC
+#+end_src
 ** Mine
 Various forks and packages of my own.
-#+BEGIN_SRC elisp :tangle packages.el
+#+begin_src elisp :tangle packages.el
 (package! evil-motion-trainer :recipe
   (:host github :repo "martinbaillie/evil-motion-trainer"))
 (package! evil-easymotion :pin "e6051245c06354ccd4a57e054cdff80a34f18376" :recipe
   (:host github :repo "martinbaillie/evil-easymotion"))
-#+END_SRC
+#+end_src
 * UI/General
 *** Frame titles and toolbar
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; Set a standard title.
 (setq frame-title-format '("%b — Emacs"))
 
 ;; Hide the toolbar.
 (tool-bar-mode 0)
-#+END_SRC
+#+end_src
 *** Welcome screen
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq +doom-dashboard-banner-file
       (expand-file-name "logo.png" doom-private-dir))
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
-#+END_SRC
+#+end_src
 *** Font
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-MAC
   (setq
    doom-font                     (font-spec :family "Iosevka" :size 13)
    doom-variable-pitch-font      (font-spec :family "Iosevka" :size 13)))
 (setq +zen-text-scale 1)
 (setq doom-font-increment  3)
-#+END_SRC
+#+end_src
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq display-line-numbers-type 'visual)
-#+END_SRC
+#+end_src
 
 *** Don't truncate lines
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (set-default 'truncate-lines nil)
-#+END_SRC
+#+end_src
 
 *** Increase time taken to pop which-key
 The default is too fast and distracting.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq-default which-key-idle-delay   1.0)
-#+END_SRC
+#+end_src
 
 *** Scrolloff
 Start scrolling X lines before the end of a screen.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq
  scroll-conservatively 10
  scroll-margin 10)
-#+END_SRC
+#+end_src
 
 Disable for terminal buffers since there can be issues completion/interactive shell scripts.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (add-hook 'term-mode-hook (λ! (setq-local scroll-margin 0)))
 (add-hook 'vterm-mode-hook (λ! (setq-local scroll-margin 0)))
 (add-hook 'ivy-mode-hook (λ! (setq-local scroll-margin 0)))
-#+END_SRC
+#+end_src
 
 *** Remove scrollbars
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (scroll-bar-mode -1)
-#+END_SRC
+#+end_src
 
 *** Remove whitespace at end of lines on save
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (defun mb/delete-trailing-whitespace ()
   "Deletes trailing whitespace in writable buffers"
   (interactive)
   (if (not buffer-read-only) (delete-trailing-whitespace)))
 (add-hook 'before-save-hook 'mb/delete-trailing-whitespace)
-#+END_SRC
+#+end_src
 *** Themes
 Load current theme.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (load! "+theme")
-#+END_SRC
+#+end_src
 
 *** Formatting
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq
  +format-on-save-enabled-modes '(not elisp-mode sql-mode tex-mode markdown-mode gfm-mode html-mode mhtml-mode))
-#+END_SRC
+#+end_src
 
 *** Brighter region highlights for my dark themes
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (if (eq doom-theme 'doom-dracula)
 ;;     (custom-set-faces
 ;;      '(region ((t (:background "#bd93f9" :foreground "black"))))
@@ -195,16 +198,16 @@ Load current theme.
      '(region ((t (:background "#51afef" :foreground "black"))))
      )
   )
-#+END_SRC
+#+end_src
 
 *** Move to splits after creating
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq evil-split-window-below t
       evil-vsplit-window-right t)
-#+END_SRC
+#+end_src
 
 *** Simpler modeline
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (after! doom-modeline
   ;; Don't care about encoding.
   (setq doom-modeline-buffer-encoding nil)
@@ -212,6 +215,11 @@ Load current theme.
   (setq doom-modeline-buffer-state-icon nil)
   ;; But I like file type icons.
   (setq doom-modeline-major-mode-icon t)
+  ;; Word counts in Markdown, Org etc.
+  ;; SEE: doom-modeline-continuous-word-count-modes
+  (setq doom-modeline-enable-word-count t)
+  ;; Try to fix icons falling off the RHS edge.
+  (setq all-the-icons-scale-factor 1.1)
   ;; Re-organise and simplify when in EXWM.
   (when IS-LINUX
     (doom-modeline-def-modeline 'main
@@ -220,57 +228,57 @@ Load current theme.
       '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
                     input-method indent-info buffer-encoding major-mode
                     process vcs checker matches))))
-#+END_SRC
+#+end_src
 
 *** Default modes
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (add-to-list 'auto-mode-alist '(".*\\.txt" . indented-text-mode))
 (add-to-list 'auto-mode-alist '("github\\.com_.*\\.txt" . gfm-mode))
 (add-to-list 'auto-mode-alist '("tridactyl\\(rc\\)?\\'" . vimrc-mode))
-#+END_SRC
+#+end_src
 
 *** Always fullscreen
 #+begin_src elisp
-(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 #+end_src
 * UI/macOS
 *** Source a clean shell environment
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-MAC
   (setq exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH")
   (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
   )
-#+END_SRC
+#+end_src
 *** Use font smoothing
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (when IS-MAC (setq ns-use-thin-smoothing t))
-#+END_SRC
+#+end_src
 *** Hide icons in titles
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-MAC (setq ns-use-proxy-icon nil))
-#+END_SRC
+#+end_src
 *** Native macOS titles
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (when IS-MAC
 ;;   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
-#+END_SRC
+#+end_src
 *** Native macOS fullscreen
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (when IS-MAC
 ;; Native macOS fullscreen.
 ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 ;; )
-#+END_SRC
+#+end_src
 *** Transparency
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-MAC
   (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
   (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
   (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
-#+END_SRC
+#+end_src
 * UI/Linux
 *** Transparency
 Set frame transparency and maximize windows by default.
@@ -282,7 +290,7 @@ Set frame transparency and maximize windows by default.
 #+end_src
 * Keys/General
 Miscellaneous.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  :n "C-s" #'save-buffer
  :n "C-/" #'evil-avy-goto-char-timer
@@ -310,10 +318,12 @@ Miscellaneous.
  :vgni "s-8"   #'+workspace/switch-to-7
  :vgni "s-9"   #'+workspace/switch-to-8
  :vgni "s-0"   #'+workspace/switch-to-final)
-#+END_SRC
+#+end_src
+
+TODO: Fix up usage of https://github.com/redguardtoo/evil-nerd-commenter again
 
 Merge comment (dwim and line).
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (defun xah-comment-dwim ()
   "Like `comment-dwim', but toggle comment if cursor is not at end of line.
 
@@ -335,10 +345,10 @@ Version 2016-10-25"
             (forward-line )))))))
 
 (map! :n "C-?" #'xah-comment-dwim)
-#+END_SRC
+#+end_src
 
 Evil frame movements.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  :n "C-h" #'evil-window-left
  :n "C-j" #'evil-window-down
@@ -350,15 +360,15 @@ Evil frame movements.
   "+" (lambda () (interactive) (evil-window-increase-height 7))
   "<" (lambda () (interactive) (evil-window-decrease-width 7))
   ">" (lambda () (interactive) (evil-window-increase-width 7))))
-#+END_SRC
+#+end_src
 
 Evil subword movements.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (global-subword-mode 1)
-#+END_SRC
+#+end_src
 
 Motion training.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (use-package! evil-motion-trainer
   :init
   (global-evil-motion-trainer-mode 1))
@@ -369,7 +379,7 @@ Motion training.
   :desc "Evil motion trainer (global)" "T" #'global-evil-motion-trainer-mode)
  (:prefix-map ("t" . "toggle")
   :desc "Evil motion trainer" "t" #'evil-motion-trainer-mode))
-#+END_SRC
+#+end_src
 
 Find in dotfiles.
 #+begin_src elisp
@@ -380,7 +390,7 @@ Find in dotfiles.
 (map! :leader "f ." #'mb/find-in-dotfiles)
 #+end_src
 * Keys/Linux
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-LINUX
   (map!
    "s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
@@ -388,16 +398,16 @@ Find in dotfiles.
    "H-s-c" (if (featurep 'evil) #'evil-yank #'copy-region-as-kill)
    "H-s-v" #'yank
    "H-s-f" #'consult-line))
-#+END_SRC
+#+end_src
 
 * Keys/macOS
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (when IS-MAC
   (map!
    :gni [s-return] #'toggle-frame-fullscreen
    )
   )
-#+END_SRC
+#+end_src
 
 * Package Customisation
 #+begin_src elisp
@@ -448,24 +458,24 @@ Find in dotfiles.
       :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
 #+end_src
 *** Scratch buffers
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)
 (setq doom-scratch-initial-major-mode 'org-mode)
-#+END_SRC
+#+end_src
 
 *** Dropbox-based cache folder
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq org-directory "~/Dropbox/org"
       org-archive-location "~/Dropbox/org/archive/%s_archive::")
-#+END_SRC
+#+end_src
 
 *** Fold all on startup
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq org-startup-folded 'content)
-#+END_SRC
+#+end_src
 
 *** Capture templates
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (after! org
   (setq org-capture-templates
         '(("t" "Personal todo" entry
@@ -514,21 +524,21 @@ Find in dotfiles.
            :heading "Changelog"
            :prepend t)))
   )
-#+END_SRC
+#+end_src
 *** Hugo
 #+begin_src elisp
 (setq org-hugo-export-with-toc t)
 #+end_src
 *** Agenda files
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq org-work-directory (concat org-directory "/work/*/")
       org-agenda-files (list org-directory
                              org-work-directory))
 (setq org-log-done 'time)
-#+END_SRC
+#+end_src
 
 *** Keywords
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq
  org-todo-keywords
  '((sequence "TODO(t)" "PROG(p)" "|" "DONE(d)" "ABRT(c)")
@@ -541,10 +551,10 @@ Find in dotfiles.
    ("DONE" :inherit (warning bold))
    ("ABRT" :inherit (error bold)))
  )
-#+END_SRC
+#+end_src
 
 *** Priorities
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (after! org
   (setq org-priority-faces '((?A . (:foreground "red" :weight 'bold))
                              (?B . (:foreground "orange"))
@@ -554,10 +564,10 @@ Find in dotfiles.
     :config (setq org-fancy-priorities-list '("⬆" "⬇" "☕"))
     )
   )
-#+END_SRC
+#+end_src
 
 *** Keys
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  (:map org-mode-map
   :ni "<s-backspace>" #'org-babel-remove-result
@@ -567,7 +577,7 @@ Find in dotfiles.
   :i "<S-tab>" #'+org/dedent
   )
  )
-#+END_SRC
+#+end_src
 ** org-roam
 The king of plain-text personal knowledge management. A Zettelkasten system in Emacs.
 #+begin_src elisp
@@ -598,8 +608,12 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
                               "#+title: ${title}\n")
            :unnarrowed t)))
 
-  ;; Ensure the roam directory exists.
+  (when IS-MAC (setq org-roam-graph-viewer "/usr/bin/open"))
+
+  ;; Ensure the roam directories exist.
   (mkdir-if-missing org-roam-directory)
+  (mkdir-if-missing (file-truename (concat org-roam-directory "/" "web")))
+  (mkdir-if-missing (file-truename (concat org-roam-directory "/" "daily")))
 
   ;; Make the default roam buffer a little smaller.
   (set-popup-rules!
@@ -611,30 +625,9 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
 ;; Make roam bindings easily accessible.
 (map!
  :leader
- (:prefix-map ("r" . "roam")
-  :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory))
-  :desc "Open random node"           "a" #'org-roam-node-random
-  :desc "Find node"                  "f" #'org-roam-node-find
-  :desc "Find ref"                   "F" #'org-roam-ref-find
-  :desc "Show graph"                 "g" #'org-roam-graph
-  :desc "Insert node"                "i" #'org-roam-node-insert
-  :desc "Capture to node"            "n" #'org-roam-capture
-  :desc "Toggle roam buffer"         "r" #'org-roam-buffer-toggle
-  :desc "Launch roam buffer"         "R" #'org-roam-buffer-display-dedicated
-  :desc "Sync database"              "s" #'org-roam-db-sync
-  (:prefix ("d" . "by date")
-   :desc "Goto previous note"        "b" #'org-roam-dailies-goto-previous-note
-   :desc "Goto date"                 "d" #'org-roam-dailies-goto-date
-   :desc "Capture date"              "D" #'org-roam-dailies-capture-date
-   :desc "Goto next note"            "f" #'org-roam-dailies-goto-next-note
-   :desc "Goto tomorrow"             "m" #'org-roam-dailies-goto-tomorrow
-   :desc "Capture tomorrow"          "M" #'org-roam-dailies-capture-tomorrow
-   :desc "Capture today"             "n" #'org-roam-dailies-capture-today
-   :desc "Goto today"                "t" #'org-roam-dailies-goto-today
-   :desc "Capture today"             "T" #'org-roam-dailies-capture-today
-   :desc "Goto yesterday"            "y" #'org-roam-dailies-goto-yesterday
-   :desc "Capture yesterday"         "Y" #'org-roam-dailies-capture-yesterday
-   :desc "Find directory"            "-" #'org-roam-dailies-find-directory)))
+ (:prefix-map ("n" . "notes")
+  (:prefix ("r" . "roam")
+   :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory)))))
 
 ;; Allow mouse clicks in the roam buffer.
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
@@ -830,11 +823,11 @@ Evil is a little too like Vim. Make it better.
     (overlay-put evil-visual-overlay 'priority 1010))
   (when evil-visual-block-overlays
     (dolist (overlay evil-visual-block-overlays)
-        (overlay-put overlay 'priority 1010))))
+ (overlay-put overlay 'priority 1010))))
 #+end_src
 ** projectile
 *** Known directories and search path
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (projectile-add-known-project "~/Dropbox/org")
 (projectile-add-known-project "/etc/dotfiles")
 
@@ -842,20 +835,20 @@ Evil is a little too like Vim. Make it better.
                                        "~/Code/personal"
                                        "~/Code/upstream"))
 (mapc 'mkdir-if-missing projectile-project-search-path)
-#+END_SRC
+#+end_src
 ** direnv
 Silence annoying popup
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq direnv-always-show-summary nil)
-#+END_SRC
+#+end_src
 ** hl-todo
 *** Enable everywhere
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'text-mode-hook #'hl-todo-mode)
-#+END_SRC
+#+end_src
 ** format-all
 *** Disabled modes
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (setq +format-on-save-enabled-modes
 ;;       '(not elisp-mode
 ;;             sql-mode
@@ -867,10 +860,10 @@ Silence annoying popup
 ;;   "Disable formatting on save."
 ;;   (interactive)
 ;;   (remove-hook 'before-save-hook #'+format-buffer-h))
-#+END_SRC
+#+end_src
 ** company
 *** Keys
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (use-package! company-tng
   :config
   (define-key! company-active-map
@@ -878,7 +871,7 @@ Silence annoying popup
     [return] 'company-complete-selection
     )
   )
-#+END_SRC
+#+end_src
 
 ** go
 *** LSP (Eglot)
@@ -935,7 +928,7 @@ Run the organise imports LSP action upon save.
 ;; (usePlaceholders . t)
 #+end_src
 
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (after! go-mode
 ;;   (defun lsp-go-install-save-hooks ()
 ;;     (add-hook 'before-save-hook #'lsp-organize-imports t t))
@@ -955,10 +948,10 @@ Run the organise imports LSP action upon save.
 ;;      ("gopls.staticcheck" t t)
 ;;      ("gopls.completionDocumentation" t t)
 ;;      ("gopls.codelenses" lsp-go-codelenses))))
-#+END_SRC
+#+end_src
 
 *** DAP
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; (setq godoc-at-point-function 'godoc-gogetdoc)
 ;; debugger configuration
 ;; (require 'dap-go)
@@ -967,30 +960,30 @@ Run the organise imports LSP action upon save.
 ;; (dap-ui-mode 1)
 ;; (dap-tooltip-mode 1)
 (tooltip-mode 1)
-#+END_SRC
+#+end_src
 
 *** Keys
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map! :map go-mode-map
       :nv "K"  #'eldoc-doc-buffer)
       ;; :nv "K"  #'lsp-describe-thing-at-point)
-#+END_SRC
+#+end_src
 ** python
 Locate the preferred language server.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (after! lsp-python-ms
   (setq lsp-python-ms-executable (executable-find "python-language-server"))
   (set-lsp-priority! 'mspyls 1))
-#+END_SRC
+#+end_src
 ** nyanmode
 Oh gees.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (use-package! nyan-mode
   :after doom-modeline
   :init
   (setq nyan-bar-length 20)
    (nyan-mode))
-#+END_SRC
+#+end_src
 ** dired
 Dired coloured icons.
 #+begin_src elisp
@@ -998,27 +991,27 @@ Dired coloured icons.
 #+end_src
 ** avy
 *** Search across all windows
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq avy-all-windows t)
-#+END_SRC
+#+end_src
 *** Select the single candidate
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq avy-single-candidate-jump t)
-#+END_SRC
+#+end_src
 *** Faster timers
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq avy-timeout-seconds 0.35)
-#+END_SRC
+#+end_src
 ** magit
 *** Avatars
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
-#+END_SRC
+#+end_src
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (add-hook 'git-commit-mode-hook (lambda () (apply #'git-commit-signoff (git-commit-self-ident))))
-#+END_SRC
+#+end_src
 *** Status buffer
 #+begin_src elisp
 ;; Unfold some more displays by default.
@@ -1030,7 +1023,7 @@ Automatically add a git signoff line based on discovered environmental identity.
 #+end_src
 ** yaml
 Get the YAML language server to validate Kubernetes resources.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq lsp-yaml-schemas (make-hash-table))
 (puthash "kubernetes" ["kube.yaml"
                        "resources.yaml"
@@ -1046,10 +1039,10 @@ Get the YAML language server to validate Kubernetes resources.
                        "service.yaml"]
          lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
-#+END_SRC
+#+end_src
 ** terraform
 Enable LSP for Terraform.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (after! lsp-mode
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-lsp" "serve"))
@@ -1057,10 +1050,10 @@ Enable LSP for Terraform.
                     :server-id 'terraform-lsp))
   )
 (add-hook 'terraform-mode-hook #'lsp-deferred)
-#+END_SRC
+#+end_src
 ** pinentry
 *** Use Emacs pinentry on Linux
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (use-package pinentry
   :demand t
   :after epg
@@ -1079,55 +1072,60 @@ Enable LSP for Terraform.
 
   (pinentry-start)
   )
-#+END_SRC
+#+end_src
 ** treemacs
 *** Keys
 Toggling.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  :n "C-S-e" #'+treemacs/toggle
  (:map evil-treemacs-state-map "C-S-e" #'+treemacs/toggle))
-#+END_SRC
+#+end_src
 
 Evil frame movements.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  (:map evil-treemacs-state-map
   "C-h" #'evil-window-left
   "C-l" #'evil-window-right))
-#+END_SRC
+#+end_src
 ** easy-motion
 *** Better scoped easy-motions
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (define-key! 'global
     [remap evilem-motion-forward-word-end] #'evilem-motion-forward-WORD-end
     [remap evilem-motion-forward-word-begin] #'evilem-motion-forward-WORD-begin
     [remap evilem-motion-backward-word-end] #'evilem-motion-backward-WORD-end
     [remap evilem-motion-backward-word-begin] #'evilem-motion-backward-WORD-begin
     )
-#+END_SRC
+#+end_src
 *** Keys
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
-#+END_SRC
+#+end_src
 ** undo-tree
 #+begin_src elisp
 (after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
 #+end_src
+** snippets
+#+begin_src elisp
+(setq yas-snippet-dirs
+     (append yas-snippet-dirs `(,(concat (getenv "XDG_CONFIG_HOME") "/doom/snippets"))))
+#+end_src
 ** move-text
 *** Keys
 Add additional evil movements for text moves.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map! :m "M-j" #'move-text-down
       :m "M-k" #'move-text-up)
 (when IS-MAC
   (map! :m "s-j" #'move-text-down
         :m "s-k" #'move-text-up))
-#+END_SRC
+#+end_src
 ** buffer-move
 *** Keys
 Add evil movements to buffer moves.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map! :vgni "M-J" #'buf-move-down
       :vgni "M-K" #'buf-move-up
       :vgni "M-H" #'buf-move-left
@@ -1137,15 +1135,15 @@ Add evil movements to buffer moves.
           :vgni "s-K" #'buf-move-up
           :vgni "s-H" #'buf-move-left
           :vgni "s-L" #'buf-move-right))
-#+END_SRC
+#+end_src
 ** buffer-expose
 *** Disable scaling
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq-default buffer-expose-rescale-factor 1)
-#+END_SRC
+#+end_src
 
 *** Workspace expose functions
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (defun buffer-workspace-expose (&optional max)
   "Expose workspace buffers.
 If MAX is given it determines the maximum number of windows to
@@ -1163,11 +1161,11 @@ show per page, which defaults to
    (projectile-project-buffers) max nil
    (lambda (buffer)
      (string-prefix-p "vterm: " (buffer-name buffer)))))
-#+END_SRC
+#+end_src
 
 *** Keys
 Add evil movements to expose view.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; TODO: Fix.
 ;; (map!
 ;;  (:map buffer-expose-grid-map
@@ -1175,15 +1173,15 @@ Add evil movements to expose view.
 ;;   :vgni "k" 'buffer-expose-up-window
 ;;   :vgni "j" 'buffer-expose-down-window
 ;;   :vgni "l" 'buffer-expose-right-window))
-#+END_SRC
+#+end_src
 
 Add expose functions to buffer commands.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map! :leader
       :desc "Expose buffers" "be" #'buffer-expose
       :desc "Expose workspace buffers" "bw" #'buffer-workspace-expose
       :desc "Expose workspace vterm buffers" "bv" #'buffer-workspace-vterm-expose)
-#+END_SRC
+#+end_src
 ** golden-ratio
 Automatically resize the viewable windows according to the golden ratio.
 #+begin_src elisp
@@ -1207,22 +1205,33 @@ Automatically resize the viewable windows according to the golden ratio.
          ))
   )
 #+end_src
+** rainbow-mode
+Rainbow mode is a helpful feature that will show the hex value colour. I want
+this enabled in most text mode.
+
+#+begin_src elisp
+(add-hook! '(text-mode-hook prog-mode-hook conf-mode-hook) #'rainbow-mode)
+#+end_src
 ** web-mode
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.vtl" . web-mode))
 #+end_src
 ** keycast-mode
 #+begin_src elisp
+(defun mb/toggle-keycast-modeline ()
+  "Toggle the keycast modeline"
+  (interactive)
+  (if keycast-mode
+      (add-to-list 'global-mode-string '("" mode-line-keycast))
+    (setq global-mode-string (remove '("" mode-line-keycast) global-mode-string))))
+
 (after! keycast
   (define-minor-mode keycast-mode
     "Show current command and its key binding in the mode line."
     :global t
     (if keycast-mode
-        (progn
-          (add-hook 'pre-command-hook 'keycast--update t)
-          (add-to-list 'global-mode-string '("" mode-line-keycast)))
-      (remove-hook 'pre-command-hook 'keycast--update)
-      (setq global-mode-string (remove '("" mode-line-keycast) global-mode-string))))
+        (add-hook 'pre-command-hook 'keycast--update t)
+      (remove-hook 'pre-command-hook 'keycast--update)))
 
   ;; `emacs-doom-themes' doesn't yet support `keycast' faces.
   (custom-set-faces!
@@ -1233,13 +1242,16 @@ Automatically resize the viewable windows according to the golden ratio.
   ;; Prettier insert events.
   (dolist (input '(self-insert-command
                    org-self-insert-command))
-    (add-to-list 'keycast-substitute-alist `(,input "." "Typing...")))
+    (add-to-list 'keycast-substitute-alist `(,input "." "Martin is typing...")))
+
 
   ;; Remove mouse scroll events.
   (dolist (event '(mwheel-scroll
                    mouse-event-p
                    mouse-movement-p))
-    (add-to-list 'keycast-substitute-alist `(,event nil))))
+    (add-to-list 'keycast-substitute-alist `(,event nil)))
+
+  (add-hook! 'keycast-mode-hook #'mb/toggle-keycast-modeline))
 
 (map!
  :leader
@@ -1294,12 +1306,12 @@ Automatically resize the viewable windows according to the golden ratio.
 #+end_src
 ** vterm
 Use system-wide vterm lib when compiling.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-#+END_SRC
+#+end_src
 *** Mode handling
 Handle escape between Emacs and vterm.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (defun evil-collection-vterm-toggle-send-escape-ins ()
   "Toggle where ESC is sent between `vterm' and `emacs'.
 This is needed for programs that use ESC, e.g. vim or an ssh'd emacs that
@@ -1359,74 +1371,74 @@ also uses `evil-mode'. This version sends a `vterm' INS when in `emacs'."
   )
 
 (add-hook 'evil-insert-state-entry-hook #'evil-collection-vterm-send-escape-vterm)
-#+END_SRC
+#+end_src
 
 *** Scroll
 Scrollback limit.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq-default vterm-max-scrollback 9999)
-#+END_SRC
+#+end_src
 
 Allow stop scroll term sequence.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (defun vterm-disable-output ()
   (interactive)
   (unless (evil-normal-state-p)
     (evil-normal-state))
   (vterm-send-key "s" nil nil t))
-#+END_SRC
+#+end_src
 
 *** Titles
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq vterm-buffer-name "vterm"
       vterm-buffer-name-string "vterm: %s")
-#+END_SRC
+#+end_src
 
 *** Prompt Outlines
-#+BEGIN_SRC elisp
+#+begin_src elisp
 ;; Old dir + Lambda based prompt:
 ;; (setq-hook! 'vterm-mode-hook outline-regexp "^[a-zA-Z.\/~❮]*[ ]*λ.*")
 ;; New uber minimal prompt:
 (setq-hook! 'vterm-mode-hook outline-regexp "^; .*")
-#+END_SRC
+#+end_src
 *** Copy mode
 Exclude prompts when exiting copy mode.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq vterm-copy-exclude-prompt t)
-#+END_SRC
+#+end_src
 
 Detect prompts using the vterm prompt tracking technique when exiting copy mode.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq vterm-use-vterm-prompt-detection-method t)
-#+END_SRC
+#+end_src
 
 Jump back into insert mode when exiting copy mode.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (advice-add 'vterm-copy-mode-done :after
             (lambda (&rest _) (funcall #'vterm-exit-visual-insert)))
-#+END_SRC
+#+end_src
 
 Make evil-yank work by bypassing vterm-copy-mode-done kill ring logic.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (advice-add 'evil-yank :after
             (lambda (&rest _)
               (when (bound-and-true-p vterm-copy-mode)
                 (vterm-copy-mode -1)
                 (vterm-exit-visual-insert))))
-#+END_SRC
+#+end_src
 
 Display line numbers in copy mode.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (add-hook 'vterm-copy-mode-hook
           (lambda ()
             (if vterm-copy-mode
                 (progn (evil-escape) (setq display-line-numbers 'relative))
               (setq display-line-numbers nil))))
-#+END_SRC
+#+end_src
 
 *** Keys
 Miscellaneous vterm bindings.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  ;; Pop new vterms.
  :vgni "s-;" #'+vterm/here
@@ -1466,18 +1478,18 @@ Miscellaneous vterm bindings.
   :mnv "<tab>" #'outline-toggle-children
   )
  )
-#+END_SRC
+#+end_src
 
 Fix escape for vterm.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (setq evil-collection-key-blacklist
       (list "C-w" "C-j" "C-k" "gd" "gf" "K" "[" "]" "gz"
             doom-leader-key doom-localleader-key
             doom-leader-alt-key doom-localleader-alt-key))
-#+END_SRC
+#+end_src
 
 Evil frame movements.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (map!
  (:map vterm-copy-mode-map
    :i "C-h" #'evil-window-left
@@ -1492,17 +1504,17 @@ Evil frame movements.
    :i "C-k" #'vterm--self-insert
    :i "C-l" #'evil-window-right)
  )
-#+END_SRC
+#+end_src
 
 Pass frame movements through to Emacs.
-#+BEGIN_SRC elisp
+#+begin_src elisp
 (use-package! vterm
   :defer t
   :init
   (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
-#+END_SRC
+#+end_src
 ** EXWM
 Load my flavour of EXWM when in Linux.
 #+begin_src elisp
@@ -1513,4 +1525,72 @@ Load my flavour of EXWM when in Linux.
 Work around https://github.com/hlissner/doom-emacs/issues/5529
 #+begin_src elisp
 (add-hook! vterm-mode (persp-add-buffer (current-buffer)))
+#+end_src
+
+BROKEN
+#+begin_src elisp
+(use-package! emacs-everywhere
+  ;; :if (daemonp)
+  :config
+  (require 'spell-fu)
+  (setq emacs-everywhere-major-mode-function #'org-mode
+        emacs-everywhere-frame-name-format "%s — Emacs")
+  (add-hook! 'emacs-everywhere-init-hooks #'hide-mode-line-mode)
+  (setq emacs-everywhere-frame-parameters
+        `((name . "emacs-everywhere")
+          (width . 120)
+          (height . 20))))
+#+end_src
+
+Hide the modeline in the popup frame.
+#+begin_src elisp
+#+end_src
+
+Make the frame larger.
+#+begin_src elisp
+#+end_src
+
+Semi-center it over the target window, rather than at the cursor position
+(which could be anywhere):
+#+begin_src elisp
+;; (defadvice! center-emacs-everywhere-in-origin-window (frame window-info)
+;;   :override #'emacs-everywhere-set-frame-position
+;;   (cl-destructuring-bind (x y width height)
+;;       (emacs-everywhere-window-geometry window-info)
+;;     (set-frame-position frame
+;;                         (+ x (/ width 2) (- (/ width 2)))
+;;                         (+ y (/ height 2)))))
+#+end_src
+
+#+begin_src elisp
+;; (defadvice! my-emacs-everywhere-set-frame-position (&rest _)
+;;   :override #'emacs-everywhere-set-frame-position
+;;   (cl-destructuring-bind (width . height)
+;;       (alist-get 'outer-size (frame-geometry))
+;;     (set-frame-position (selected-frame)
+;;                         (+ emacs-everywhere-window-x
+;;                            (/ emacs-everywhere-window-width 2)
+;;                            (- (/ width 2)))
+;;                         (+ emacs-everywhere-window-y
+;;                            (/ emacs-everywhere-window-height 2)))))
+#+end_src
+
+Format org buffers. Helpful for keeping consistency. Found this on the Org
+mailing list.
+#+begin_src elisp
+(defun mb/org-reformat-buffer ()
+  (interactive)
+  (when (y-or-n-p "Really format current buffer? ")
+    (let ((document (org-element-interpret-data (org-element-parse-buffer))))
+      (erase-buffer)
+      (insert document)
+      (goto-char (point-min)))))
+#+end_src
+
+Org mode mixed pitch and solaire mode looks more aesthetically pleasing.
+TODO: Mixed pitch font.
+#+begin_src elisp
+(add-hook! 'org-mode-hook #'mixed-pitch-mode)
+(add-hook! 'org-mode-hook #'solaire-mode)
+(setq mixed-pitch-variable-pitch-cursor nil)
 #+end_src

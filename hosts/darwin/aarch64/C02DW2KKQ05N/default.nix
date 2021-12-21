@@ -10,6 +10,7 @@
     desktop = {
       enable = true;
       sudoTouchID = true;
+      hammerspoon.enable = true;
     };
 
     editors = {

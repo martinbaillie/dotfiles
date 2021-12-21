@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: debug verbose fmt.Printf
+# key: vv
+# --
+fmt.Printf("%#v\n", $1)
+$0

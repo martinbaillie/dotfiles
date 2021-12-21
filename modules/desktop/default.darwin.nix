@@ -46,30 +46,32 @@ in
       "flux" # Still better than macOS NightShift.
       "font-iosevka" # Emacs font.
       "karabiner-elements" # CapsLock as CTRL when held, ESC when tapped.
-      "raycast" # A better Spotlight.
-      "rectangle" # Spectacle-like but for Apple Silicon.
+      # TODO: Use of secure enclave.
+      # "secretive"
     ];
 
     home = {
-      # activation = {
-      #   aliasApplications = let
-      #     apps = pkgs.buildEnv {
-      #       name = "nix-managed-applications";
-      #       paths = config.user.packages ++ config.environment.systemPackages;
-      #       pathsToLink = "/Applications";
-      #     };
-      #   in dag.entryAfter [ "writeBoundary" ] ''
-      #     find ${apps}/Applications/ -maxdepth 1 -type l | while read f; do
-      #       src="$(/usr/bin/stat -f%Y $f)"
-      #       dest="/Applications/$(basename $src .app)"
-      #       [ -f "$dest" ] && rm $dest
-      #       sleep 2 # Weird sync issue.
-      #       /usr/bin/osascript -e "tell app \"Finder\" to \
-      #               make new alias file at POSIX file \"/Applications\" to \
-      #               POSIX file \"$src\""
-      #     done
-      #   '';
-      # };
+      activation = {
+        aliasApplications =
+          let
+            apps = pkgs.buildEnv {
+              name = "nix-managed-applications";
+              paths = config.user.packages ++ config.environment.systemPackages;
+              pathsToLink = "/Applications";
+            };
+          in
+          dag.entryAfter [ "writeBoundary" ] ''
+            find ${apps}/Applications/ -maxdepth 1 -type l | while read f; do
+              src="$(/usr/bin/stat -f%Y $f)"
+              dest="/Applications/$(basename $src .app)"
+              [ -f "$dest" ] && rm $dest
+              sleep 2 # Weird sync issue.
+              /usr/bin/osascript -e "tell app \"Finder\" to \
+                      make new alias file at POSIX file \"/Applications\" to \
+                      POSIX file \"$src\""
+            done
+          '';
+      };
 
       # Align common keybindings between Linux and Darwin.
       # TODO: Add more Emacs bindings.
@@ -88,8 +90,10 @@ in
     # Fonts.
     fonts = {
       enableFontDir = true;
-      # FIXME: doesn't build on aarch64 hence Cask above for now.
-      # fonts = with pkgs; [ iosevka ];
+      fonts = with pkgs; [
+        # FIXME: doesn't build on aarch64 hence Cask above for now.
+        # iosevka
+      ];
     };
 
     # My default desktop system settings across all macOS/Darwin installs.
