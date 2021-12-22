@@ -124,8 +124,8 @@ Various forks and packages of my own.
 #+begin_src elisp
 (when IS-MAC
   (setq
-   doom-font                     (font-spec :family "Iosevka" :size 13)
-   doom-variable-pitch-font      (font-spec :family "Iosevka" :size 13)))
+   doom-font                     (font-spec :family "Iosevka Term" :size 13)
+   doom-variable-pitch-font      (font-spec :family "Iosevka Term" :size 13)))
 (setq +zen-text-scale 1)
 (setq doom-font-increment  3)
 #+end_src
@@ -241,6 +241,10 @@ Load current theme.
 #+begin_src elisp
 ;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
+*** Favour customised versions of files
+#+begin_src elisp
+(setq load-prefer-newer t)
 #+end_src
 * UI/macOS
 *** Source a clean shell environment
@@ -462,7 +466,6 @@ Find in dotfiles.
 (setq doom-scratch-buffer-major-mode 'org-mode)
 (setq doom-scratch-initial-major-mode 'org-mode)
 #+end_src
-
 *** Dropbox-based cache folder
 #+begin_src elisp
 (setq org-directory "~/Dropbox/org"
@@ -522,8 +525,7 @@ Find in dotfiles.
            (function +org-capture-central-project-changelog-file)
            "* %U %?\n %i\n %a"
            :heading "Changelog"
-           :prepend t)))
-  )
+           :prepend t))))
 #+end_src
 *** Hugo
 #+begin_src elisp
@@ -542,17 +544,18 @@ Find in dotfiles.
 (setq
  org-todo-keywords
  '((sequence "TODO(t)" "PROG(p)" "|" "DONE(d)" "ABRT(c)")
-   (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)"))
+   (sequence "[ ](T)" "[-](P)" "[?](M)" "|" "[X](D)")
+   (sequence "MEETING(m)" "CANCELLED(z)"))
  org-todo-keyword-faces
  '(("[-]" :inherit (font-lock-constant-face bold))
    ("[?]" :inherit (warning bold))
    ("TODO" :inherit (success bold))
    ("PROG" :inherit (bold default))
    ("DONE" :inherit (warning bold))
-   ("ABRT" :inherit (error bold)))
- )
+   ("ABRT" :inherit (error bold))
+   ("MEETING" . +org-todo-project)
+   ("CANCELLED" . +org-todo-cancel)))
 #+end_src
-
 *** Priorities
 #+begin_src elisp
 (after! org
@@ -594,6 +597,11 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
            "%?"
            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n")
+           :unnarrowed t)
+          ("n" "note" plain
+           "%?"
+           :if-new (file+head "${slug}.org"
+                              "#+title: ${title}\n")
            :unnarrowed t))
 
         org-roam-capture-ref-templates
@@ -607,6 +615,27 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
            :if-new (file+head "web/${slug}.org"
                               "#+title: ${title}\n")
            :unnarrowed t)))
+
+  (setq org-roam-dailies-capture-templates
+        '(("d" "default" entry
+           "* %?"
+           :if-new (file+head "%<%Y-%m-%d>.org"
+                              "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n"))
+          ("t" "task" entry
+           "* TODO %?\n%U\n%a\n%i"
+           :if-new (file+head+olp "%<%Y-%m-%d>.org"
+                                  "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n"
+                                  ("Tasks")))
+          ("n" "note" entry
+           "* NOTE %U\n\n%?\n\n"
+           :if-new (file+head+olp "%<%Y-%m-%d>.org"
+                                  "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n"
+                                  ("Notes")))
+          ("m" "meeting" entry
+           "* MEETING %U - %^{Title} :meetings:\n\n%?\n\n"
+           :if-new (file+head+olp "%<%Y-%m-%d>.org"
+                                  "#+title: %<%Y-%m-%d %a>\n\n[[roam:%<%Y-%B>]]\n\n"
+                                  ("Meetings")))))
 
   (when IS-MAC (setq org-roam-graph-viewer "/usr/bin/open"))
 
@@ -622,7 +651,7 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
       ("^\\*org-roam: " ; node dedicated org-roam buffer
        :side right :width .25 :height .5 :ttl nil :modeline nil :quit nil :slot 2))))
 
-;; Make roam bindings easily accessible.
+;; Other roam bindings
 (map!
  :leader
  (:prefix-map ("n" . "notes")
@@ -631,12 +660,6 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
 
 ;; Allow mouse clicks in the roam buffer.
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
-
-;; Show node modification times in Marginalia.
-;; (setq org-roam-node-display-template
-;;       (concat "${title:80} " (propertize "${tags:20}" 'face 'org-tag))
-;;       org-roam-node-annotation-function
-;;       (lambda (node) (marginalia--time (org-roam-node-file-mtime node))))
 
 ;; Show node hierarchy in Marginalia.
 (cl-defmethod org-roam-node-hierarchy ((node org-roam-node))
@@ -1527,7 +1550,6 @@ Work around https://github.com/hlissner/doom-emacs/issues/5529
 (add-hook! vterm-mode (persp-add-buffer (current-buffer)))
 #+end_src
 
-BROKEN
 #+begin_src elisp
 (use-package! emacs-everywhere
   ;; :if (daemonp)
@@ -1540,39 +1562,6 @@ BROKEN
         `((name . "emacs-everywhere")
           (width . 120)
           (height . 20))))
-#+end_src
-
-Hide the modeline in the popup frame.
-#+begin_src elisp
-#+end_src
-
-Make the frame larger.
-#+begin_src elisp
-#+end_src
-
-Semi-center it over the target window, rather than at the cursor position
-(which could be anywhere):
-#+begin_src elisp
-;; (defadvice! center-emacs-everywhere-in-origin-window (frame window-info)
-;;   :override #'emacs-everywhere-set-frame-position
-;;   (cl-destructuring-bind (x y width height)
-;;       (emacs-everywhere-window-geometry window-info)
-;;     (set-frame-position frame
-;;                         (+ x (/ width 2) (- (/ width 2)))
-;;                         (+ y (/ height 2)))))
-#+end_src
-
-#+begin_src elisp
-;; (defadvice! my-emacs-everywhere-set-frame-position (&rest _)
-;;   :override #'emacs-everywhere-set-frame-position
-;;   (cl-destructuring-bind (width . height)
-;;       (alist-get 'outer-size (frame-geometry))
-;;     (set-frame-position (selected-frame)
-;;                         (+ emacs-everywhere-window-x
-;;                            (/ emacs-everywhere-window-width 2)
-;;                            (- (/ width 2)))
-;;                         (+ emacs-everywhere-window-y
-;;                            (/ emacs-everywhere-window-height 2)))))
 #+end_src
 
 Format org buffers. Helpful for keeping consistency. Found this on the Org
@@ -1591,6 +1580,5 @@ Org mode mixed pitch and solaire mode looks more aesthetically pleasing.
 TODO: Mixed pitch font.
 #+begin_src elisp
 (add-hook! 'org-mode-hook #'mixed-pitch-mode)
-(add-hook! 'org-mode-hook #'solaire-mode)
 (setq mixed-pitch-variable-pitch-cursor nil)
 #+end_src
