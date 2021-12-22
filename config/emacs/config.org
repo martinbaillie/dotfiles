@@ -20,6 +20,7 @@
 - [[#package-customisation][Package Customisation]]
   - [[#org][org]]
   - [[#org-roam][org-roam]]
+  - [[#ediff][ediff]]
   - [[#pomm][pomm]]
   - [[#evil][evil]]
   - [[#projectile][projectile]]
@@ -38,7 +39,6 @@
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
-  - [[#undo-tree][undo-tree]]
   - [[#snippets][snippets]]
   - [[#move-text][move-text]]
   - [[#buffer-move][buffer-move]]
@@ -47,6 +47,7 @@
   - [[#rainbow-mode][rainbow-mode]]
   - [[#web-mode][web-mode]]
   - [[#keycast-mode][keycast-mode]]
+  - [[#undo-tree][undo-tree]]
   - [[#proced][proced]]
   - [[#nix][nix]]
   - [[#vterm][vterm]]
@@ -689,6 +690,17 @@ I use org-roam UI to quickly visualise my Zettelkasten.
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 #+end_src
+** ediff
+#+begin_src elisp
+(defun ediff-copy-both-to-C ()
+  (interactive)
+  (ediff-copy-diff ediff-current-difference nil 'C nil
+                   (concat
+                    (ediff-get-region-contents ediff-current-difference 'A ediff-control-buffer)
+                    (ediff-get-region-contents ediff-current-difference 'B ediff-control-buffer))))
+(defun add-c-to-ediff-mode-map () (define-key ediff-mode-map (kbd "c") 'ediff-copy-both-to-C))
+(add-hook 'ediff-keymap-setup-hook 'add-c-to-ediff-mode-map)
+#+end_src
 ** pomm
 Transient Pomodoro implementation with Slack status updates and terrible sounds.
 #+begin_src elisp
@@ -1126,10 +1138,6 @@ Evil frame movements.
 #+begin_src elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
 #+end_src
-** undo-tree
-#+begin_src elisp
-(after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
-#+end_src
 ** snippets
 #+begin_src elisp
 (setq yas-snippet-dirs
@@ -1267,7 +1275,6 @@ this enabled in most text mode.
                    org-self-insert-command))
     (add-to-list 'keycast-substitute-alist `(,input "." "Martin is typing...")))
 
-
   ;; Remove mouse scroll events.
   (dolist (event '(mwheel-scroll
                    mouse-event-p
@@ -1280,6 +1287,10 @@ this enabled in most text mode.
  :leader
  (:prefix-map ("T" . "toggle")
   :desc "Keycast mode" "k" #'keycast-mode))
+#+end_src
+** undo-tree
+#+begin_src elisp
+(after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
 #+end_src
 ** proced
 #+begin_src emacs-lisp

@@ -77,7 +77,7 @@ setnull searchurls.wikipedia
 setnull searchurls.yahoo
 
 " Org-roam capture
-command org_roam js javascript:location.href='org-protocol://roam-ref?template=r&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
+command org_roam js javascript:location.href='org-protocol://roam-ref?template=w&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
 bind X org_roam
 
 " Pop to other persistent tabs
