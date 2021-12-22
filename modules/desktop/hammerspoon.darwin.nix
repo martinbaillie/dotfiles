@@ -16,6 +16,7 @@ in
       };
 
       ".hammerspoon/init.lua".source = "${configDir}/init.lua";
+      ".hammerspoon/utils.lua".source = "${configDir}/utils.lua";
     };
 
     user.packages = [ pkgs.unstable.sumneko-lua-language-server ];

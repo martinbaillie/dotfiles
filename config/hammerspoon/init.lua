@@ -1,13 +1,8 @@
 local utils = require "utils"
 local leader = {"ctrl", "alt"} -- tends to not conflict with anything else
 
-hs.notify.new({title="Hammerspoon", informativeText="Loaded"}):send()
-
 hs.logger.defaultLogLevel = 'verbose'
 hs.window.animationDuration = 0
-
--- Standard binds
-hs.hotkey.bind({"cmd", "shift"}, "r", hs.reload)
 
 -- Run or raise Application launching
 -- osascript -e 'id of app "<Application>"'
@@ -18,7 +13,6 @@ hs.hotkey.bind({"ctrl", "cmd"}, "1", utils.toggleApplication(
 hs.hotkey.bind({"ctrl", "cmd"}, "2", utils.toggleApplication("org.mozilla.firefox", nil))
 
 -- Emacs edit / capture.
--- FIXME BROKEN AGAIN
 require("hs.ipc")
 hs.hotkey.bindSpec({leader, "\\"},
   function ()
@@ -32,14 +26,29 @@ hs.hotkey.bindSpec({leader, "\\"},
   end
 )
 
+-- Bring all Finder windows to the the front.
+function applicationWatcher(appName, eventType, appObject)
+  if (eventType == hs.application.watcher.activated) then
+      if (appName == "Finder") then
+          -- Bring all Finder windows forward when one gets activated
+          appObject:selectMenuItem({"Window", "Bring All to Front"})
+      end
+  end
+end
+finderWatcher = hs.application.watcher.new(applicationWatcher)
+finderWatcher:start()
+
 --------------------------------------------------------------------------------
 -- External spoons
 hs.loadSpoon("SpoonInstall")
 spoon.SpoonInstall.use_syncinstall = true
 Install = spoon.SpoonInstall
 
+-- https://www.hammerspoon.org/Spoons/ReloadConfiguration.html
+Install:andUse('ReloadConfiguration', {start=true})
+hs.notify.new({title="Hammerspoon", informativeText="Loaded"}):send()
+
 -- Basic window movements
---
 local almost_max = { x = 0.02, y = 0.02, w = 0.96, h = 0.95 }
 hs.hotkey.bind(leader, 'c', function() hs.window.focusedWindow():move(almost_max,  nil, true) end)
 
