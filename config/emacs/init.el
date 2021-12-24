@@ -97,6 +97,7 @@
             +html)
 
        :app
+       calendar
        ;; everywhere
 
        :config

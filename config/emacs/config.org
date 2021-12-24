@@ -20,6 +20,7 @@
 - [[#package-customisation][Package Customisation]]
   - [[#org][org]]
   - [[#org-roam][org-roam]]
+  - [[#org-gcal][org-gcal]]
   - [[#ediff][ediff]]
   - [[#pomm][pomm]]
   - [[#evil][evil]]
@@ -52,7 +53,7 @@
   - [[#nix][nix]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
-  - [[#temp][TEMP]]
+  - [[#temp-wips][TEMP WIPs]]
 
 * Personal
 #+begin_src elisp
@@ -240,8 +241,9 @@ Load current theme.
 
 *** Always fullscreen
 #+begin_src elisp
-;; (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
 *** Favour customised versions of files
 #+begin_src elisp
@@ -462,17 +464,19 @@ Find in dotfiles.
 (map! :map org-tree-slide-mode-map
       :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
 #+end_src
-*** Scratch buffers
+*** Scratch and default buffers
+Org the world.
 #+begin_src elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)
 (setq doom-scratch-initial-major-mode 'org-mode)
+(setq-default major-mode 'org-mode)
 #+end_src
 *** Dropbox-based cache folder
 #+begin_src elisp
 (setq org-directory "~/Dropbox/org"
       org-archive-location "~/Dropbox/org/archive/%s_archive::")
+(mkdir-if-missing (f-dirname org-archive-location))
 #+end_src
-
 *** Fold all on startup
 #+begin_src elisp
 (setq org-startup-folded 'content)
@@ -534,12 +538,11 @@ Find in dotfiles.
 #+end_src
 *** Agenda files
 #+begin_src elisp
-(setq org-work-directory (concat org-directory "/work/*/")
-      org-agenda-files (list org-directory
-                             org-work-directory))
+(setq org-agenda-files (list org-directory
+                             (concat org-directory "/" "cal")
+                             (concat org-directory "/" "roam/daily")))
 (setq org-log-done 'time)
 #+end_src
-
 *** Keywords
 #+begin_src elisp
 (setq
@@ -577,10 +580,7 @@ Find in dotfiles.
   :ni "<s-backspace>" #'org-babel-remove-result
   :ni [M-return] #'org-meta-return
   :ni [S-M-return] #'org-insert-todo-heading
-
-  :i "<S-tab>" #'+org/dedent
-  )
- )
+  :i "<S-tab>" #'+org/dedent))
 #+end_src
 ** org-roam
 The king of plain-text personal knowledge management. A Zettelkasten system in Emacs.
@@ -689,6 +689,22 @@ I use org-roam UI to quickly visualise my Zettelkasten.
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
+#+end_src
+** org-gcal
+#+begin_src elisp
+(after! org-gcal
+  (setq mb/calendar-dir (file-truename (concat org-directory "/" "cal"))
+        org-gcal-client-id (auth-source-pick-first-password
+                            :host "calendar.google.com" :user "martin@baillie.id^client")
+        org-gcal-client-secret (auth-source-pick-first-password
+                            :host "calendar.google.com" :user "martin@baillie.id^password")
+        org-gcal-token-file "/etc/dotfiles/.private/org-gcal.gpg"
+        org-gcal-fetch-file-alist `(("martin@baillie.id" . ,(concat
+                                                            mb/calendar-dir
+                                                            "/"
+                                                            "martin@baillie.id.org"))))
+  ;; (add-hook! 'org-agenda-mode-hook 'org-gcal-fetch)
+  (mkdir-if-missing mb/calendar-dir))
 #+end_src
 ** ediff
 #+begin_src elisp
@@ -1555,24 +1571,42 @@ Load my flavour of EXWM when in Linux.
 (when IS-LINUX
   (load! "+exwm"))
 #+end_src
-** TEMP
+** TEMP WIPs
 Work around https://github.com/hlissner/doom-emacs/issues/5529
 #+begin_src elisp
 (add-hook! vterm-mode (persp-add-buffer (current-buffer)))
 #+end_src
 
 #+begin_src elisp
+;; Register with yas
+(set-yas-minor-mode! 'emacs-everywhere-mode)
+
 (use-package! emacs-everywhere
-  ;; :if (daemonp)
   :config
   (require 'spell-fu)
   (setq emacs-everywhere-major-mode-function #'org-mode
-        emacs-everywhere-frame-name-format "%s — Emacs")
-  (add-hook! 'emacs-everywhere-init-hooks #'hide-mode-line-mode)
-  (setq emacs-everywhere-frame-parameters
+        emacs-everywhere-frame-name-format "%s — Emacs"
+        emacs-everywhere-frame-parameters
         `((name . "emacs-everywhere")
           (width . 120)
           (height . 20))))
+
+;; No need for a modeline in an Emacs Everywhere frame.
+(add-hook! 'emacs-everywhere-init-hooks #'hide-mode-line-mode)
+
+;; Make new frames work consistently when persp-mode is enabled.
+(add-hook! 'emacs-everywhere-init-hooks
+  (defun +everywhere-clear-persp-info-h ()
+    (when (bound-and-true-p persp-mode)
+      (setq persp-emacsclient-init-frame-behaviour-override nil))))
+
+;; Not sure why I need this but I get prompts without it.
+(add-hook! 'emacs-everywhere-final-hooks :depth 10
+  (defun +everywhere-save-buffer ()
+    (let ((inhibit-message t)
+          (require-final-newline nil)
+          write-file-functions)
+      (write-file buffer-file-name))))
 #+end_src
 
 Format org buffers. Helpful for keeping consistency. Found this on the Org

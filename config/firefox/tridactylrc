@@ -95,6 +95,9 @@ bindurl reddit.com gu urlparent 3
 " Toggle comments on Reddit/HN.
 bind ;c hint -c [class*="expand"],[class="togg"]
 
+" Tab ordering in fuzzy finders
+set tabsort mru
+
 " Search engine and shortcuts.
 set searchengine ddg
 " General.
