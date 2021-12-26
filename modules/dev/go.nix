@@ -9,8 +9,6 @@ in
     user.packages = with pkgs; [
       delve
       errcheck
-      go
-      go-protobuf
       go2nix
       gocode
       godef
@@ -24,6 +22,19 @@ in
       gotools
       protobuf
       vgo2nix
+
+      # Golang we hardly knew ye...
+      # Here I accept fate and play with 1.18's generics.
+      # TODO: Move back to upstream once merged.
+      (go_1_17.overrideAttrs
+        (oldattrs: rec {
+          version = "1.18beta1";
+          src = fetchurl {
+            url = "https://dl.google.com/go/go${version}.src.tar.gz";
+            sha256 = "sha256-QYwCjbFGmctbLUkHrTpBnXn3ibMZFu+HZIZ+SnjmU6E=";
+          };
+          patches = [ ];
+        }))
 
       unstable.gofumpt
       unstable.gopls

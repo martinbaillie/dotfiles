@@ -17,7 +17,6 @@
 
     # Miscellaneous overlays.
     emacs-overlay.url = "github:nix-community/emacs-overlay";
-    # TODO: pin "github:nix-community/emacs-overlay?rev=67fe74d6e73e3c8a983b09a76d809acc730ad911";
 
     # Hardware definitions.
     nixos-hardware.url = "github:nixos/nixos-hardware";

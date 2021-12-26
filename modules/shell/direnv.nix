@@ -9,7 +9,6 @@ in
     home.programs.direnv = {
       enable = true;
       nix-direnv.enable = true;
-      nix-direnv.enableFlakes = true;
     };
 
     modules.shell.zsh.rc = ''eval "$(direnv hook zsh)"'';

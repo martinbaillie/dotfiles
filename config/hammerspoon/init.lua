@@ -8,7 +8,8 @@ hs.window.animationDuration = 0
 -- osascript -e 'id of app "<Application>"'
 hs.hotkey.bind({"ctrl", "cmd"}, "1", utils.toggleApplication(
     "org.gnu.Emacs",
-    os.getenv("HOME") .. "/Applications/Emacs.app"
+    -- os.getenv("HOME") .. "/Applications/Emacs.app"
+    "/Applications/Emacs"
 ))
 hs.hotkey.bind({"ctrl", "cmd"}, "2", utils.toggleApplication("org.mozilla.firefox", nil))
 
