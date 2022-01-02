@@ -1061,7 +1061,27 @@ Dired coloured icons.
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
 #+begin_src elisp
-(add-hook 'git-commit-mode-hook (lambda () (apply #'git-commit-signoff (git-commit-self-ident))))
+(defun mb/auto-git-commit-signoff ()
+  "Automatically add a git signoff line based on environmental identity"
+  (beginning-of-buffer)
+  (unless (word-search-forward "Signed-off-by" nil t)
+    (apply #'git-commit-signoff (git-commit-self-ident))))
+(add-hook! 'git-commit-mode-hook #'mb/auto-git-commit-signoff)
+#+end_src
+*** WIP Commits
+#+begin_src elisp
+;; TODO: Unfinished. A literal WIP. Need to workaround the race that occurs due
+;; to Magit git calls being async.
+(defun mb/magit-wip-commit-push (msg)
+  "Commit current unstaged changes and push to its upstream."
+  (interactive "sCommit Message: ")
+  (when (= 0 (length msg))
+    (setq msg (format-time-string "WIP (Magit@%Y-%m-%d %H:%M:%S)" (current-time))))
+  (when (and buffer-file-name (buffer-modified-p))
+    (save-buffer))
+  (magit-stage-modified)
+  (magit-commit-create (list "-m" msg))
+  (magit-push-current-to-pushremote nil))
 #+end_src
 *** Status buffer
 #+begin_src elisp
