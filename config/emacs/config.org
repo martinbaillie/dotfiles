@@ -267,6 +267,11 @@ Load current theme.
 #+begin_src elisp
 (when IS-MAC (setq ns-use-proxy-icon nil))
 #+end_src
+*** Give me my em—dash back
+#+begin_src elisp
+(defun mb/emdash () (interactive) (insert-char (char-from-name "EM DASH")))
+(map! :i "M-_" #'mb/emdash)
+#+end_src
 *** Native macOS titles
 #+begin_src elisp
 ;; (when IS-MAC
