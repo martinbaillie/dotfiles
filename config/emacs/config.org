@@ -256,8 +256,7 @@ Load current theme.
   (setq exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-initialize)
   (exec-path-from-shell-copy-env "GOPATH")
-  (exec-path-from-shell-copy-env "SSH_AUTH_SOCK")
-  )
+  (exec-path-from-shell-copy-env "SSH_AUTH_SOCK"))
 #+end_src
 *** Use font smoothing
 #+begin_src elisp
@@ -1096,6 +1095,11 @@ Automatically add a git signoff line based on discovered environmental identity.
                                                     (unpushed . show)))
 ;; No motion training on status buffers.
 (add-hook 'magit-status-mode-hook (lambda () (evil-motion-trainer-mode -1)))
+#+end_src
+*** Remove confirmation of a few things
+#+begin_src elisp
+(add-to-list 'magit-no-confirm 'stage-all-changes)
+(add-to-list 'magit-no-confirm 'unstage-all-changes)
 #+end_src
 ** yaml
 Get the YAML language server to validate Kubernetes resources.
