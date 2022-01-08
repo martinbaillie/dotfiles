@@ -9,7 +9,7 @@ in
 
   config =
     let
-      cachix = "${pkgs.cachix}/bin/cachix watch-store martinbaillie";
+      cachix = "${pkgs.cachix}/bin/cachix -v watch-store martinbaillie";
       common = {
         environment = {
           XDG_CACHE_HOME = "/var/cache/cachix-watch-store";

@@ -1,5 +1,6 @@
 zstyle ':prezto:*:*' color 'yes'
 zstyle ':prezto:environment:termcap' color 'no'
+zstyle ':prezto:module:utility:ls' color 'no'
 zstyle ':prezto:load' zmodule 'attr' 'stat'
 zstyle ':prezto:load' pmodule \
   'environment' \

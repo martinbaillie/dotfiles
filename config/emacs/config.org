@@ -61,6 +61,7 @@
       user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
 #+end_src
+
 * Packages
 ** Upstream
 #+begin_src elisp :tangle packages.el
@@ -85,10 +86,15 @@
 (package! golden-ratio)
 (package! pomm)
 (package! emacs-everywhere)
+(package! bazel-mode
+  :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
 (package! org-roam-ui)
+
+;; Trialing the Modus themes in stock Emacs
+(package! modus-themes)
 
 ;; EXWM related.
 ;; (package! exwm-firefox-evil)
@@ -99,6 +105,7 @@
   (package! app-launcher
     :recipe (:type git :host github :repo "SebastienWae/app-launcher")))
 #+end_src
+
 ** Mine
 Various forks and packages of my own.
 #+begin_src elisp :tangle packages.el
@@ -107,30 +114,37 @@ Various forks and packages of my own.
 (package! evil-easymotion :pin "e6051245c06354ccd4a57e054cdff80a34f18376" :recipe
   (:host github :repo "martinbaillie/evil-easymotion"))
 #+end_src
+
 * UI/General
 *** Frame titles and toolbar
 #+begin_src elisp
 ;; Set a standard title.
-(setq frame-title-format '("%b — Emacs"))
+(setq frame-title-format '("%b — Emacs")
+      doom-fallback-buffer-name "*new buffer*"
+      +doom-dashboard-name "Emacs")
 
 ;; Hide the toolbar.
 (tool-bar-mode 0)
 #+end_src
+
 *** Welcome screen
 #+begin_src elisp
 (setq +doom-dashboard-banner-file
       (expand-file-name "logo.png" doom-private-dir))
 (remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
 #+end_src
+
 *** Font
 #+begin_src elisp
 (when IS-MAC
   (setq
    doom-font                     (font-spec :family "Iosevka Term" :size 13)
-   doom-variable-pitch-font      (font-spec :family "Iosevka Term" :size 13)))
-(setq +zen-text-scale 1)
-(setq doom-font-increment  3)
+   doom-variable-pitch-font      (font-spec :family "Iosevka Aile" :size 14)
+   doom-serif-font               (font-spec :family "Iosevka Etoile" :size 14)))
+(setq +zen-text-scale 0.8)
+(setq doom-font-increment 3)
 #+end_src
+
 *** Display line numbers relative to cursor
 This is useful for command combinations e.g. 10j
 #+begin_src elisp
@@ -176,10 +190,32 @@ Disable for terminal buffers since there can be issues completion/interactive sh
   (if (not buffer-read-only) (delete-trailing-whitespace)))
 (add-hook 'before-save-hook 'mb/delete-trailing-whitespace)
 #+end_src
+
 *** Themes
 Load current theme.
 #+begin_src elisp
 (load! "+theme")
+#+end_src
+
+Configure Emacs Modus themes if using.
+#+begin_src elisp
+(use-package! modus-themes
+  :init
+  (setq modus-themes-completions 'opinionated
+        modus-themes-variable-pitch-headings t
+        modus-themes-scale-headings t
+        modus-themes-bold-constructs t
+        modus-themes-italic-constructs t
+        modus-themes-org-blocks 'gray-background
+        modus-themes-region '(accented bg-only no-extend))
+
+  ;; I like the main modus-operandi colours in my git gutters.
+  (custom-theme-set-faces! 'modus-operandi
+    '(git-gutter-fr:deleted :background nil :foreground "#a60000" )
+    '(git-gutter-fr:modified :background nil :foreground "#0031a9" )
+    '(git-gutter-fr:added :background nil :foreground "#005e00"))
+
+  (modus-themes-load-themes))
 #+end_src
 
 *** Formatting
@@ -197,9 +233,9 @@ Load current theme.
 ;;   )
 (if (eq doom-theme 'doom-one)
     (custom-set-faces
-     '(region ((t (:background "#51afef" :foreground "black"))))
-     )
-  )
+     '(region ((t (:background "#51afef" :foreground "black"))))))
+
+
 #+end_src
 
 *** Move to splits after creating
@@ -215,13 +251,20 @@ Load current theme.
   (setq doom-modeline-buffer-encoding nil)
   ;; Or state.
   (setq doom-modeline-buffer-state-icon nil)
-  ;; But I like file type icons.
+  ;; Or buffer size.
+  (remove-hook 'doom-modeline-mode-hook #'size-indication-mode)
+  ;; Or the default icon when there's no checker
+  (defun mb/remove-no-checker-icon (args)
+    (unless (equal args '(no-checker)) args))
+  (advice-add #'doom-modeline-update-flycheck-icon
+              :filter-args #'mb/remove-no-checker-icon)
+  ;; But I do like file type icons.
   (setq doom-modeline-major-mode-icon t)
-  ;; Word counts in Markdown, Org etc.
+  ;; And word counts in Markdown, Org etc.
   ;; SEE: doom-modeline-continuous-word-count-modes
   (setq doom-modeline-enable-word-count t)
   ;; Try to fix icons falling off the RHS edge.
-  (setq all-the-icons-scale-factor 1.1)
+  (setq all-the-icons-scale-factor 0.9)
   ;; Re-organise and simplify when in EXWM.
   (when IS-LINUX
     (doom-modeline-def-modeline 'main
@@ -245,10 +288,12 @@ Load current theme.
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-to-list 'initial-frame-alist '(fullscreen . maximized))
 #+end_src
+
 *** Favour customised versions of files
 #+begin_src elisp
 (setq load-prefer-newer t)
 #+end_src
+
 * UI/macOS
 *** Source a clean shell environment
 #+begin_src elisp
@@ -258,24 +303,29 @@ Load current theme.
   (exec-path-from-shell-copy-env "GOPATH")
   (exec-path-from-shell-copy-env "SSH_AUTH_SOCK"))
 #+end_src
+
 *** Use font smoothing
 #+begin_src elisp
 ;; (when IS-MAC (setq ns-use-thin-smoothing t))
 #+end_src
+
 *** Hide icons in titles
 #+begin_src elisp
 (when IS-MAC (setq ns-use-proxy-icon nil))
 #+end_src
+
 *** Give me my em—dash back
 #+begin_src elisp
 (defun mb/emdash () (interactive) (insert-char (char-from-name "EM DASH")))
 (map! :i "M-_" #'mb/emdash)
 #+end_src
+
 *** Native macOS titles
 #+begin_src elisp
 ;; (when IS-MAC
 ;;   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)))
 #+end_src
+
 *** Native macOS fullscreen
 #+begin_src elisp
 ;; (when IS-MAC
@@ -283,6 +333,7 @@ Load current theme.
 ;; (add-to-list 'default-frame-alist '(fullscreen . fullboth))
 ;; )
 #+end_src
+
 *** Transparency
 #+begin_src elisp
 (when IS-MAC
@@ -290,6 +341,7 @@ Load current theme.
   (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
   (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 #+end_src
+
 * UI/Linux
 *** Transparency
 Set frame transparency and maximize windows by default.
@@ -299,6 +351,7 @@ Set frame transparency and maximize windows by default.
   (add-to-list 'default-frame-alist '(alpha . (95 . 95)))
   (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 #+end_src
+
 * Keys/General
 Miscellaneous.
 #+begin_src elisp
@@ -400,6 +453,7 @@ Find in dotfiles.
   (doom-project-find-file (expand-file-name "/etc/dotfiles")))
 (map! :leader "f ." #'mb/find-in-dotfiles)
 #+end_src
+
 * Keys/Linux
 #+begin_src elisp
 (when IS-LINUX
@@ -426,6 +480,7 @@ Find in dotfiles.
   (if (not (file-exists-p (expand-file-name path)))
     (make-directory (expand-file-name path t))))
 #+end_src
+
 ** org
 *** Centered buffers
 #+begin_src elisp
@@ -438,6 +493,7 @@ Find in dotfiles.
 (use-package! visual-fill-column
   :hook (org-mode . mb/org-mode-visual-fill))
 #+end_src
+
 *** Tree slide
 #+begin_src elisp
 (org-tree-slide-presentation-profile)
@@ -468,19 +524,24 @@ Find in dotfiles.
 (map! :map org-tree-slide-mode-map
       :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
 #+end_src
+
 *** Scratch and default buffers
 Org the world.
 #+begin_src elisp
 (setq doom-scratch-buffer-major-mode 'org-mode)
 (setq doom-scratch-initial-major-mode 'org-mode)
-(setq-default major-mode 'org-mode)
+;; this is a bit too far.
+;; (setq-default major-mode 'org-mode)
 #+end_src
+
 *** Dropbox-based cache folder
 #+begin_src elisp
-(setq org-directory "~/Dropbox/org"
-      org-archive-location "~/Dropbox/org/archive/%s_archive::")
+(setq org-directory (expand-file-name "~/Dropbox/org")
+      org-archive-location (concat org-directory "/" "archive" "/" "%s_archive::")
+      org-id-locations-file (concat org-directory "/" ".org-id-locations"))
 (mkdir-if-missing (f-dirname org-archive-location))
 #+end_src
+
 *** Fold all on startup
 #+begin_src elisp
 (setq org-startup-folded 'content)
@@ -536,17 +597,20 @@ Org the world.
            :heading "Changelog"
            :prepend t))))
 #+end_src
+
 *** Hugo
 #+begin_src elisp
 (setq org-hugo-export-with-toc t)
 #+end_src
+
 *** Agenda files
 #+begin_src elisp
-(setq org-agenda-files (list org-directory
+(setq org-agenda-files (list ;;org-directory
                              (concat org-directory "/" "cal")
                              (concat org-directory "/" "roam/daily")))
 (setq org-log-done 'time)
 #+end_src
+
 *** Keywords
 #+begin_src elisp
 (setq
@@ -564,6 +628,7 @@ Org the world.
    ("MEETING" . +org-todo-project)
    ("CANCELLED" . +org-todo-cancel)))
 #+end_src
+
 *** Priorities
 #+begin_src elisp
 (after! org
@@ -586,6 +651,7 @@ Org the world.
   :ni [S-M-return] #'org-insert-todo-heading
   :i "<S-tab>" #'+org/dedent))
 #+end_src
+
 ** org-roam
 The king of plain-text personal knowledge management. A Zettelkasten system in Emacs.
 #+begin_src elisp
@@ -660,6 +726,7 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
 (map!
  :leader
  (:prefix-map ("n" . "notes")
+  :desc "Find directory" "-" (lambda () (interactive) (find-file org-directory))
   (:prefix ("r" . "roam")
    :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory)))))
 
@@ -694,22 +761,57 @@ I use org-roam UI to quickly visualise my Zettelkasten.
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
 #+end_src
+
 ** org-gcal
+NOTE: Occasionally need to run =org-gcal-sync-tokens-clear=
 #+begin_src elisp
 (after! org-gcal
   (setq mb/calendar-dir (file-truename (concat org-directory "/" "cal"))
+        mb/calendar-professional "martin@baillie.id"
+        mb/calendar-personal  "martin.t.baillie@gmail.com"
+        mb/calendar-aus-holidays "en.australian%23holiday%40group.v.calendar.google.com"
+
+        ;; Set `org-gcal-auto-archive' to `nil' for workaround to:
+        ;; https://github.com/kidd/org-gcal.el/issues/172
+        org-gcal-auto-archive nil
+        org-gcal-remove-api-cancelled-events t
         org-gcal-client-id (auth-source-pick-first-password
-                            :host "calendar.google.com" :user "martin@baillie.id^client")
+                            :host "calendar.google.com"
+                            :user "martin@baillie.id^client")
         org-gcal-client-secret (auth-source-pick-first-password
-                            :host "calendar.google.com" :user "martin@baillie.id^password")
+                                :host "calendar.google.com"
+                                :user "martin@baillie.id^secret")
         org-gcal-token-file "/etc/dotfiles/.private/org-gcal.gpg"
-        org-gcal-fetch-file-alist `(("martin@baillie.id" . ,(concat
-                                                            mb/calendar-dir
-                                                            "/"
-                                                            "martin@baillie.id.org"))))
-  ;; (add-hook! 'org-agenda-mode-hook 'org-gcal-fetch)
+        org-gcal-fetch-file-alist `((,mb/calendar-professional
+                                     . ,(concat
+                                         mb/calendar-dir
+                                         "/"
+                                         (url-unhex-string mb/calendar-professional)
+                                         ".org"))
+                                    (,mb/calendar-personal
+                                     . ,(concat
+                                         mb/calendar-dir
+                                         "/"
+                                         (url-unhex-string mb/calendar-personal)
+                                         ".org"))
+                                    (,mb/calendar-aus-holidays
+                                     . ,(concat
+                                         mb/calendar-dir
+                                         "/"
+                                         (url-unhex-string mb/calendar-aus-holidays)
+                                         ".org"))))
   (mkdir-if-missing mb/calendar-dir))
+
+;; Update my calendars upon Org agenda view entry.
+(add-hook! 'org-agenda-mode-hook :append 'org-gcal-fetch)
+
+;; org-gcal opens all agenda files to search for events (by design)
+;; SEE: https://github.com/kidd/org-gcal.el/issues/168
+;; close all these buffers again from agenda with =org-agenda-exit=
+(map! :map org-mode-map
+      :map evil-org-agenda-mode-map :m "q" #'org-agenda-exit)
 #+end_src
+
 ** ediff
 #+begin_src elisp
 (defun ediff-copy-both-to-C ()
@@ -721,6 +823,7 @@ I use org-roam UI to quickly visualise my Zettelkasten.
 (defun add-c-to-ediff-mode-map () (define-key ediff-mode-map (kbd "c") 'ediff-copy-both-to-C))
 (add-hook 'ediff-keymap-setup-hook 'add-c-to-ediff-mode-map)
 #+end_src
+
 ** pomm
 Transient Pomodoro implementation with Slack status updates and terrible sounds.
 #+begin_src elisp
@@ -856,19 +959,24 @@ Removes the status if EMOJI and TEXT are nil."
   (add-hook! 'pomm-on-status-changed-hook 'mb/pomm-slack-dispatch)
   (map! :leader :desc "Pomodoro" "P" #'pomm))
 #+end_src
+
 ** evil
 Evil is a little too like Vim. Make it better.
 #+begin_src elisp
 (setq
  ;; Do not move the cursor back one after insert mode.
  ;; evil-move-cursor-back nil
+ ;; Finer undo according to Emacs heuristics
+ evil-want-fine-undo t
  ;; Keep yank (kill) content after pasting.
  evil-kill-on-visual-paste nil
+ ;; I usually know what state i'm in. Remove state from the echo area.
+ evil-echo-state nil
  ;; Synchronise Evil Visual selections with Emacs' concept of Regions.
  evil-visual-region-expanded t)
 
 ;; Move forward Evil symbols instead of Evil words.
-(defalias #'forward-evil-word #'forward-evil-symbol)
+;; (defalias #'forward-evil-word #'forward-evil-symbol)
 
 ;; Put highlighted text as a higher priority than search highlights.
 (defadvice! my-evil-visual-highlight-a (&rest _)
@@ -878,8 +986,9 @@ Evil is a little too like Vim. Make it better.
     (overlay-put evil-visual-overlay 'priority 1010))
   (when evil-visual-block-overlays
     (dolist (overlay evil-visual-block-overlays)
- (overlay-put overlay 'priority 1010))))
+      (overlay-put overlay 'priority 1010))))
 #+end_src
+
 ** projectile
 *** Known directories and search path
 #+begin_src elisp
@@ -890,17 +999,34 @@ Evil is a little too like Vim. Make it better.
                                        "~/Code/personal"
                                        "~/Code/upstream"))
 (mapc 'mkdir-if-missing projectile-project-search-path)
+
+
 #+end_src
+
+*** Ignore certain source code directories
+#+begin_src elisp
+(setq projectile-ignored-projects '("/tmp"
+                                    "~/.emacs.d/.local/straight/repos"
+                                    "~/Code/go"
+                                    "/nix/store"
+                                    ))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+end_src
+
 ** direnv
 Silence annoying popup
 #+begin_src elisp
 (setq direnv-always-show-summary nil)
 #+end_src
+
 ** hl-todo
 *** Enable everywhere
 #+begin_src emacs-lisp
 (add-hook 'text-mode-hook #'hl-todo-mode)
 #+end_src
+
 ** format-all
 *** Disabled modes
 #+begin_src elisp
@@ -916,6 +1042,7 @@ Silence annoying popup
 ;;   (interactive)
 ;;   (remove-hook 'before-save-hook #'+format-buffer-h))
 #+end_src
+
 ** company
 *** Keys
 #+begin_src elisp
@@ -1023,6 +1150,7 @@ Run the organise imports LSP action upon save.
       :nv "K"  #'eldoc-doc-buffer)
       ;; :nv "K"  #'lsp-describe-thing-at-point)
 #+end_src
+
 ** python
 Locate the preferred language server.
 #+begin_src elisp
@@ -1030,6 +1158,7 @@ Locate the preferred language server.
   (setq lsp-python-ms-executable (executable-find "python-language-server"))
   (set-lsp-priority! 'mspyls 1))
 #+end_src
+
 ** nyanmode
 Oh gees.
 #+begin_src elisp
@@ -1039,29 +1168,36 @@ Oh gees.
   (setq nyan-bar-length 20)
    (nyan-mode))
 #+end_src
+
 ** dired
 Dired coloured icons.
 #+begin_src elisp
 (setq all-the-icons-dired-monochrome nil)
 #+end_src
+
 ** avy
+
 *** Search across all windows
 #+begin_src elisp
 (setq avy-all-windows t)
 #+end_src
+
 *** Select the single candidate
 #+begin_src elisp
 (setq avy-single-candidate-jump t)
 #+end_src
+
 *** Faster timers
 #+begin_src elisp
 (setq avy-timeout-seconds 0.35)
 #+end_src
 ** magit
+
 *** Avatars
 #+begin_src elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
 #+end_src
+
 *** Git sign-off line
 Automatically add a git signoff line based on discovered environmental identity.
 #+begin_src elisp
@@ -1072,6 +1208,7 @@ Automatically add a git signoff line based on discovered environmental identity.
     (apply #'git-commit-signoff (git-commit-self-ident))))
 (add-hook! 'git-commit-mode-hook #'mb/auto-git-commit-signoff)
 #+end_src
+
 *** WIP Commits
 #+begin_src elisp
 ;; TODO: Unfinished. A literal WIP. Need to workaround the race that occurs due
@@ -1087,6 +1224,7 @@ Automatically add a git signoff line based on discovered environmental identity.
   (magit-commit-create (list "-m" msg))
   (magit-push-current-to-pushremote nil))
 #+end_src
+
 *** Status buffer
 #+begin_src elisp
 ;; Unfold some more displays by default.
@@ -1120,6 +1258,7 @@ Get the YAML language server to validate Kubernetes resources.
          lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+end_src
+
 ** terraform
 Enable LSP for Terraform.
 #+begin_src elisp
@@ -1131,6 +1270,7 @@ Enable LSP for Terraform.
   )
 (add-hook 'terraform-mode-hook #'lsp-deferred)
 #+end_src
+
 ** pinentry
 *** Use Emacs pinentry on Linux
 #+begin_src elisp
@@ -1153,6 +1293,7 @@ Enable LSP for Terraform.
   (pinentry-start)
   )
 #+end_src
+
 ** treemacs
 *** Keys
 Toggling.
@@ -1169,6 +1310,7 @@ Evil frame movements.
   "C-h" #'evil-window-left
   "C-l" #'evil-window-right))
 #+end_src
+
 ** easy-motion
 *** Better scoped easy-motions
 #+begin_src elisp
@@ -1179,16 +1321,20 @@ Evil frame movements.
     [remap evilem-motion-backward-word-begin] #'evilem-motion-backward-WORD-begin
     )
 #+end_src
+
 *** Keys
 #+begin_src elisp
 (map! (:after evil-easymotion :m "C-f" evilem-map))
 #+end_src
+
 ** snippets
 #+begin_src elisp
 (setq yas-snippet-dirs
      (append yas-snippet-dirs `(,(concat (getenv "XDG_CONFIG_HOME") "/doom/snippets"))))
 #+end_src
+
 ** move-text
+
 *** Keys
 Add additional evil movements for text moves.
 #+begin_src elisp
@@ -1198,7 +1344,9 @@ Add additional evil movements for text moves.
   (map! :m "s-j" #'move-text-down
         :m "s-k" #'move-text-up))
 #+end_src
+
 ** buffer-move
+
 *** Keys
 Add evil movements to buffer moves.
 #+begin_src elisp
@@ -1212,6 +1360,7 @@ Add evil movements to buffer moves.
           :vgni "s-H" #'buf-move-left
           :vgni "s-L" #'buf-move-right))
 #+end_src
+
 ** buffer-expose
 *** Disable scaling
 #+begin_src elisp
@@ -1258,6 +1407,7 @@ Add expose functions to buffer commands.
       :desc "Expose workspace buffers" "bw" #'buffer-workspace-expose
       :desc "Expose workspace vterm buffers" "bv" #'buffer-workspace-vterm-expose)
 #+end_src
+
 ** golden-ratio
 Automatically resize the viewable windows according to the golden ratio.
 #+begin_src elisp
@@ -1281,6 +1431,7 @@ Automatically resize the viewable windows according to the golden ratio.
          ))
   )
 #+end_src
+
 ** rainbow-mode
 Rainbow mode is a helpful feature that will show the hex value colour. I want
 this enabled in most text mode.
@@ -1288,10 +1439,12 @@ this enabled in most text mode.
 #+begin_src elisp
 (add-hook! '(text-mode-hook prog-mode-hook conf-mode-hook) #'rainbow-mode)
 #+end_src
+
 ** web-mode
 #+begin_src elisp
 (add-to-list 'auto-mode-alist '("\\.vtl" . web-mode))
 #+end_src
+
 ** keycast-mode
 #+begin_src elisp
 (defun mb/toggle-keycast-modeline ()
@@ -1333,10 +1486,12 @@ this enabled in most text mode.
  (:prefix-map ("T" . "toggle")
   :desc "Keycast mode" "k" #'keycast-mode))
 #+end_src
+
 ** undo-tree
 #+begin_src elisp
 (after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
 #+end_src
+
 ** proced
 #+begin_src emacs-lisp
 (use-package! proced
@@ -1348,6 +1503,7 @@ this enabled in most text mode.
       (:prefix-map ("o" . "open")
        :desc "Proced" "=" #'proced))
 #+end_src
+
 *** Narrowing processes
 #+begin_src elisp
 (use-package! proced-narrow
@@ -1357,6 +1513,7 @@ this enabled in most text mode.
    :map proced-mode-map
    :n "/" #'proced-narrow))
 #+end_src
+
 *** Readable Nix paths
 #+begin_src elisp
 ;; WIP Shorten long paths.
@@ -1378,16 +1535,19 @@ this enabled in most text mode.
 
 ;; (advice-add #'proced-format-args :around #'+mb/proced-remove-nix-path)
 #+end_src
+
 ** nix
 #+begin_src elisp
 ;; TODO is there a more standard way to trigger LSP?
 (add-hook! 'nix-mode-hook #'lsp!)
 #+end_src
+
 ** vterm
 Use system-wide vterm lib when compiling.
 #+begin_src elisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 #+end_src
+
 *** Mode handling
 Handle escape between Emacs and vterm.
 #+begin_src elisp
@@ -1480,6 +1640,7 @@ Allow stop scroll term sequence.
 ;; New uber minimal prompt:
 (setq-hook! 'vterm-mode-hook outline-regexp "^; .*")
 #+end_src
+
 *** Copy mode
 Exclude prompts when exiting copy mode.
 #+begin_src elisp
@@ -1594,12 +1755,14 @@ Pass frame movements through to Emacs.
   :config
   (add-to-list 'vterm-keymap-exceptions "C-w"))
 #+end_src
+
 ** EXWM
 Load my flavour of EXWM when in Linux.
 #+begin_src elisp
 (when IS-LINUX
   (load! "+exwm"))
 #+end_src
+
 ** TEMP WIPs
 Work around https://github.com/hlissner/doom-emacs/issues/5529
 #+begin_src elisp
@@ -1650,9 +1813,6 @@ mailing list.
       (goto-char (point-min)))))
 #+end_src
 
-Org mode mixed pitch and solaire mode looks more aesthetically pleasing.
-TODO: Mixed pitch font.
-#+begin_src elisp
-(add-hook! 'org-mode-hook #'mixed-pitch-mode)
-(setq mixed-pitch-variable-pitch-cursor nil)
-#+end_src
+| Hi there          | Mate |
+|-------------------+------|
+| Not working is it | No   |

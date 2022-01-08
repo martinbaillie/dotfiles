@@ -38,6 +38,11 @@ in
 
       unstable.gofumpt
       unstable.gopls
+    ]
+    ++ optional config.modules.dev.jvm.bazel.enable bazel-gazelle
+    ++ optionals config.modules.dev.protobuf.grpc.enable [
+      protoc-gen-go
+      protoc-gen-go-grpc
     ];
 
     env = {

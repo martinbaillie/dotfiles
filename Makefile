@@ -106,8 +106,10 @@ darwin-wallpaper:
 		-e 'end tell' &
 .PHONY: darwin-wallpaper
 
-light: EMACS_THEME ?=doom-solarized-light
-light: TERM_THEME ?=base16-solarized-light.sh
+# light: EMACS_THEME ?=doom-solarized-light
+# light: TERM_THEME ?=base16-solarized-light.sh
+light: EMACS_THEME ?=modus-operandi
+light: TERM_THEME ?=base16-tomorrow.sh
 light:
 ifeq ($(SYSTEM),Darwin)
 light: darwin-wallpaper

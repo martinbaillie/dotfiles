@@ -85,6 +85,7 @@ in
       rg = "rg --hidden";
       tree = "tree -a -I '.git'";
       wget = "wget -c";
+      tailf = "tail -f"; # util-linux habits.
     };
 
     # Shell fuzzer configuration.

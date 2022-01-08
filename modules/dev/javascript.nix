@@ -29,6 +29,6 @@ in
       ] ++ (optionals cfg.typescript.enable [
         nodePackages.typescript
         nodePackages.typescript-language-server
-      ]);
+      ]) ++ optional config.modules.dev.protobuf.grpc.enable protoc-gen-grpc-web;
   };
 }

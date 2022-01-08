@@ -27,6 +27,13 @@
     dev = {
       enable = true;
       go.enable = true;
+      jvm.bazel.enable = true;
+      python.enable = true;
+      frontend.enable = true;
+      javascript = {
+        enable = true;
+        typescript.enable = true;
+      };
     };
 
     services = {
