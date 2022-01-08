@@ -46,7 +46,7 @@ in
     ];
 
     env = {
-      # Ensure Go modules work with $WORK private (ssh keyed) repositories.
+      # Ensure Go modules work with $WORK private (SSH keyed) repositories.
       GOPRIVATE = config.secrets.work_vcs_host + "/"
         + config.secrets.work_vcs_path + "/*";
       GOPATH = "$HOME/Code/go";

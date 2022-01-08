@@ -258,6 +258,11 @@ Configure Emacs Modus themes if using.
     (unless (equal args '(no-checker)) args))
   (advice-add #'doom-modeline-update-flycheck-icon
               :filter-args #'mb/remove-no-checker-icon)
+  ;; Or for the excessive height
+  ;; FIXME This has no effect on its own?
+  (setq doom-modeline-height 22)
+  (advice-add #'doom-modeline--font-height
+              :override #'(lambda () (progn 22)))
   ;; But I do like file type icons.
   (setq doom-modeline-major-mode-icon t)
   ;; And word counts in Markdown, Org etc.
@@ -522,7 +527,32 @@ Find in dotfiles.
                #'+org-present--narrow-to-subtree-a)
 
 (map! :map org-tree-slide-mode-map
-      :n "q" (lambda () (interactive) (org-tree-slide-mode 0)))
+      :n "q" (lambda () (interactive) (org-tree-slide-mode 0))
+      :ni "C-l" #'org-tree-slide-move-next-tree
+      :ni "C-h" #'org-tree-slide-move-previous-tree
+      :ni "s-<right>" #'org-tree-slide-move-next-tree
+      :ni "s-<left>" #'org-tree-slide-move-previous-tree)
+
+
+(defvar mb/hide-org-meta-line-p nil)
+
+(defun mb/hide-org-meta-line ()
+  (interactive)
+  (setq mb/hide-org-meta-line-p t)
+  (set-face-attribute 'org-meta-line nil
+                      :foreground (face-attribute 'default :background)))
+(defun mb/show-org-meta-line ()
+  (interactive)
+  (setq mb/hide-org-meta-line-p nil)
+  (set-face-attribute 'org-meta-line nil :foreground nil))
+
+(defun my/toggle-org-meta-line ()
+  (interactive)
+  (if mb/hide-org-meta-line-p
+      (mb/show-org-meta-line) (mb/hide-org-meta-line)))
+
+(add-hook 'org-tree-slide-play-hook #'mb/hide-org-meta-line)
+(add-hook 'org-tree-slide-stop-hook #'mb/show-org-meta-line)
 #+end_src
 
 *** Scratch and default buffers
