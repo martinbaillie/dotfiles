@@ -21,6 +21,7 @@ zstyle ':prezto:module:editor' key-bindings 'vi'
 zstyle ':prezto:module:editor' dot-expansion 'yes'
 zstyle ':prezto:module:git:status:ignore' submodules 'all'
 zstyle ':prezto:module:prompt' theme 'martin'
+zstyle ':prezto:module:history' histsize '999999999'
 zstyle ':prezto:module:syntax-highlighting' highlighters \
    'main' \
    'brackets' \

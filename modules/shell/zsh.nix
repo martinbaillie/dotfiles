@@ -53,10 +53,6 @@ in
             INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc";
             LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
             WGETRC = "$XDG_CONFIG_HOME/wgetrc";
-
-            # And have a very long history despite Prezto.
-            HISTSIZE = "999999999";
-            SAVEHIST = "$HISTSIZE";
           };
 
         home = {
