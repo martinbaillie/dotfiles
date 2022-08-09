@@ -1,7 +1,7 @@
-(when (and noninteractive IS-LINUX)
-  (add-to-list 'doom-env-blacklist "^SWAYSOCK$"))
-(when (and noninteractive IS-MAC)
-  (add-to-list 'doom-env-whitelist "^SSH_"))
+;;(when (and noninteractive IS-LINUX)
+;;  (add-to-list 'doom-env-blacklist "^SWAYSOCK$"))
+;; (when (and noninteractive IS-MAC)
+;;  (add-to-list 'doom-env-whitelist "^SSH_"))
 
 (doom! :input
        :completion
@@ -57,7 +57,7 @@
        :checkers
        syntax            ; tasing you for every semicolon you forget
        spell             ; tasing you for misspelling mispelling
-       grammar           ; tasing grammar mistake every you make
+       ;; grammar           ; tasing grammar mistake every you make
 
        :tools
        ansible
@@ -66,22 +66,26 @@
        editorconfig      ; let someone else argue about tabs vs spaces
        (eval +overlay)   ; run code, run (also, repls)
        lookup            ; navigate your code and its documentation
-       (lsp +peek +eglot)
+       (lsp +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs
        pdf               ; pdf enhancements
        rgb               ; creating color strings
        terraform         ; infrastructure as code
+       tree-sitter       ; syntax and parsing, sitting in a tree...
 
        :lang
        data              ; config/data formats
        emacs-lisp        ; drown in parentheses
-       (go +lsp)         ; the hipster dialect
-       (json +lsp)       ; At least it ain't XML
-       (javascript +lsp) ; all(hope(abandon(ye(who(enter(here))))))
+       (go +lsp
+           +tree-sitter) ; the hipster dialect
+       (json +lsp
+             +tree-sitter)       ; At least it ain't XML
+       (javascript +lsp
+                   +tree-sitter) ; all(hope(abandon(ye(who(enter(here))))))
        (lua +lsp)        ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
-       nix               ; I hereby declare "nix geht mehr!"
+       (markdown +grip)  ; writing docs for people to ignore
+       (nix +tree-sitter); I hereby declare "nix geht mehr!"
        (org              ; organize your plain life in plain text
         +dragndrop
         +gnuplot
@@ -91,13 +95,17 @@
         +present
         +pretty
         +roam2)
-       (python +lsp)     ; beautiful is better than ugly
-       (rust +lsp)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
-       (sh +lsp)         ; she sells {ba,z,fi}sh shells on the C xor
+       (python +lsp
+               +tree-sitter)     ; beautiful is better than ugly
+       (rust +lsp
+             +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       (sh +lsp
+           +tree-sitter)         ; she sells {ba,z,fi}sh shells on the C xor
        (yaml +lsp)       ; JSON, but readable
        ;; (racket +xp)      ; always be scheming
        (web +css
-            +html)
+            +html
+            +tree-sitter)
 
        :app
        calendar

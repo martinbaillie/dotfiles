@@ -82,9 +82,9 @@ bind X org_roam
 
 " Pop to other persistent tabs
 unbind S
-bind S buffer slack.com
-bind M buffer outlook.office.com
-bind C buffer soundcloud.com
+bind S buffer soundcloud.com
+bind M buffer mail.google.com
+bind C buffer calendar.google.com
 
 " New reddit design is just fucking _terrible_. Use the old one.
 autocmd DocStart ^http(s?)://www.reddit.com js tri.excmds.urlmodify("-t", "www", "old")
@@ -105,7 +105,9 @@ set searchurls.g https://www.google.com.au/search?q=%s
 set searchurls.ddg https://duckduckgo.com/?q=%s
 set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
 set searchurls.yt https://youtube.com/results?search_query=%s
-set searchurls.gh https://github.com/search?q=%s
+set searchurls.gh https://cs.github.com/?scopeName=All+repos&scope=&q=%s
+set searchurls.gho https://github.com/search?q=%s
+set searchurls.so https://stackoverflow.com/search?q=%s
 set searchurls.reddit https://old.reddit.com/r/%s
 " Nix.
 set searchurls.nixopt https://search.nixos.org/options?from=0&size=15&sort=relevance&channel=unstable&query=%s
@@ -127,18 +129,26 @@ set searchurls.gopkg https://golang.org/pkg/%s
 
 " Disable.
 blacklistadd mail.google.com
-blacklistadd docs.google.com
+" blacklistadd docs.google.com
 blacklistadd protonmail.com
 blacklistadd office.com
 blacklistadd excalidraw.com
 blacklistadd draw.io
 blacklistadd app.diagrams.net
+blacklistadd canva.com
+blacklistadd atlassian.net
 
 " Really disable
-autocmd DocStart docs.google.com mode ignore
-autocmd TabEnter docs.google.com mode ignore
-autocmd TabEnter mail.google.com/mail/u/ mode ignore
+autocmd DocStart canva.com mode ignore
+autocmd TabEnter canva.com mode ignore
+" autocmd DocStart docs.google.com mode ignore
+" autocmd TabEnter docs.google.com mode ignore
 autocmd DocStart mail.google.com/mail/u/ mode ignore
+autocmd TabEnter mail.google.com/mail/u/ mode ignore
+autocmd DocStart protonmail.com mode ignore
+autocmd TabEnter protonmail.com mode ignore
+autocmd DocStart atlassian.net mode ignore
+autocmd TabEnter atlassian.net mode ignore
 
 " Scroll smoothly and slowly.
 set smoothscroll true

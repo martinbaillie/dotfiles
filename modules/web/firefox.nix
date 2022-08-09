@@ -85,6 +85,7 @@ in
             let
               host = "${config.secrets.work_vcs_host}";
               path = "${config.secrets.work_vcs_path}";
+              jira = "${config.secrets.work_jira}";
             in
             builtins.readFile "${configDir}/tridactylrc" + ''
               " Set a custom colour theme.
@@ -92,6 +93,9 @@ in
 
               " Search work VCS.
               set searchurls.w https://${host}/search?q=org%3A${path}+%s
+
+              " Search work JIRA.
+              set searchurls.j https://${jira}.atlassian.net/browse/%s
             '';
         };
       };
@@ -113,11 +117,11 @@ in
         };
 
         # Wire up Tridactyl native for NixOS.
-        file.".mozilla/native-messaging-hosts" = {
-          source =
-            "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
-          recursive = true;
-        };
+        # file.".mozilla/native-messaging-hosts" = {
+        #   source =
+        #     "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+        #   recursive = true;
+        # };
       };
     } else {
       # Darwin.
@@ -130,11 +134,11 @@ in
         programs.firefox.package = pkgs.my.firefox;
 
         # Wire up Tridactyl native for macOS.
-        file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
-          source =
-            "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
-          recursive = true;
-        };
+        # file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
+        #   source =
+        #     "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+        #   recursive = true;
+        # };
       };
     })
   ]);

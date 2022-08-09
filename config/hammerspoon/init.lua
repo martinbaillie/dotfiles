@@ -8,8 +8,8 @@ hs.window.animationDuration = 0
 -- osascript -e 'id of app "<Application>"'
 hs.hotkey.bind({"ctrl", "cmd"}, "1", utils.toggleApplication(
     "org.gnu.Emacs",
-    -- os.getenv("HOME") .. "/Applications/Emacs.app"
-    "/Applications/Emacs"
+    os.getenv("HOME") .. "/Applications/Nix Apps/Emacs.app"
+    -- "/Applications/Emacs"
 ))
 hs.hotkey.bind({"ctrl", "cmd"}, "2", utils.toggleApplication("org.mozilla.firefox", nil))
 
@@ -70,3 +70,29 @@ Install:andUse(
         smaller     = { leader, "-" },
       }
 })
+
+Install:andUse("WinWin", {})
+if spoon.WinWin then
+  hs.hotkey.bind({"ctrl", "alt", "cmd"}, "Left", function() spoon.WinWin:moveToScreen("left") end )
+  hs.hotkey.bind({"ctrl", "alt", "cmd"}, "Right", function() spoon.WinWin:moveToScreen("right") end )
+  hs.hotkey.bind({"ctrl", "alt", "cmd"}, "Up", function() spoon.WinWin:moveToScreen("up") end )
+  hs.hotkey.bind({"ctrl", "alt", "cmd"}, "Down", function() spoon.WinWin:moveToScreen("down") end )
+end
+
+--------------------------------
+-- START VIM CONFIG - https://github.com/dbalatero/VimMode.spoon
+--------------------------------
+local VimMode = hs.loadSpoon("VimMode")
+local vim = VimMode:new()
+
+vim
+  :disableForApp('Emacs')
+  -- :disableForApp('Firefox')
+  :disableForApp('Terminal')
+  :disableForApp('zoom.us')
+  :enterWithSequence('jk')
+  -- :bindHotKeys({ enter = { {}, 'escape'} })
+  :shouldDimScreenInNormalMode(false)
+  :shouldShowAlertInNormalMode(true)
+  :setAlertFont("Courier New")
+  :enableBetaFeature('block_cursor_overlay')

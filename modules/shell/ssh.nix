@@ -9,6 +9,13 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     {
+      user.packages = [
+        # NOTE: To stop sending carriage returns on accidental press:
+        # 1. Find slot: `ykman otp info`
+        # 2. Disable: `ykman otp settings --no-enter 1`
+        pkgs.yubikey-manager
+      ];
+
       home.file = {
         ".ssh/config".source = "${configDir}/config";
 

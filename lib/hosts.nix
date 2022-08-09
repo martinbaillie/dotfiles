@@ -7,11 +7,13 @@ with darwin.lib; {
     attrs@{ system, ... }:
     let
       isNixOS = strings.hasInfix "linux" system;
+      hostname = baseNameOf path;
       theme = "${(builtins.getEnv "XDG_DATA_HOME")}/theme.nix";
+      private = "${(builtins.getEnv "XDG_DATA_HOME")}/${hostname}.nix";
       hardware = "${path}/hardware-configuration.nix";
       commonModules = [
         rec {
-          networking.hostName = mkDefault (baseNameOf path);
+          networking.hostName = mkDefault hostname;
           environment = {
             variables.HOSTNAME = networking.hostName;
             systemPackages = [ inputs.deploy-rs.defaultPackage.${system} ];
@@ -25,7 +27,8 @@ with darwin.lib; {
         (dirOf path) # 3. Current architecture (e.g. aarch64, x86_64).
         (import path) # 4. Current host.
       ] ++ (mapModulesRec' ../modules import) # Make all my modules available.
-      ++ (optional (pathExists theme) theme); # Current host theme.
+      ++ (optional (pathExists theme) theme) # Current host theme.
+      ++ (optional (pathExists private) private); # Current host private settings.
       specialArgs = {
         inherit lib inputs;
         pkgs = pkgs.${system};

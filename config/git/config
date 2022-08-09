@@ -12,20 +12,29 @@
 	rebase = true
 [push]
 	default = simple
+[checkout]
+	workers = 0
+	thresholdForParallelism = 50
+[fetch]
+	prune = true
+[protocol]
+	version = 2
 [credential]
 	helper = store
 [commit]
 	gpgsign = true
 [core]
 	pager = diff-so-fancy | less --tabs=4 -RFX
+	untrackedCache = true
+	excludesfile = ~/.config/git/ignore
 [merge]
 	tool = ediff
 [mergetool "ediff"]
 	cmd = emacsclient -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
 [mergetool "nvimfugitive"]
 	cmd = nvim -f -c \"Gdiff\" \"$MERGED\"
-[includeIf "gitdir:~/Code/work/**"]
-	path = ~/Code/work/.gitconfig
+[includeIf "gitdir:~/work/**"]
+	path = ~/work/.gitconfig
 [color]
 	ui = true
 [color "diff-highlight"]

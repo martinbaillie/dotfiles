@@ -35,24 +35,29 @@ in
           promptInit = "";
         };
 
-        env = {
-          # Global zsh releated environment values.
-          ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
-          ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
-          ZGEN_DIR = "$XDG_DATA_HOME/zsh";
-          ZGEN_SRC = builtins.fetchGit {
-            url = "https://github.com/jandamm/zgenom.git";
-            rev = "6ff785d403dd3f0d3b739c9c2d3508f49003441f";
-            ref = "main"; # zgenom@<2021-05-15 Sat>
-          };
+        env =
+          {
+            # Global zsh releated environment values.
+            ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
+            ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
+            ZGEN_DIR = "$XDG_DATA_HOME/zsh";
+            ZGEN_SRC = builtins.fetchGit {
+              url = "https://github.com/jandamm/zgenom.git";
+              rev = "6ff785d403dd3f0d3b739c9c2d3508f49003441f";
+              ref = "main"; # zgenom@<2021-05-15 Sat>
+            };
 
-          # Try very hard to have things favour XDG convention.
-          PATH = [ "$XDG_BIN_HOME" ];
-          HISTFILE = "$XDG_DATA_HOME/zsh/history";
-          INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc";
-          LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
-          WGETRC = "$XDG_CONFIG_HOME/wgetrc";
-        };
+            # Try very hard to have things favour XDG convention.
+            PATH = [ "$XDG_BIN_HOME" ];
+            HISTFILE = "$XDG_DATA_HOME/zsh/history";
+            INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc";
+            LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
+            WGETRC = "$XDG_CONFIG_HOME/wgetrc";
+
+            # And have a very long history despite Prezto.
+            HISTSIZE = "999999999";
+            SAVEHIST = "$HISTSIZE";
+          };
 
         home = {
           programs.nix-index = {

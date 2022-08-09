@@ -30,10 +30,12 @@ with lib; {
         connect-timeout = 5
         # Enable the Nix 2.0 CLI and Flakes support.
         experimental-features = nix-command flakes
+        # Shutup warnings about dirty repo.
+        warn-dirty = false
       '';
 
       # Use the Flakes edition of Nix.
-      package = pkgs.nixFlakes;
+      package = pkgs.unstable.nix;
 
       nixPath = (mapAttrsToList (n: v: "${n}=${v}") filteredInputs) ++ [
         "nixpkgs-overlays=${config.dotfiles.dir}/overlays"

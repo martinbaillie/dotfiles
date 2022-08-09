@@ -53,6 +53,7 @@ with lib; {
       work_vcs_host = mkSecret "$WORK VCS host" "";
       work_vcs_path = mkSecret "$WORK VCS path" "";
       work_email = mkSecret "$WORK email" "";
+      work_jira = mkSecret "$WORK JIRA instance" "";
       protonvpn_username = mkSecret "ProtonVPN OpenVPN username" "";
       protonvpn_password = mkSecret "ProtonVPN OpenVPN password" "";
       openweathermap_api_key = mkSecret "OpenWeatherMap key" "";

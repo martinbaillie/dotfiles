@@ -8,6 +8,7 @@
 
 * Table of Contents :TOC_2_gh:
 - [[#personal][Personal]]
+- [[#private][Private]]
 - [[#packages][Packages]]
   - [[#upstream][Upstream]]
   - [[#mine][Mine]]
@@ -24,6 +25,7 @@
   - [[#ediff][ediff]]
   - [[#pomm][pomm]]
   - [[#evil][evil]]
+  - [[#flyspell][flyspell]]
   - [[#projectile][projectile]]
   - [[#direnv][direnv]]
   - [[#hl-todo][hl-todo]]
@@ -31,12 +33,15 @@
   - [[#company][company]]
   - [[#go][go]]
   - [[#python][python]]
+  - [[#flycheck][flycheck]]
   - [[#nyanmode][nyanmode]]
   - [[#dired][dired]]
   - [[#avy][avy]]
   - [[#magit][magit]]
   - [[#yaml][yaml]]
+  - [[#bazel][bazel]]
   - [[#terraform][terraform]]
+  - [[#ox-clip][ox-clip]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
   - [[#easy-motion][easy-motion]]
@@ -61,21 +66,28 @@
       user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
 #+end_src
-
+* Private
+Private settings for current system.
+#+begin_src elisp
+(let ((+private (concat "/etc/dotfiles/.private/+" (system-name) ".el")))
+      (when (file-exists-p +private)
+        (load! +private)))
+#+end_src
 * Packages
 ** Upstream
 #+begin_src elisp :tangle packages.el
 ;; (package! dap-mode)
 (package! nyan-mode)
 (package! org-fancy-priorities)
+(package! magit-org-todos)
 (package! edit-indirect)
 (package! vimrc-mode)
 (package! pinentry)
 (package! move-text)
 (package! buffer-move)
 (package! buffer-expose)
+(package! nixpkgs-fmt)
 (package! exec-path-from-shell)
-(package! flycheck-golangci-lint)
 (package! keycast)
 (package! rego-mode)
 (package! protobuf-mode)
@@ -86,6 +98,7 @@
 (package! golden-ratio)
 (package! pomm)
 (package! emacs-everywhere)
+(package! magit-lfs)
 (package! bazel-mode
   :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
 
@@ -138,11 +151,13 @@ Various forks and packages of my own.
 #+begin_src elisp
 (when IS-MAC
   (setq
-   doom-font                     (font-spec :family "Iosevka Term" :size 13)
-   doom-variable-pitch-font      (font-spec :family "Iosevka Aile" :size 14)
-   doom-serif-font               (font-spec :family "Iosevka Etoile" :size 14)))
+   ;; TODO: Export
+   doom-font                     (font-spec :family "Iosevka" :size 14.5 :weight 'medium)
+   doom-big-font                 (font-spec :family "Iosevka Term" :size 22)
+   doom-variable-pitch-font      (font-spec :family "Iosevka Aile" :size 15)
+   doom-serif-font               (font-spec :family "Iosevka Etoile" :size 15)))
 (setq +zen-text-scale 0.8)
-(setq doom-font-increment 3)
+(setq doom-font-increment 0.8)
 #+end_src
 
 *** Display line numbers relative to cursor
@@ -201,7 +216,9 @@ Configure Emacs Modus themes if using.
 #+begin_src elisp
 (use-package! modus-themes
   :init
-  (setq modus-themes-completions 'opinionated
+  (setq modus-themes-completions
+      '((selection . (intense))
+        (matches . (background intense)))
         modus-themes-variable-pitch-headings t
         modus-themes-scale-headings t
         modus-themes-bold-constructs t
@@ -298,7 +315,17 @@ Configure Emacs Modus themes if using.
 #+begin_src elisp
 (setq load-prefer-newer t)
 #+end_src
-
+*** Pixel scroll precision
+Aww yeah. Scroll up or down at pixel resolution.
+#+begin_src elisp
+(when (fboundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
+#+end_src
+*** Fuzzier completion
+Use orderless and fallback on flex.
+#+begin_src elisp
+(after! orderless
+  (add-to-list 'completion-styles 'flex t))
+#+end_src
 * UI/macOS
 *** Source a clean shell environment
 #+begin_src elisp
@@ -311,7 +338,7 @@ Configure Emacs Modus themes if using.
 
 *** Use font smoothing
 #+begin_src elisp
-;; (when IS-MAC (setq ns-use-thin-smoothing t))
+(when IS-MAC (setq ns-use-thin-smoothing t))
 #+end_src
 
 *** Hide icons in titles
@@ -487,6 +514,10 @@ Find in dotfiles.
 #+end_src
 
 ** org
+*** Hide emphasis markers
+#+begin_src elisp
+(setq org-hide-emphasis-markers t)
+#+end_src
 *** Centered buffers
 #+begin_src elisp
 (defun mb/org-mode-visual-fill ()
@@ -517,7 +548,6 @@ Find in dotfiles.
 (defun mb/org-tree-slide-mode-hook ()
   (setq-local evil-motion-trainer-mode nil)
   (spell-fu-mode-disable)
-  (writegood-turn-off)
   (org-display-inline-images)
   (doom-disable-line-numbers-h))
 
@@ -566,10 +596,11 @@ Org the world.
 
 *** Dropbox-based cache folder
 #+begin_src elisp
-(setq org-directory (expand-file-name "~/Dropbox/org")
-      org-archive-location (concat org-directory "/" "archive" "/" "%s_archive::")
-      org-id-locations-file (concat org-directory "/" ".org-id-locations"))
-(mkdir-if-missing (f-dirname org-archive-location))
+(after! org
+  (setq org-directory (expand-file-name "~/Dropbox/org")
+        org-archive-location (concat org-directory "/" "archive" "/" "%s_archive::")
+        org-id-locations-file (concat org-directory "/" ".org-id-locations"))
+  (file-name-directory (directory-file-name org-archive-location)))
 #+end_src
 
 *** Fold all on startup
@@ -758,7 +789,8 @@ The king of plain-text personal knowledge management. A Zettelkasten system in E
  (:prefix-map ("n" . "notes")
   :desc "Find directory" "-" (lambda () (interactive) (find-file org-directory))
   (:prefix ("r" . "roam")
-   :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory)))))
+   :desc "Find directory" "-" (lambda () (interactive) (find-file org-roam-directory))
+   :desc "Capture meeting today" "m" (lambda () (interactive) (org-roam-dailies-capture-today nil "m")))))
 
 ;; Allow mouse clicks in the roam buffer.
 (define-key org-roam-mode-map [mouse-1] #'org-roam-visit-thing)
@@ -807,10 +839,10 @@ NOTE: Occasionally need to run =org-gcal-sync-tokens-clear=
         org-gcal-remove-api-cancelled-events t
         org-gcal-client-id (auth-source-pick-first-password
                             :host "calendar.google.com"
-                            :user "martin@baillie.id^client")
+                            :user "mbaillie^client")
         org-gcal-client-secret (auth-source-pick-first-password
                                 :host "calendar.google.com"
-                                :user "martin@baillie.id^secret")
+                                :user "mbaillie^secret")
         org-gcal-token-file "/etc/dotfiles/.private/org-gcal.gpg"
         org-gcal-fetch-file-alist `((,mb/calendar-professional
                                      . ,(concat
@@ -829,7 +861,14 @@ NOTE: Occasionally need to run =org-gcal-sync-tokens-clear=
                                          mb/calendar-dir
                                          "/"
                                          (url-unhex-string mb/calendar-aus-holidays)
-                                         ".org"))))
+                                         ".org"))
+                                    (,mb/calendar-work
+                                     . ,(concat
+                                         mb/calendar-dir
+                                         "/"
+                                         (url-unhex-string mb/calendar-work)
+                                         ".org"))
+                                    ))
   (mkdir-if-missing mb/calendar-dir))
 
 ;; Update my calendars upon Org agenda view entry.
@@ -1018,28 +1057,39 @@ Evil is a little too like Vim. Make it better.
     (dolist (overlay evil-visual-block-overlays)
       (overlay-put overlay 'priority 1010))))
 #+end_src
+** flyspell
+#+begin_src elisp
+;; TODO
+#+end_src
 
 ** projectile
 *** Known directories and search path
 #+begin_src elisp
-(projectile-add-known-project "~/Dropbox/org")
+(defun mb/directory-directories (directory &optional regexp)
+  "List just the directories of DIRECTORY"
+  (let* ((dir       (expand-file-name directory))
+         (dir-files (directory-files dir t regexp)))
+    ;; Filter out non-dirs.
+    (dolist (file dir-files)
+      (if (not (file-directory-p file))
+          (setq dir-files (delq file dir-files))))
+    dir-files))
+
+(projectile-add-known-project (expand-file-name "~/Dropbox/org"))
 (projectile-add-known-project "/etc/dotfiles")
 
-(setq projectile-project-search-path '("~/Code/work"
-                                       "~/Code/personal"
-                                       "~/Code/upstream"))
+(setq projectile-project-search-path (append projectile-project-search-path
+                                      '("~/personal" "~/upstream")))
 (mapc 'mkdir-if-missing projectile-project-search-path)
-
-
 #+end_src
 
 *** Ignore certain source code directories
 #+begin_src elisp
-(setq projectile-ignored-projects '("/tmp"
+(setq projectile-ignored-projects (append projectile-ignored-projects
+                                          '("/tmp"
                                     "~/.emacs.d/.local/straight/repos"
                                     "~/Code/go"
-                                    "/nix/store"
-                                    ))
+                                    "/nix/store")))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
@@ -1086,60 +1136,7 @@ Silence annoying popup
 #+end_src
 
 ** go
-*** LSP (Eglot)
-I'm trialling Eglot after a lot of annoyances over time with lsp-mode.
-
-Fix backslashes in Eglot documentation.
-SEE: https://github.com/joaotavora/eglot/issues/333
-#+begin_src elisp
-(defun mb/gfm-unescape-string (string)
-  "Remove backslash-escape of punctuation characters in STRING."
-  ;; https://github.github.com/gfm/#backslash-escapes
-  (replace-regexp-in-string "[\\\\]\\([][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-]\\)" "\\1" string))
-
-(advice-add 'eglot--format-markup :filter-return 'mb/gfm-unescape-string)
-#+end_src
-
-Run the organise imports LSP action upon save.
-#+begin_src elisp
-(defun mb/eglot-interactively-organize-imports ()
-  (ignore-errors (eglot-code-action-organize-imports (point-min))))
-
-;; The depth of -10 places this before eglot's willSave notification,
-;; so that notification reports the actual contents that will be saved.
-(defun eglot-go-save-hook ()
-  (add-hook 'before-save-hook #'mb/eglot-interactively-organize-imports -10 t))
-
-(after! go-mode
-  (add-hook! 'go-mode-hook #'eglot-go-save-hook))
-
-(setq-default eglot-workspace-configuration
-              ;; Turn on a bunch of stuff despite patchy Eglot support.
-              '((:gopls . ((usePlaceholders . t)
-                           (hoverKind ."FullDocumentation")
-                           (linksInHover . t)
-                           (allExperiments . t)
-                           (staticcheck . t)
-                           (gofumpt . t)
-                           (analyses . ((nilness . t)
-                                        (fieldalignment . t)
-                                        (shadow . t)
-                                        (unusedparams . t)
-                                        (unusedwrite . t)))
-                           (matcher . "Fuzzy")))))
-
-(setq-default eglot-workspace-configuration
-              '((:gopls . ((gofumpt . t)))))
-
-;; (setq-default eglot-workspace-configuration
-;;               '((:gopls .
-;;                  ((staticcheck . t)
-;;                   (gofumpt . t)))))
-
-;; (hoverKind ."FullDocumentation")
-;; (usePlaceholders . t)
-#+end_src
-
+*** LSP (lsp-mode)
 #+begin_src elisp
 ;; (after! go-mode
 ;;   (defun lsp-go-install-save-hooks ()
@@ -1154,14 +1151,140 @@ Run the organise imports LSP action upon save.
 ;;                             (vendor . t)
 ;;                             (upgrade_dependency . t))))
 
-;; (after! lsp-mode
-;;   (lsp-register-custom-settings
-;;    '(("gopls.completeUnimported" t t)
-;;      ("gopls.staticcheck" t t)
-;;      ("gopls.completionDocumentation" t t)
-;;      ("gopls.codelenses" lsp-go-codelenses))))
+(if (not (boundp 'mb/device-local-gopackage))
+    (setq mb/device-local-gopackage "github.com/martinbaillie"))
+(after! lsp-mode
+  (setq
+   ;; lsp-go-env (make-hash-table)
+        lsp-file-watch-threshold 4000
+        lsp-enable-file-watchers nil
+        lsp-go-use-gofumpt t
+        lsp-go-goimports-local mb/device-local-gopackage
+        lsp-gopls-hover-kind "FullDocumentation"
+        lsp-go-build-flags ["-tags=integration e2e smoke"]
+        lsp-go-directory-filters ["-_bazel_out"
+                                  "-_bazel_bin"
+                                  "-_bazel_testlogs"
+                                  "-_bazel_infrastructure"
+                                  "-bazel-out"
+                                  "-bazel-bin"
+                                  "-bazel-testlogs"
+                                  "-bazel-infrastructure"
+                                  "-tools"]
+        lsp-go-symbol-matcher "FastFuzzy"
+        lsp-go-analyses '((nilness . t)
+                          (fieldalignment . t)
+                          (shadow . t)
+                          (unusedparams . t)
+                          (unusedwrite . t)
+                          (useany . t)))
+  (lsp-register-custom-settings
+   '(("gopls.completeUnimported" t t)
+     ("gopls.staticcheck" t t)
+     ("gopls.completionDocumentation" t t)
+     ;; ("gopls.experimentalWorkspaceModule" t t)
+     ("gopls.hoverKind" lsp-go-hover-kind)
+     ("gopls.codelenses" lsp-go-codelenses))))
+
+;; (defun lsp-mode-go-packages-driver
+;;       (puthash "GOPACKAGESDRIVER" (concat (projectile-project-root) "/gopackagesdriver.sh") lsp-go-env)
+;;   (my-lsp-workspace-restart))
+;;     )
+
+(defun lsp-mode-go-save-hook ()
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-mode-go-save-hook)
 #+end_src
 
+*** LSP (Eglot)
+# I'm trialling Eglot after a lot of annoyances over time with lsp-mode.
+
+# Fix backslashes in Eglot documentation.
+# SEE: https://github.com/joaotavora/eglot/issues/333
+# #+begin_src elisp
+# (defun mb/gfm-unescape-string (string)
+#   "Remove backslash-escape of punctuation characters in STRING."
+#   ;; https://github.github.com/gfm/#backslash-escapes
+#   (replace-regexp-in-string "[\\\\]\\([][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-]\\)" "\\1" string))
+
+# (advice-add 'eglot--format-markup :filter-return 'mb/gfm-unescape-string)
+# #+end_src
+
+# Run the organise imports LSP action upon save.
+# #+begin_src elisp
+# (defun mb/eglot-interactively-organize-imports ()
+#   (ignore-errors (eglot-code-action-organize-imports (point-min))))
+
+# ;; The depth of -10 places this before eglot's willSave notification,
+# ;; so that notification reports the actual contents that will be saved.
+# (defun eglot-go-save-hook ()
+#   (add-hook 'before-save-hook #'mb/eglot-interactively-organize-imports -10 t))
+
+# (after! go-mode
+#   (add-hook! 'go-mode-hook #'eglot-go-save-hook))
+
+# (if (not (boundp 'mb/device-local-gopackage))
+#          (setq mb/device-local-gopackage "github.com/martinbaillie"))
+
+# ;; Don't ask for confirmation before allowing server edits.
+# (setq eglot-confirm-server-initiated-edits nil
+#       eglot-send-changes-idle-time 2
+#       ;; grow forever
+#       eglot-events-buffer-size nil)
+#       ;; eglot-ignored-server-capabilites (quote ("workspace/didChangeWatchedFiles"))
+
+
+# (setq-default eglot-workspace-configuration
+#               ;; Turn on a bunch of stuff despite patchy Eglot support.
+#               `((:gopls . ((usePlaceholders . t)
+#                            (hoverKind ."FullDocumentation")
+#                            (linksInHover . t)
+#                            ;; TODO move hacks to monorepo .dir-locals
+#                            ;; (deepCompletion . :json-false);; does this do anything?
+#                            (buildFlags . ,["-tags=integration e2e smoke"])
+#                            (directoryFilters . ,["-_bazel_out"
+#                                                 "-_bazel_bin"
+#                                                 "-_bazel_testlogs"
+#                                                 "-_bazel_infrastructure"
+#                                                 "-bazel-out"
+#                                                 "-bazel-bin"
+#                                                 "-bazel-testlogs"
+#                                                 "-bazel-infrastructure"
+#                                                 "-tools"])
+#                            ;; (allExperiments . t)
+#                            (experimentalWorkspaceModule . t)
+#                            ;; (allowModfileModifications . t)
+#                            (staticcheck . t)
+#                            (local . ,mb/device-local-gopackage)
+#                            (gofumpt . t)
+#                            (analyses . ((nilness . t)
+#                                         (fieldalignment . t)
+#                                         (shadow . t)
+#                                         (unusedparams . t)
+#                                         (unusedwrite . t)))
+#                            (matcher . "Fuzzy")))))
+
+# ;; (setq-default eglot-workspace-configuration
+# ;;               '((:gopls . ((gofumpt . t)))))
+
+# ;; (setq-default eglot-workspace-configuration
+# ;;               '((:gopls .
+# ;;                  ((staticcheck . t)
+# ;;                   (gofumpt . t)))))
+
+# ;; (hoverKind ."FullDocumentation")
+# ;; (usePlaceholders . t)
+
+#+begin_src elisp
+;; (defun project- find-go-module (dir)
+;;   (when-let ((root (locate-dominating-file dir "go.mod")))
+;;     (cons 'go-module root)))
+
+;; (cl-defmethod project-root ((project (head go-module)))
+;;   (cdr project))
+
+;; (add-hook 'project-find-functions #'project-find-go-module)
+#+end_src
 *** DAP
 #+begin_src elisp
 ;; (setq godoc-at-point-function 'godoc-gogetdoc)
@@ -1187,6 +1310,37 @@ Locate the preferred language server.
 (after! lsp-python-ms
   (setq lsp-python-ms-executable (executable-find "python-language-server"))
   (set-lsp-priority! 'mspyls 1))
+#+end_src
+** flycheck
+#+begin_src elisp
+;; ]e [e next and previous error respectively.
+(map! (:after flycheck
+       :m "]e" 'flycheck-next-error
+       :m "[e" 'flycheck-previous-error))
+
+;; TEMP Hack
+;; (setq flycheck-golangci-lint-executable "/Users/mbaillie/.local/share/go/bin/golangci-lint")
+(setq flycheck-disabled-checkers '(go-gofmt
+                                   golangci-lint ;; temp
+                                   go-golint
+                                   go-vet
+                                   go-build
+                                   go-test
+                                   go-staticcheck
+                                   go-errcheck))
+#+end_src
+
+#+begin_src elisp
+(flycheck-define-checker vale
+  "A checker for prose"
+  :command ("vale" "--output" "line"
+            source)
+  :standard-input nil
+  :error-patterns
+  ((error line-start (file-name) ":" line ":" column ":" (id (one-or-more (not (any ":")))) ":" (message) line-end))
+  :modes (markdown-mode gfm-mode org-mode text-mode)
+  )
+(add-to-list 'flycheck-checkers 'vale 'append)
 #+end_src
 
 ** nyanmode
@@ -1222,7 +1376,6 @@ Dired coloured icons.
 (setq avy-timeout-seconds 0.35)
 #+end_src
 ** magit
-
 *** Avatars
 #+begin_src elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
@@ -1234,7 +1387,10 @@ Automatically add a git signoff line based on discovered environmental identity.
 (defun mb/auto-git-commit-signoff ()
   "Automatically add a git signoff line based on environmental identity"
   (beginning-of-buffer)
-  (unless (word-search-forward "Signed-off-by" nil t)
+  (unless
+      (or ;; Unless we're in a work repo or there's already a signoff line.
+       (string-match-p (regexp-quote "/work/") default-directory)
+       (word-search-forward "Signed-off-by" nil t))
     (apply #'git-commit-signoff (git-commit-self-ident))))
 (add-hook! 'git-commit-mode-hook #'mb/auto-git-commit-signoff)
 #+end_src
@@ -1254,6 +1410,10 @@ Automatically add a git signoff line based on discovered environmental identity.
   (magit-commit-create (list "-m" msg))
   (magit-push-current-to-pushremote nil))
 #+end_src
+*** TODOs
+#+begin_src elisp
+(use-package magit-org-todos :config (magit-org-todos-autoinsert))
+#+end_src
 
 *** Status buffer
 #+begin_src elisp
@@ -1263,11 +1423,19 @@ Automatically add a git signoff line based on discovered environmental identity.
                                                     (unpushed . show)))
 ;; No motion training on status buffers.
 (add-hook 'magit-status-mode-hook (lambda () (evil-motion-trainer-mode -1)))
+(add-hook 'forge-topic-mode-hook (lambda () (evil-motion-trainer-mode -1)))
 #+end_src
 *** Remove confirmation of a few things
 #+begin_src elisp
-(add-to-list 'magit-no-confirm 'stage-all-changes)
-(add-to-list 'magit-no-confirm 'unstage-all-changes)
+(after! magit
+  (add-to-list 'magit-no-confirm 'stage-all-changes)
+  (add-to-list 'magit-no-confirm 'unstage-all-changes))
+#+end_src
+*** Forge
+#+begin_src elisp
+;; Workaround for massive monrepos with huge GH issues
+;; https://github.com/magit/ghub/issues/81
+(setq ghub-use-workaround-for-emacs-bug 'force)
 #+end_src
 ** yaml
 Get the YAML language server to validate Kubernetes resources.
@@ -1288,18 +1456,40 @@ Get the YAML language server to validate Kubernetes resources.
          lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+end_src
+** bazel
+#+begin_src elisp
+(add-to-list 'projectile-globally-ignored-directories "bazel-*")
+(use-package! bazel
+  :config
+  (setq bazel-buildifier-before-save t))
+#+end_src
 
 ** terraform
 Enable LSP for Terraform.
 #+begin_src elisp
-(after! lsp-mode
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-lsp" "serve"))
-                    :major-modes '(terraform-mode)
-                    :server-id 'terraform-lsp))
-  )
-(add-hook 'terraform-mode-hook #'lsp-deferred)
+;; (use-package! terraform-mode
+;;   :hook
+;;   (terraform-mode . (lambda ()
+;;                       (add-to-list
+;;                        'eglot-server-programs '(terraform-mode "terraform-lsp")
+;;                        (eglot-ensure)))))
+(setq lsp-disabled-clients '(tfls)
+      lsp-terraform-ls-enable-show-reference t
+      lsp-semantic-tokens-enable t
+      lsp-semantic-tokens-honor-refresh-requests t)
+;; (after! lsp-mode
+;;   (lsp-register-client
+;;    (make-lsp-client :new-connection (lsp-stdio-connection '("terraform-lsp" "serve"))
+;;                     :major-modes '(terraform-mode)
+;;                     :server-id 'terraform-lsp))
+;;   )
+;; (add-hook 'terraform-mode-hook #'lsp-deferred)
 #+end_src
+** ox-clip
+Use =M-x ox-clip-formatted-copy=
+#+BEGIN_SRC emacs-lisp
+(setq ox-clip-osx-cmd "hexdump -ve '1/1 \"%.2x\"' | xargs printf \"set the clipboard to {text:\\\" \\\", «class HTML»:«data HTML%s»}\" | osascript -")
+#+END_SRC
 
 ** pinentry
 *** Use Emacs pinentry on Linux
@@ -1394,7 +1584,9 @@ Add evil movements to buffer moves.
 ** buffer-expose
 *** Disable scaling
 #+begin_src elisp
-(setq-default buffer-expose-rescale-factor 1)
+(use-package! buffer-expose
+  :config
+  (setq-default buffer-expose-rescale-factor 1.0))
 #+end_src
 
 *** Workspace expose functions
@@ -1414,8 +1606,10 @@ show per page, which defaults to
   (interactive "P")
   (buffer-expose-show-buffers
    (projectile-project-buffers) max nil
-   (lambda (buffer)
-     (string-prefix-p "vterm: " (buffer-name buffer)))))
+   (lambda (buf)
+     (eq (buffer-local-value 'major-mode buf)
+         'vterm-mode))))
+     ;; (string-prefix-p "vterm: " (buffer-name buffer)))))
 #+end_src
 
 *** Keys
@@ -1428,6 +1622,24 @@ Add evil movements to expose view.
 ;;   :vgni "k" 'buffer-expose-up-window
 ;;   :vgni "j" 'buffer-expose-down-window
 ;;   :vgni "l" 'buffer-expose-right-window))
+  (general-define-key
+   :keymaps '(buffer-expose-grid-map)
+   "h" 'buffer-expose-left-window
+   "l" 'buffer-expose-right-window
+   "k" 'buffer-expose-up-window
+   "j" 'buffer-expose-down-window
+   "C-h" 'buffer-expose-left-window
+   "C-l" 'buffer-expose-right-window
+   "C-k" 'buffer-expose-up-window
+   "C-j" 'buffer-expose-down-window
+   "^" 'buffer-expose-first-window-in-row
+   "$" 'buffer-expose-last-window-in-row
+   "G" 'buffer-expose-last-window
+   "<escape>" 'buffer-expose-reset
+   "SPC" 'buffer-expose-ace-window
+   "]" 'buffer-expose-next-page
+   "[" 'buffer-expose-prev-page
+   "d" 'buffer-expose-kill-buffer)
 #+end_src
 
 Add expose functions to buffer commands.
@@ -1570,6 +1782,7 @@ this enabled in most text mode.
 #+begin_src elisp
 ;; TODO is there a more standard way to trigger LSP?
 (add-hook! 'nix-mode-hook #'lsp!)
+(add-hook! 'nix-mode-hook 'nixpkgs-fmt-on-save-mode)
 #+end_src
 
 ** vterm
@@ -1709,10 +1922,16 @@ Display line numbers in copy mode.
 *** Keys
 Miscellaneous vterm bindings.
 #+begin_src elisp
+(defun mb/vterm-right-here ()
+    (interactive)
+  (let ((current-prefix-arg '-))
+    (call-interactively '+vterm/here)))
+
 (map!
- ;; Pop new vterms.
- :vgni "s-;" #'+vterm/here
- :vgni "H-s-;" #'+vterm/here
+ ;; Pop and find vterms.
+ :vgni "s-;" #'mb/vterm-right-here
+ :vgni "H-s-;" #'mb/vterm-right-here
+ :vgni "s-'" #'buffer-workspace-vterm-expose
 
  (:map vterm-mode-map
 

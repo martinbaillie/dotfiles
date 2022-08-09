@@ -15,10 +15,19 @@ let
         if result is not {} then perform action "AXRaise" of item 1 of result
     end tell' &> /dev/null || exit 0'';
 
+  valeStyles = [
+    { name = "alex"; path = "${inputs.vale-alex}/alex"; }
+    { name = "Google"; path = "${inputs.vale-Google}/Google"; }
+    { name = "Microsoft"; path = "${inputs.vale-Microsoft}/Microsoft"; }
+    { name = "Joblint"; path = "${inputs.vale-Joblint}/Joblint"; }
+    { name = "proselint"; path = "${inputs.vale-proselint}/proselint"; }
+    { name = "write-good"; path = "${inputs.vale-write-good}/write-good"; }
+  ];
+
   # My Emacs and all its needs and wants.
   emacsWithDeps = with pkgs;
     [
-      ((emacsPackagesNgGen cfg.package).emacsWithPackages (epkgs:
+      ((emacsPackagesFor cfg.package).emacsWithPackages (epkgs:
         with epkgs;
         # Use Nix to manage packages with non-trivial userspace dependencies.
         [
@@ -53,6 +62,7 @@ let
       languagetool
       # pandoc
       # (hiPrio clang)
+      vale
     ]
     ++ optional config.currentSystem.isDarwin my.orgprotocolclient
     ++ optional config.currentSystem.isLinux wkhtmltopdf;
@@ -77,6 +87,18 @@ in
 
       home.configFile."zsh/rc.d/rc.emacs.zsh".source = "${configDir}/rc.zsh";
 
+      home.file.".vale.ini".text =
+        let
+          stylesPath = pkgs.linkFarm "vale-styles" valeStyles;
+          basedOnStyles = concatStringsSep ", "
+            (zipAttrsWithNames [ "name" ] (_: v: v) valeStyles).name;
+        in
+        ''
+          StylesPath = ${stylesPath}
+          [*]
+          BasedOnStyles = ${basedOnStyles}
+        '';
+
       fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
     }
     (mkIf config.currentSystem.isDarwin {
@@ -98,7 +120,8 @@ in
               mkdir -p $out/bin
               cp pngpaste $out/bin/
             '';
-          }; in
+          };
+        in
         [ pngpaste ];
     })
     (mkIf config.currentSystem.isLinux {
@@ -116,13 +139,15 @@ in
       home = {
         dataFile."applications/emacsclient.desktop".text = ''
           [Desktop Entry]
-          Categories=Development;TextEditor;
-          Exec=emacs.bash --no-wait %F
-          GenericName=Text Editor
+          Categories=Development;
+          TextEditor;
+          Exec = emacs.bash - -no-wait %F
+            GenericName=Text Editor
           Icon=emacs
-          Keywords=Text;Editor;
-          Name=Emacs
-          StartupWMClass=Emacs
+          Keywords=Text;
+          Editor;
+          Name = Emacs
+            StartupWMClass=Emacs
           Terminal=false
           Type=Application
         '';

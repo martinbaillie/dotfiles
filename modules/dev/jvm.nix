@@ -8,14 +8,24 @@ in
     bazel.enable = my.mkBoolOpt false;
   };
 
-  config = mkIf
-    (
-      cfg.enable
-      ||
-      # I'm not using the JVM for anything else at the moment.
-      cfg.bazel.enable
-    )
-    {
-      user.packages = optional cfg.bazel.enable pkgs.bazel_4;
-    };
+  config = mkMerge [
+    ((mkIf cfg.enable) {
+      user.packages = with pkgs; optionals cfg.bazel.enable
+        [ bazel_5 buildifier ];
+    })
+    ((mkIf cfg.bazel.enable) {
+      home.file.".bazelrc".text = ''
+        # Stop confusing `gopls` workspaces.
+        # build --symlink_prefix=_bazel_
+        # test  --symlink_prefix=_bazel_
+
+        # Also suppress the generation of the bazel-out symlink which always
+        # appears no  matter what you set --symlink_prefix to.
+        # build --experimental_no_product_name_out_symlink
+
+        # LocalStack Pro API key passing.
+        test --test_env=LOCALSTACK_API_KEY
+      '';
+    })
+  ];
 }

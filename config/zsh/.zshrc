@@ -58,9 +58,6 @@ setopt clobber
 # Allow comments on the command line.
 setopt interactivecomments
 
-# Add to HISTFILE incrementally rather than when the current shell exits.
-setopt incappendhistory
-
 # Remove superfluous blanks before adding to history.
 setopt histreduceblanks
 

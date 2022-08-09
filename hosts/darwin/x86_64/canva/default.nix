@@ -1,8 +1,8 @@
-# MacBook Pro (13-inch, M1, 2020) 16GB Apple M1.
+# MacBook Pro (16-inch, Intel, 2019) 64GB 8-core i9
 { pkgs, ... }: {
   nix = rec {
     # $ sysctl -n hw.ncpu
-    buildCores = 8;
+    buildCores = 16;
     maxJobs = buildCores;
   };
 
@@ -19,32 +19,49 @@
       emacs = {
         enable = true;
         package = pkgs.emacsGitNativeComp;
+        # pkgs.emacsGitNativeComp.overrideAttrs
+        #   (_: {
+        #     # Process background thread patch.
+        #     src = pkgs.fetchgit {
+        #       url = "https://github.com/tyler-dodge/emacs.git";
+        #       rev = "b386047f311af495963ad6a25ddda128acc1d461";
+        #       sha256 = "t7r+6C05Amx5XV75H9Y7xt1iCX6g4YVwhc1q+33Glsw=";
+        #     };
+        #   });
       };
 
       vim.enable = true;
     };
 
-    services = {
-      cachix.enable = true;
-      docker.enable = true;
-    };
-
     dev = {
       enable = true;
-      go.enable = true;
       frontend.enable = true;
+      go.enable = true;
       javascript = {
         enable = true;
         typescript.enable = true;
       };
+      protobuf = {
+        enable = true;
+        grpc.enable = true;
+      };
+      jvm = {
+        enable = true;
+        bazel.enable = true;
+      };
       python.enable = true;
-      rust.enable = true;
     };
 
     ops = {
       enable = true;
       aws.enable = true;
       kubernetes.enable = true;
+    };
+
+    services = {
+      cachix.enable = true;
+      dropbox.enable = true;
+      docker.enable = true;
     };
 
     shell = {
@@ -63,14 +80,8 @@
           tridactyl = true;
         };
       };
-      slack.enable = true;
-      zoom.enable = true;
     };
   };
 
-  homebrew.casks = [
-    # "blackhole-16ch" # Zero latency audio mux (https://git.io/JVQ4B).
-    "drawio" # Pretty boxes and lines.
-    "licecap" # Screen recordings to GIF (supports arm64).
-  ];
+  homebrew.casks = [ "vlc" "gimp" "nosql-workbench" "drawio" ];
 }

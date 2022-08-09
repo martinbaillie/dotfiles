@@ -3,6 +3,7 @@
 *.*~
 \#*
 .\#*
+.projectile
 
 # Vim
 *.swp
@@ -51,3 +52,11 @@ Thumbs.db
 .cache
 .pid
 .sock
+
+# Bazel symlinks
+bazel-*
+_bazel*
+
+# Project-local notes and todos
+notes.org
+todo.org

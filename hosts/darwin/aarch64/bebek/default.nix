@@ -18,7 +18,7 @@
 
       emacs = {
         enable = true;
-        package = pkgs.emacsGcc;
+        package = pkgs.emacsGitNativeComp;
       };
 
       vim.enable = true;
