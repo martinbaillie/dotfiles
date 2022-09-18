@@ -153,7 +153,7 @@ Various forks and packages of my own.
   (setq
    ;; TODO: Export
    doom-font                     (font-spec :family "Iosevka" :size 14.5 :weight 'medium)
-   doom-big-font                 (font-spec :family "Iosevka Term" :size 22)
+   doom-big-font                 (font-spec :family "Iosevka Term" :size 20)
    doom-variable-pitch-font      (font-spec :family "Iosevka Aile" :size 15)
    doom-serif-font               (font-spec :family "Iosevka Etoile" :size 15)))
 (setq +zen-text-scale 0.8)
@@ -1094,6 +1094,13 @@ Evil is a little too like Vim. Make it better.
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+end_src
+*** Alternate switch project actions
+#+begin_src elisp
+;; Dired
+;; (setq +workspaces-switch-project-function (lambda (dir) (dired dir)))
+;; Magit
+;; (setq +workspaces-switch-project-function #'projectile-vc)
+#+end_src
 
 ** direnv
 Silence annoying popup
@@ -1338,9 +1345,8 @@ Locate the preferred language server.
   :standard-input nil
   :error-patterns
   ((error line-start (file-name) ":" line ":" column ":" (id (one-or-more (not (any ":")))) ":" (message) line-end))
-  :modes (markdown-mode gfm-mode org-mode text-mode)
-  )
-(add-to-list 'flycheck-checkers 'vale 'append)
+  :modes (markdown-mode gfm-mode org-mode text-mode))
+;; (add-to-list 'flycheck-checkers 'vale 'append)
 #+end_src
 
 ** nyanmode
@@ -1731,6 +1737,7 @@ this enabled in most text mode.
 
 ** undo-tree
 #+begin_src elisp
+(setq undo-tree-enable-undo-in-region t)
 (after! undo-tree (add-hook! 'evil-local-mode-hook 'turn-on-undo-tree-mode))
 #+end_src
 

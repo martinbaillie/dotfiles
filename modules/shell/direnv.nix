@@ -13,5 +13,6 @@ in
 
     modules.shell.zsh.rc = ''eval "$(direnv hook zsh)"'';
     env.DIRENV_WARN_TIMEOUT = "30s";
+    env.DIRENV_LOG_FORMAT = "";
   };
 }

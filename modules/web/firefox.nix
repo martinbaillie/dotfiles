@@ -49,10 +49,10 @@ in
                 # Smaller tab widths.
                 "browser.tabs.tabMinWidth" = 50;
                 # Search.
-                "browser.urlbar.placeholderName" = "DuckDuckGo";
-                "browser.urlbar.placeholderName.private" = "DuckDuckGo";
-                "browser.search.defaultenginename" = "DuckDuckGo";
-                "browser.search.selectedEngine" = "DuckDuckGo";
+                "browser.urlbar.placeholderName" = "Kagi";
+                "browser.urlbar.placeholderName.private" = "Kagi";
+                "browser.search.defaultenginename" = "Kagi";
+                "browser.search.selectedEngine" = "Kagi";
                 # Locale.
                 "browser.search.region" = "AU";
                 # Allow custom styling.
@@ -86,6 +86,7 @@ in
               host = "${config.secrets.work_vcs_host}";
               path = "${config.secrets.work_vcs_path}";
               jira = "${config.secrets.work_jira}";
+              sourcegraph = "${config.secrets.work_sourcegraph}";
             in
             builtins.readFile "${configDir}/tridactylrc" + ''
               " Set a custom colour theme.
@@ -93,6 +94,7 @@ in
 
               " Search work VCS.
               set searchurls.w https://${host}/search?q=org%3A${path}+%s
+              set searchurls.wsg https://${sourcegraph}/search?q=%s
 
               " Search work JIRA.
               set searchurls.j https://${jira}.atlassian.net/browse/%s
