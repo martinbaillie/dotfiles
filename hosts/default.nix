@@ -21,8 +21,10 @@ with lib; {
     in
     {
       # My trusted binary caches.
-      binaryCaches = map (x: x.url) all;
-      binaryCachePublicKeys = map (x: x.key) all;
+      settings = {
+        substituters = map (x: x.url) all;
+        trusted-public-keys = map (x: x.key) all;
+      };
 
       extraOptions = ''
         # Control binary cache connections.
@@ -63,7 +65,7 @@ with lib; {
       XDG_BIN_HOME = "$HOME/.local/bin";
       XDG_DESKTOP_DIR = "$HOME"; # prevent creation of ~/Desktop
       XDG_RUNTIME_DIR =
-        if config.currentSystem.isLinux then
+        if config.targetSystem.isLinux then
           "/run/user/$UID"
         else
           "$XDG_DATA_HOME";

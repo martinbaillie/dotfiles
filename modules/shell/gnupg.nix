@@ -34,7 +34,7 @@ in
       user.packages = [ pkgs.gnupg ];
     }
 
-    (mkIf config.currentSystem.isLinux {
+    (mkIf config.targetSystem.isLinux {
       # home = {
       #   services.gpg-agent = {
       #     enable = true;

@@ -6,6 +6,7 @@ let
 
   modules = import ./modules.nix {
     inherit lib;
+    inherit pkgs;
     self.attrs = import ./attrs.nix {
       inherit lib;
       self = { };

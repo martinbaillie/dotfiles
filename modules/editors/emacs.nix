@@ -55,7 +55,7 @@ let
         else
           ${cfg.package}/bin/emacsclient --quiet "$@"
         fi
-      '' + optionalString config.currentSystem.isDarwin osascript))
+      '' + optionalString config.targetSystem.isDarwin osascript))
 
       discount
       editorconfig-core-c
@@ -64,8 +64,8 @@ let
       # (hiPrio clang)
       vale
     ]
-    ++ optional config.currentSystem.isDarwin my.orgprotocolclient
-    ++ optional config.currentSystem.isLinux wkhtmltopdf;
+    ++ optional config.targetSystem.isDarwin my.orgprotocolclient
+    ++ optional config.targetSystem.isLinux wkhtmltopdf;
 in
 {
   options.modules.editors.emacs = {
@@ -101,7 +101,7 @@ in
 
       fonts.fonts = [ pkgs.emacs-all-the-icons-fonts ];
     }
-    (mkIf config.currentSystem.isDarwin {
+    (mkIf config.targetSystem.isDarwin {
       environment.systemPackages = emacsWithDeps;
 
       user.packages =
@@ -124,7 +124,7 @@ in
         in
         [ pngpaste ];
     })
-    (mkIf config.currentSystem.isLinux {
+    (mkIf config.targetSystem.isLinux {
       user.packages = emacsWithDeps ++ [
         (pkgs.makeDesktopItem {
           name = "org-protocol";

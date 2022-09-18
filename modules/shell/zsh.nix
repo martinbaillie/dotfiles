@@ -3,7 +3,6 @@ with lib;
 let
   cfg = config.modules.shell.zsh;
   configDir = "${config.dotfiles.configDir}/zsh";
-  inherit (systems.elaborate { system = builtins.currentSystem; }) isLinux;
 in
 {
   options.modules.shell.zsh = with my;
@@ -90,7 +89,7 @@ in
           };
         };
       }
-      (if isLinux then {
+      (if stdenv.targetPlatform.isLinux then {
         # Linux specific.
         users.defaultUserShell = zsh;
         programs.zsh.enableGlobalCompInit = false;

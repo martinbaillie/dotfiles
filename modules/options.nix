@@ -1,4 +1,4 @@
-{ config, options, lib, home-manager, ... }:
+{ config, options, lib, home-manager, pkgs, ... }:
 let inherit (lib.my) mkOpt mkOpt' mkSecret;
 in
 with lib; {
@@ -54,6 +54,7 @@ with lib; {
       work_vcs_path = mkSecret "$WORK VCS path" "";
       work_email = mkSecret "$WORK email" "";
       work_jira = mkSecret "$WORK JIRA instance" "";
+      work_sourcegraph = mkSecret "$WORK Sourcegraph instance" "";
       protonvpn_username = mkSecret "ProtonVPN OpenVPN username" "";
       protonvpn_password = mkSecret "ProtonVPN OpenVPN password" "";
       openweathermap_api_key = mkSecret "OpenWeatherMap key" "";
@@ -66,9 +67,9 @@ with lib; {
     };
 
     # Elaborate the current system for convenience elsewhere.
-    currentSystem =
-      mkOpt' attrs (systems.elaborate { system = builtins.currentSystem; })
-        "Elaborated description of the current system";
+    targetSystem =
+      mkOpt' attrs (systems.elaborate { system = pkgs.stdenv.targetPlatform.system; })
+        "Elaborated description of the target system";
   };
 
   config = {
@@ -80,22 +81,25 @@ with lib; {
       {
         inherit name;
         description = "Martin Baillie";
-      } // optionalAttrs config.currentSystem.isLinux {
+      } // optionalAttrs config.targetSystem.isLinux {
         uid = 1000;
         extraGroups = [ "wheel" ];
         group = "users";
         home = "/home/${name}";
         isNormalUser = true;
       }
-      // optionalAttrs config.currentSystem.isDarwin { home = "/Users/${name}"; };
+      // optionalAttrs config.targetSystem.isDarwin { home = "/Users/${name}"; };
 
     users.users.${config.user.name} = mkAliasDefinitions options.user;
     nix =
       let users = [ "root" config.user.name ];
       in
       {
-        trustedUsers = users;
-        allowedUsers = users;
+        settings =
+          {
+            trusted-users = users;
+            allowed-users = users;
+          };
       };
 
     home-manager = {
@@ -117,7 +121,7 @@ with lib; {
           enable = true;
           configFile = mkAliasDefinitions options.home.configFile;
           dataFile = mkAliasDefinitions options.home.dataFile;
-        } // optionalAttrs config.currentSystem.isLinux {
+        } // optionalAttrs config.targetSystem.isLinux {
           mime.enable = true;
           mimeApps = {
             enable = true;

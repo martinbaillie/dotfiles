@@ -58,7 +58,7 @@ in
         # unstable.wireshark
 
         (aspellWithDicts (d: with d; [ en en-computers en-science ]))
-      ] ++ (if config.currentSystem.isLinux then
+      ] ++ (if config.targetSystem.isLinux then
       # Exclusive to Linux.
         [
           psmisc

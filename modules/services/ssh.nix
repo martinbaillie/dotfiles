@@ -13,7 +13,7 @@ in
         enable = true;
         startWhenNeeded = true;
         forwardX11 = true;
-        challengeResponseAuthentication = false;
+        kbdInteractiveAuthentication = false;
         passwordAuthentication = false;
         permitRootLogin = "no";
       };

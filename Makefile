@@ -72,10 +72,12 @@ endif
 # Deploy targets.
 deploy-zuul: ; deploy '$(WORKDIR)#zuul' $(DEPLOY_FLAGS) -- $(FLAGS)
 .PHONY: deploy-zuul
+deploy-naptime: ; deploy '$(WORKDIR)#naptime' $(DEPLOY_FLAGS) -- $(FLAGS)
+.PHONY: deploy-naptime
 
 # Emacs configuration.
 $(XDG_CONFIG_HOME)/emacs:
-	git clone https://github.com/hlissner/doom-emacs $@
+	git clone --depth 1 https://github.com/doomemacs/doomemacs $@
 # Sadly not everything in the Emacs world is supporting XDG yet.
 	ln -sf $@ $(HOME)/.emacs.d
 $(XDG_CONFIG_HOME)/doom: ; ln -sf $(WORKDIR)/config/emacs $@

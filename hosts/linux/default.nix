@@ -15,7 +15,7 @@ with lib.my; {
 
   nix = {
     # Automatically detects files in the store that have identical contents.
-    autoOptimiseStore = true;
+    settings.auto-optimise-store = true;
 
     gc = {
       # Automatically run the Nix garbage collector daily.

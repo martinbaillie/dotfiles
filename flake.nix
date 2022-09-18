@@ -139,8 +139,9 @@
           fastConnection = true;
           profiles = {
             system = {
+              # ???
               path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
-                self.nixosConfigurations.zuul;
+                self.nixosConfigurations.naptime;
               user = "root";
             };
           };
