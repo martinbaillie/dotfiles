@@ -40,7 +40,10 @@ with darwin.lib; {
           inherit specialArgs;
           modules = [
             ({ config, pkgs, ... }: {
-              imports = [ inputs.home-manager.nixosModules.home-manager ];
+              imports = [
+                inputs.home-manager.nixosModules.home-manager
+                inputs.bad-hosts.nixosModule
+              ];
             })
           ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
         }
@@ -49,7 +52,9 @@ with darwin.lib; {
         inherit specialArgs system;
         modules = [
           ({ config, pkgs, ... }: {
-            imports = [ inputs.home-manager.darwinModules.home-manager ];
+            imports = [
+              inputs.home-manager.darwinModules.home-manager
+            ];
           })
         ] ++ commonModules;
       };

@@ -55,6 +55,8 @@ with lib; {
       work_email = mkSecret "$WORK email" "";
       work_jira = mkSecret "$WORK JIRA instance" "";
       work_sourcegraph = mkSecret "$WORK Sourcegraph instance" "";
+      exetel_username = mkSecret "Exetel username" "";
+      exetel_password = mkSecret "Exetel password" "";
       protonvpn_username = mkSecret "ProtonVPN OpenVPN username" "";
       protonvpn_password = mkSecret "ProtonVPN OpenVPN password" "";
       openweathermap_api_key = mkSecret "OpenWeatherMap key" "";

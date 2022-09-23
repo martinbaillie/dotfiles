@@ -37,7 +37,7 @@ NIX_REBUILD		+=.\#darwinConfigurations.$(HOSTNAME).system
 NIX_REBUILD		+=&&
 NIX_REBUILD		+=./result/sw/bin/darwin-rebuild $(FLAGS)
 else
-NIX_REBUILD 	:=sudo -E nixos-rebuild $(NIX_FLAGS) $(FLAGS)
+NIX_REBUILD 	:=sudo -E nixos-rebuild $(FLAGS)
 endif
 NIX_REBUILD 	+=--flake .\#$(HOSTNAME)
 
@@ -70,7 +70,9 @@ endif
 .PHONY:	gc
 
 # Deploy targets.
-deploy-zuul: ; deploy '$(WORKDIR)#zuul' $(DEPLOY_FLAGS) -- $(FLAGS)
+# TODO: Tidy up.
+# deploy-zuul: ; deploy '$(WORKDIR)#zuul' $(DEPLOY_FLAGS) -- $(FLAGS)
+deploy-zuul: ; sudo nixos-rebuild switch --flake '.#zuul' --target-host mbaillie@zuul --build-host localhost --impure
 .PHONY: deploy-zuul
 deploy-naptime: ; deploy '$(WORKDIR)#naptime' $(DEPLOY_FLAGS) -- $(FLAGS)
 .PHONY: deploy-naptime

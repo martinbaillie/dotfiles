@@ -25,7 +25,11 @@
       default = "emacs";
     };
 
-    dev = { enable = true; };
+    dev = {
+      enable = true;
+      python.enable = true;
+      go.enable = true;
+    };
 
     services = {
       cachix.enable = true;
@@ -150,10 +154,18 @@
   programs.light.enable = true;
 
   # Networking.
-  networking.wireless = {
-    enable = true;
-    interfaces = [ "wlp5s0" ];
+  networking = {
+    wireless = {
+      enable = true;
+      interfaces = [ "wlp5s0" ];
+    };
+
+    firewall = {
+      enable = true;
+      allowPing = true;
+    };
   };
+
   systemd.services.systemd-udev-settle.enable = false;
 
   # TODO: Do I really need this still?
@@ -182,7 +194,7 @@
   # DBus.
   programs.dconf.enable = true;
   services = {
-    dbus.packages = with pkgs; [ gnome3.dconf ];
+    dbus.packages = with pkgs; [ dconf ];
 
     # DBus service that allows applications to update firmware.
     fwupd.enable = true;

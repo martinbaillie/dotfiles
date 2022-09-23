@@ -8,18 +8,19 @@
     nixpkgs-unstable.url = "nixpkgs/master";
 
     # Declarative, NixOS-style configuration but for macOS.
-    darwin.url = "github:lnl7/nix-darwin/master";
+    darwin.url = github:lnl7/nix-darwin/master;
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     # Declarative user home management.
-    home-manager.url = "github:rycee/home-manager/master";
+    home-manager.url = github:rycee/home-manager/master;
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Miscellaneous overlays.
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    # Block adservers, fake news etc.
+    bad-hosts.url = github:StevenBlack/hosts;
+    bad-hosts.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Hardware definitions.
-    nixos-hardware.url = "github:nixos/nixos-hardware";
+    # Emacs overlay.
+    emacs-overlay.url = github:nix-community/emacs-overlay;
 
     # Remote deploys.
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -37,6 +38,9 @@
     vale-proselint.url = "github:errata-ai/proselint";
     vale-write-good.flake = false;
     vale-write-good.url = "github:errata-ai/write-good";
+
+    # NixOS hardware definitions.
+    nixos-hardware.url = github:nixos/nixos-hardware;
   };
 
   # NOTE: Flake interface found at:
@@ -46,8 +50,9 @@
     , nixpkgs
     , nixpkgs-unstable
     , darwin
-    , deploy-rs
+    , bad-hosts
     , emacs-overlay
+    , deploy-rs
     , ...
     }:
     let

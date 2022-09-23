@@ -74,7 +74,7 @@ in
           user = config.user.name;
         };
 
-        sessionCommands = "${pkgs.xlibs.xset}/bin/xset r rate 190 50";
+        sessionCommands = "${pkgs.xorg.xset}/bin/xset r rate 190 50";
       };
     };
 
@@ -87,7 +87,7 @@ in
         enable = true;
         fade = true;
         fadeDelta = 1;
-        fadeSteps = [ (toString 1.0e-2) (toString 1.2e-2) ];
+        fadeSteps = [ 1.0e-2 1.2e-2 ];
       };
 
       # Screenshotting.
