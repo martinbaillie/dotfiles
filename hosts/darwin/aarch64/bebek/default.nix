@@ -1,9 +1,9 @@
 # MacBook Air (13-inch, M1, 2020) 8GB Apple M1.
 { pkgs, ... }: {
-  nix = rec {
+  nix.settings = rec {
     # $ sysctl -n hw.ncpu
-    buildCores = 8;
-    maxJobs = buildCores;
+    cores = 8;
+    max-jobs = buildCores;
   };
 
   modules = {

@@ -10,17 +10,22 @@
   homebrew = {
     enable = true;
 
-    # Keep things deterministic.
-    autoUpdate = false;
+    onActivation = {
+      # Keep things deterministic.
+      autoUpdate = false;
+
+      # Properly uninstall all things not managed by Nix homebrew.
+      cleanup = "zap";
+
+      # Upgrade during activation.
+      upgrade = false;
+    };
 
     # Use the Brewfile in the Nix store everywhere.
     global = {
       brewfile = true;
-      noLock = true;
+      lockfiles = true;
     };
-
-    # Properly uninstall all things not managed by Nix homebrew.
-    cleanup = "zap";
 
     extraConfig = ''
       cask_args require_sha: true

@@ -6,9 +6,9 @@
   networking.hostName = "parasite";
 
   # Parasite only gets half of what its host has.
-  nix = {
-    maxJobs = 2;
-    buildCores = 2;
+  nix.settings = rec {
+    cores = 2;
+    max-jobs = cores;
   };
 
   # Enable VMWare's guest additions.

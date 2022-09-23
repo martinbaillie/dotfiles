@@ -113,7 +113,7 @@ in
 
           dock = {
             autohide = true;
-            expose-animation-duration = "0.0";
+            expose-animation-duration = 0.0;
             minimize-to-application = true;
             mru-spaces = false;
             orientation = "left";

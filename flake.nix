@@ -133,19 +133,20 @@
         mapConfigurations supportedSystems.linux ./hosts/linux;
 
       # Make NixOS host configurations remotely deployable.
-      deploy.nodes = (builtins.mapAttrs
-        (hostname: attr: {
-          inherit hostname;
-          fastConnection = true;
-          profiles = {
-            system = {
-              # ???
-              path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
-                self.nixosConfigurations.naptime;
-              user = "root";
-            };
-          };
-        })
-        self.nixosConfigurations);
+      # deploy.nodes = (builtins.mapAttrs
+      #   (hostname: attr: {
+      #     inherit hostname;
+      #     fastConnection = true;
+      #     remoteBuild = true;
+      #     profiles = {
+      #       system = {
+      #         # ???
+      #         path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
+      #           self.nixosConfigurations.naptime;
+      #         user = "root";
+      #       };
+      #     };
+      #   })
+      #   self.nixosConfigurations);
     };
 }

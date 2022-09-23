@@ -326,6 +326,12 @@ Use orderless and fallback on flex.
 (after! orderless
   (add-to-list 'completion-styles 'flex t))
 #+end_src
+*** Lookup online
+I really just use the one search engine from Emacs.
+#+begin_src elisp
+(setq +lookup-provider-url-alist
+      '(("Kagi" "https://kagi.com/search?q=%s")))
+#+end_src
 * UI/macOS
 *** Source a clean shell environment
 #+begin_src elisp
@@ -1163,35 +1169,43 @@ Silence annoying popup
 (after! lsp-mode
   (setq
    ;; lsp-go-env (make-hash-table)
-        lsp-file-watch-threshold 4000
-        lsp-enable-file-watchers nil
-        lsp-go-use-gofumpt t
-        lsp-go-goimports-local mb/device-local-gopackage
-        lsp-gopls-hover-kind "FullDocumentation"
-        lsp-go-build-flags ["-tags=integration e2e smoke"]
-        lsp-go-directory-filters ["-_bazel_out"
-                                  "-_bazel_bin"
-                                  "-_bazel_testlogs"
-                                  "-_bazel_infrastructure"
-                                  "-bazel-out"
-                                  "-bazel-bin"
-                                  "-bazel-testlogs"
-                                  "-bazel-infrastructure"
-                                  "-tools"]
-        lsp-go-symbol-matcher "FastFuzzy"
-        lsp-go-analyses '((nilness . t)
-                          (fieldalignment . t)
-                          (shadow . t)
-                          (unusedparams . t)
-                          (unusedwrite . t)
-                          (useany . t)))
+   lsp-file-watch-threshold 4000
+   lsp-enable-file-watchers nil
+   lsp-go-use-gofumpt t
+   lsp-go-goimports-local mb/device-local-gopackage
+   lsp-gopls-hover-kind "FullDocumentation"
+   lsp-go-build-flags ["-tags=integration e2e smoke"]
+   lsp-go-directory-filters ["-_bazel_out"
+                             "-_bazel_bin"
+                             "-_bazel_testlogs"
+                             "-_bazel_infrastructure"
+                             "-bazel-out"
+                             "-bazel-bin"
+                             "-bazel-testlogs"
+                             "-bazel-infrastructure"
+                             "-tools"]
+   lsp-go-symbol-matcher "FastFuzzy"
+   lsp-go-analyses '((nilness . t)
+                     (fieldalignment . t)
+                     (shadow . t)
+                     (unusedparams . t)
+                     (unusedwrite . t)
+                     (useany . t)))
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
      ("gopls.staticcheck" t t)
      ("gopls.completionDocumentation" t t)
      ;; ("gopls.experimentalWorkspaceModule" t t)
      ("gopls.hoverKind" lsp-go-hover-kind)
-     ("gopls.codelenses" lsp-go-codelenses))))
+     ("gopls.codelenses" lsp-go-codelenses)))
+
+  ;; Not sure why =sh-mode= isn't picked up.
+  (lsp-register-client
+   (make-lsp-client :new-connection
+                    (lsp-stdio-connection '("bash-language-server" "start"))
+                    :major-modes '(sh-mode)
+                    :priority -1
+                    :server-id 'bash-ls)))
 
 ;; (defun lsp-mode-go-packages-driver
 ;;       (puthash "GOPACKAGESDRIVER" (concat (projectile-project-root) "/gopackagesdriver.sh") lsp-go-env)
