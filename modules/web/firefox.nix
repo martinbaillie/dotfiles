@@ -119,11 +119,11 @@ in
         };
 
         # Wire up Tridactyl native for NixOS.
-        # file.".mozilla/native-messaging-hosts" = {
-        #   source =
-        #     "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
-        #   recursive = true;
-        # };
+        file.".mozilla/native-messaging-hosts" = {
+          source =
+            "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+          recursive = true;
+        };
       };
     } else {
       # Darwin.

@@ -69,13 +69,10 @@ endif
 	nix-collect-garbage -d
 .PHONY:	gc
 
-# Deploy targets.
-# TODO: Tidy up.
-# deploy-zuul: ; deploy '$(WORKDIR)#zuul' $(DEPLOY_FLAGS) -- $(FLAGS)
+# Remote deploy targets.
 deploy-zuul: ; sudo nixos-rebuild switch --flake '.#zuul' --target-host mbaillie@zuul --build-host localhost --impure
-.PHONY: deploy-zuul
-deploy-naptime: ; deploy '$(WORKDIR)#naptime' $(DEPLOY_FLAGS) -- $(FLAGS)
-.PHONY: deploy-naptime
+deploy-naptime: ; sudo nixos-rebuild switch --flake '.#naptime' --target-host mbaillie@naptime --build-host localhost --impure
+.PHONY: deploy-zuul deploy-naptime
 
 # Emacs configuration.
 $(XDG_CONFIG_HOME)/emacs:

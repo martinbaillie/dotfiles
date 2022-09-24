@@ -3,6 +3,11 @@
 ;; (when (and noninteractive IS-MAC)
 ;;  (add-to-list 'doom-env-whitelist "^SSH_"))
 
+;; https://github.com/doomemacs/doomemacs/issues/6813
+(defadvice! fixed-doom-module-list (fn &rest args)
+  :around #'doom-module-list
+  (nreverse (apply fn args)))
+
 (doom! :input
        :completion
        (company +tng)    ; the ultimate code completion backend
@@ -12,7 +17,6 @@
        doom              ; what makes DOOM look the way it does
        ;; doom-dashboard    ; a nifty splash screen for Emacs
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
-       fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API

@@ -155,18 +155,13 @@
 
   # Networking.
   networking = {
-    wireless = {
-      enable = true;
-      interfaces = [ "wlp5s0" ];
-    };
-
+    networkmanager.enable = true;
     firewall = {
       enable = true;
       allowPing = true;
     };
   };
-
-  systemd.services.systemd-udev-settle.enable = false;
+  user.extraGroups = [ "networkmanager" ];
 
   # TODO: Do I really need this still?
   # Fan controller for IBM/Lenovo ThinkPads.

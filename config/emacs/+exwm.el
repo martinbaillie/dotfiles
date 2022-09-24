@@ -87,12 +87,12 @@
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
 (defun mb/buffer-with-suffix (suffix)
-  "Locates the buffer matching the suffix"
+  "Locates the buffer matching the suffix."
   (cl-find-if (lambda (buffer)
                 (string-suffix-p suffix (buffer-name buffer))) (buffer-list)))
 
 (defun mb/split-with-browser ()
-  "Raises the browser side-by-side with current window"
+  "Raises the browser side-by-side with current window."
   (interactive)
   (delete-other-windows)
   (set-window-buffer (split-window-horizontally) (mb/buffer-with-suffix "Firefox")))
@@ -144,7 +144,7 @@
   (add-hook 'exwm-update-title-hook
             (lambda ()
               (pcase exwm-class-name
-                ("Firefox" (progn
+                ("firefox" (progn
                              (exwm-workspace-rename-buffer (format "%s" exwm-title))
                              (mb/update-polybar-exwm))))))
 
@@ -236,7 +236,7 @@
   (add-hook 'exwm-manage-finish-hook
             (lambda ()
               (when (and exwm-class-name
-                         (string= exwm-class-name "Firefox"))
+                         (string= exwm-class-name "firefox"))
                 (exwm-input-set-local-simulation-keys
                  `(,@exwm-input-simulation-keys
                    ;; Allow Emacs double C-c|w chord to send a C-c|w in Firefox.
@@ -343,8 +343,7 @@
          (size (assoc 'mm-size attrs))
          (sizex (cadr size))
          (res (cdr (assoc 'geometry attrs)))
-         (resx (- (caddr res) (car res)))
-         dpi)
+         (resx (- (caddr res) (car res))))
     (catch 'exit
       ;; in terminal
       (unless sizex
