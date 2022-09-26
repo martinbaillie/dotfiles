@@ -2,11 +2,13 @@
 ;;  (add-to-list 'doom-env-blacklist "^SWAYSOCK$"))
 ;; (when (and noninteractive IS-MAC)
 ;;  (add-to-list 'doom-env-whitelist "^SSH_"))
-
-;; https://github.com/doomemacs/doomemacs/issues/6813
-(defadvice! fixed-doom-module-list (fn &rest args)
-  :around #'doom-module-list
-  (nreverse (apply fn args)))
+;;
+;;
+;; https://github.com/doomemacs/doomemacs/issues/6811
+;; doom build
+(setq native-comp-deferred-compilation nil)
+(after! (doom-packages straight)
+  (setq straight--native-comp-available t))
 
 (doom! :input
        :completion

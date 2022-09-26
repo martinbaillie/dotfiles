@@ -18,7 +18,7 @@
 
       emacs = {
         enable = true;
-        package = pkgs.emacsGitNativeComp;
+        package = pkgs.emacs;
         # pkgs.emacsGitNativeComp.overrideAttrs
         #   (_: {
         #     # Process background thread patch.
@@ -59,7 +59,6 @@
     };
 
     services = {
-      cachix.enable = true;
       dropbox.enable = true;
       docker.enable = true;
     };

@@ -37,7 +37,6 @@
     };
 
     services = {
-      cachix.enable = true;
       dropbox.enable = true;
     };
 
