@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }: {
+{ pkgs, lib, inputs, config, ... }: {
   modules = {
     editors = {
       vim.enable = true;
@@ -6,7 +6,13 @@
       default = "vim";
     };
 
-    services = { ssh.enable = true; };
+    services = {
+      ssh.enable = true;
+      transmission = {
+        enable = true;
+        flexget.enable = true;
+      };
+    };
 
     shell = {
       enable = true;
@@ -58,6 +64,8 @@
     };
   };
 
+  users.users.minidlna.extraGroups = [ "transmission" ];
+
   services = {
     smartd = {
       enable = true;
@@ -97,18 +105,26 @@
       openFirewall = true;
     };
 
-    transmission = {
-      enable = false;
-    };
-
-    flexget = {
-      enable = false;
-
+    minidlna = {
+      enable = true;
+      settings = {
+        mediaDirs = [ "/media" ];
+        announceInterval = 10;
+      };
     };
 
     xserver = {
+      enable = true;
+      layout = "au";
       desktopManager = {
-        kodi.enable = false;
+        kodi.enable = true;
+      };
+
+      displayManager = {
+        autoLogin = {
+          enable = true;
+          user = config.user.name;
+        };
       };
     };
 

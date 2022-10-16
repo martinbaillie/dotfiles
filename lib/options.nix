@@ -13,6 +13,12 @@ rec {
       type = types.bool;
     };
 
+  mkIntOpt = default:
+    mkOption {
+      inherit default;
+      type = types.int;
+    };
+
   mkStrOpt = default:
     mkOption {
       inherit default;

@@ -66,6 +66,7 @@ with lib; {
       zuul_server_public_key = mkSecret "Zuul server public key" "";
       zuul_client_private_key = mkSecret "Zuul client private key" "";
       zuul_client_public_key = mkSecret "Zuul client public key" "";
+      showrss_url = mkSecret "Show RSS URL" "";
     };
 
     # Elaborate the current system for convenience elsewhere.
