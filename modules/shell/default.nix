@@ -17,7 +17,7 @@ in
         coreutils
         curl
         diffutils
-        dnsutils
+        # dnsutils
         entr
         exa
         fd

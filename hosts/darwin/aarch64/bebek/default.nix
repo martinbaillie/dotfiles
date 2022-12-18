@@ -3,7 +3,7 @@
   nix.settings = rec {
     # $ sysctl -n hw.ncpu
     cores = 8;
-    max-jobs = buildCores;
+    max-jobs = cores;
   };
 
   modules = {
@@ -18,7 +18,7 @@
 
       emacs = {
         enable = true;
-        package = pkgs.emacsGitNativeComp;
+        package = pkgs.emacs;
       };
 
       vim.enable = true;

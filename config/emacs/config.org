@@ -50,6 +50,7 @@
   - [[#buffer-move][buffer-move]]
   - [[#buffer-expose][buffer-expose]]
   - [[#golden-ratio][golden-ratio]]
+  - [[#smartparens][smartparens]]
   - [[#rainbow-mode][rainbow-mode]]
   - [[#web-mode][web-mode]]
   - [[#keycast-mode][keycast-mode]]
@@ -1692,6 +1693,10 @@ Automatically resize the viewable windows according to the golden ratio.
          "G" #'golden-ratio-mode
          ))
   )
+#+end_src
+** smartparens
+#+begin_src elisp
+(remove-hook 'doom-first-buffer-hook #'smartparens-global-mode)
 #+end_src
 
 ** rainbow-mode
