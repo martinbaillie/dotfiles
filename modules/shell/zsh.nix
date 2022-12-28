@@ -37,9 +37,9 @@ in
         env =
           {
             # Global zsh releated environment values.
-            ZDOTDIR = "$XDG_CONFIG_HOME/zsh";
-            ZSH_CACHE = "$XDG_CACHE_HOME/zsh";
-            ZGEN_DIR = "$XDG_DATA_HOME/zsh";
+            ZDOTDIR = "${config.my.xdg.configHome}/zsh";
+            ZSH_CACHE = "${config.my.xdg.cacheHome}/zsh";
+            ZGEN_DIR = "${config.my.xdg.dataHome}/zsh";
             ZGEN_SRC = builtins.fetchGit {
               url = "https://github.com/jandamm/zgenom.git";
               rev = "6ff785d403dd3f0d3b739c9c2d3508f49003441f";
@@ -47,11 +47,11 @@ in
             };
 
             # Try very hard to have things favour XDG convention.
-            PATH = [ "$XDG_BIN_HOME" ];
-            HISTFILE = "$XDG_DATA_HOME/zsh/history";
-            INPUTRC = "$XDG_CONFIG_HOME/readline/inputrc";
-            LESSHISTFILE = "$XDG_CACHE_HOME/lesshst";
-            WGETRC = "$XDG_CONFIG_HOME/wgetrc";
+            PATH = [ "${config.my.home.homeDirectory}/.local/bin" ];
+            HISTFILE = "${config.my.xdg.dataHome}/zsh/history";
+            INPUTRC = "${config.my.xdg.configHome}/readline/inputrc";
+            LESSHISTFILE = "${config.my.xdg.cacheHome}/lesshst";
+            WGETRC = "${config.my.xdg.configHome}/wgetrc";
           };
 
         home = {

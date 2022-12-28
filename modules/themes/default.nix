@@ -52,7 +52,7 @@ in
 
     home.configFile."wallpaper".source =
       # Allow local overriding of wallpaper.
-      let local = "${(getEnv "XDG_DATA_HOME")}/.wallpaper";
+      let local = "${config.my.xdg.dataHome}/.wallpaper";
       in if pathExists local then local else cfg.wallpaper;
   };
 }

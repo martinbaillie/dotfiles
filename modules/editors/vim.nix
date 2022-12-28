@@ -14,7 +14,7 @@ in
     };
 
     modules.shell.zsh.env.VIMINIT =
-      "let \\$RC='\\$XDG_CONFIG_HOME/nvim/init.vim'|source \\$RC";
+      "let \\$RC='\\${config.my.xdg.configHome}/nvim/init.vim'|source \\$RC";
 
     home.configFile = {
       "nvim/init.vim".text = ''

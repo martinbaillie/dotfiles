@@ -87,12 +87,11 @@ with lib.my; {
   # Linux user and homedir settings.
   user = {
     extraGroups = [ "input" "disk" "audio" "video" "systemd-journal" ];
-    initialHashedPassword = config.secrets.password;
+    passwordFile = config.secrets.password.path;
   };
 
   users = {
-    # Empty root password to begin with.
-    extraUsers.root.initialHashedPassword = config.secrets.password;
+    extraUsers.root.passwordFile = config.secrets.password.path;
 
     # Ensure only way to change users/groups is through this file.
     mutableUsers = false;

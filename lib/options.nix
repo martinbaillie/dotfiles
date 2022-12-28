@@ -25,7 +25,7 @@ rec {
       type = types.str;
     };
 
-  mkSecret = description: default:
+  mkPrivate = description: default:
     mkOption {
       inherit description default;
       type = with types; either str (listOf str);

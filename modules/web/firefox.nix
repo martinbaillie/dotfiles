@@ -83,10 +83,10 @@ in
           };
           "tridactyl/tridactylrc".text =
             let
-              host = "${config.secrets.work_vcs_host}";
-              path = "${config.secrets.work_vcs_path}";
-              jira = "${config.secrets.work_jira}";
-              sourcegraph = "${config.secrets.work_sourcegraph}";
+              host = "${config.private.work_vcs_host}";
+              path = "${config.private.work_vcs_path}";
+              jira = "${config.private.work_jira}";
+              sourcegraph = "${config.private.work_sourcegraph}";
             in
             builtins.readFile "${configDir}/tridactylrc" + ''
               " Set a custom colour theme.

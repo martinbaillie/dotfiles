@@ -33,6 +33,7 @@
 
     services = {
       ssh.enable = true;
+      cachix.enable = true;
       #docker.enable = true;
     };
 
@@ -161,29 +162,6 @@
     };
   };
   user.extraGroups = [ "networkmanager" ];
-
-  # TODO: Do I really need this still?
-  # Fan controller for IBM/Lenovo ThinkPads.
-  # NOTE: https://gist.github.com/Yatoom/1c80b8afe7fa47a938d3b667ce234559
-  # services.thinkfan = {
-  #   enable = true;
-  #   sensors = ''
-  #     hwmon /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp3_input
-  #     hwmon /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp4_input
-  #     hwmon /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp1_input
-  #     hwmon /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp5_input
-  #     hwmon /sys/devices/platform/coretemp.0/hwmon/hwmon5/temp2_input
-  #   '';
-  #   levels = ''
-  #     (0, 0, 65)
-  #     (1, 50, 70)
-  #     (2, 68, 74)
-  #     (3, 72, 75)
-  #     (4, 74, 78)
-  #     (5, 76, 80)
-  #     (7, 78, 32767)
-  #   '';
-  # };
 
   # DBus.
   programs.dconf.enable = true;

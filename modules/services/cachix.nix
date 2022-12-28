@@ -9,11 +9,14 @@ in
 
   config =
     let
-      cachix = "${pkgs.cachix}/bin/cachix -v watch-store martinbaillie";
+      cachix = ''
+        ${pkgs.cachix}/bin/cachix --verbose \
+        --config ${config.secrets.cachix_dhall.path} \
+        watch-store martinbaillie
+      '';
       common = {
         environment = {
-          XDG_CACHE_HOME = "/var/cache/cachix-watch-store";
-          CACHIX_AUTH_TOKEN = config.secrets.cachix_auth_token;
+          XDG_CACHE_HOME = config.my.xdg.cacheHome;
         };
         path = [ config.nix.package ];
       };

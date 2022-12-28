@@ -11,7 +11,7 @@ in
     user.packages = [ pkgs.nyxt ];
 
     home.configFile."nyxt/init.org" =
-      let target = "${(builtins.getEnv "XDG_CONFIG_HOME")}/nyxt/init.org";
+      let target = "${config.my.xdg.configHome}/nyxt/init.org";
       in
       {
         source = "${configDir}/nyxt.org";

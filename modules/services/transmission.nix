@@ -13,6 +13,7 @@ in
 
   config = mkIf cfg.enable (mkMerge [
     (if isLinux then {
+
       services = {
         transmission = {
           enable = true;
@@ -45,7 +46,7 @@ in
             templates:
               media:
                 inputs:
-                  - rss: ${config.secrets.showrss_url}
+                  - rss: ${config.private.showrss_url}
                 verify_ssl_certificates: no
                 download: /media/.incoming
                 quality: webrip+

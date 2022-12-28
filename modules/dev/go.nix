@@ -33,11 +33,11 @@ in
 
     env = {
       # Ensure Go modules work with $WORK private (SSH keyed) repositories.
-      GOPRIVATE = config.secrets.work_vcs_host + "/"
-        + config.secrets.work_vcs_path + "/*";
-      GOPATH = "$XDG_DATA_HOME/go";
+      GOPRIVATE = config.private.work_vcs_host + "/"
+        + config.private.work_vcs_path + "/*";
       GOOS = "$(uname -s | tr '[:upper:]' '[:lower:]')";
-      PATH = [ "$GOPATH/bin" ];
+      GOPATH = "${config.my.xdg.dataHome}/go";
+      PATH = [ "${config.my.xdg.dataHome}/go/bin" ];
     };
   };
 }

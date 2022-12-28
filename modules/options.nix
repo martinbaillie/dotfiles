@@ -1,7 +1,12 @@
 { config, options, lib, home-manager, pkgs, ... }:
-let inherit (lib.my) mkOpt mkOpt' mkSecret;
+with lib;
+with builtins;
+let
+  inherit (lib.my) mkOpt mkOpt' mkPrivate;
+  user = getEnv "USER";
+  name = if elem user [ "" "root" ] then "mbaillie" else user;
 in
-with lib; {
+{
   options = with types; {
     dotfiles =
       let t = either str path;
@@ -9,7 +14,7 @@ with lib; {
       {
         # Allow for dotfile location flexibility, defaulting to parent dir.
         dir = mkOpt t (findFirst pathExists (toString ../.)
-          [ "${config.user.home}/.config/dotfiles" ]);
+          [ "${config.user.home}/.config/dotfiles" "/etc/dotfiles" ]);
         configDir = mkOpt t "${config.dotfiles.dir}/config";
         modulesDir = mkOpt t "${config.dotfiles.dir}/modules";
         privateDir = mkOpt t "${config.dotfiles.dir}/.private";
@@ -40,33 +45,15 @@ with lib; {
       description = "Global environment variables";
     };
 
-    secrets = {
-      id_rsa = mkSecret "SSH RSA key" "";
-      id_ed25519 = mkSecret "SSH ED25519 key" "";
-      ssh_keygrips = mkSecret "SSH->GPG keygrips" [ ];
-      gpg = mkSecret "GPG key" "";
-      password = mkSecret "Local user password" "";
-      cachix_signing_key = mkSecret "Cachix signing key" "";
-      cachix_auth_token = mkSecret "Cachix auth token" "";
-      work_overlay_url = mkSecret "$WORK Nix packages overlay URL" "";
-      work_username = mkSecret "$WORK username" "";
-      work_vcs_host = mkSecret "$WORK VCS host" "";
-      work_vcs_path = mkSecret "$WORK VCS path" "";
-      work_email = mkSecret "$WORK email" "";
-      work_jira = mkSecret "$WORK JIRA instance" "";
-      work_sourcegraph = mkSecret "$WORK Sourcegraph instance" "";
-      exetel_username = mkSecret "Exetel username" "";
-      exetel_password = mkSecret "Exetel password" "";
-      protonvpn_username = mkSecret "ProtonVPN OpenVPN username" "";
-      protonvpn_password = mkSecret "ProtonVPN OpenVPN password" "";
-      openweathermap_api_key = mkSecret "OpenWeatherMap key" "";
-      zuul_server_host = mkSecret "Zuul server host" "";
-      zuul_server_port = mkSecret "Zuul server port" "";
-      zuul_server_private_key = mkSecret "Zuul server private key" "";
-      zuul_server_public_key = mkSecret "Zuul server public key" "";
-      zuul_client_private_key = mkSecret "Zuul client private key" "";
-      zuul_client_public_key = mkSecret "Zuul client public key" "";
-      showrss_url = mkSecret "Show RSS URL" "";
+    private = {
+      work_overlay_url = mkPrivate "$WORK Nix packages overlay URL" "";
+      work_username = mkPrivate "$WORK username" "";
+      work_vcs_host = mkPrivate "$WORK VCS host" "";
+      work_vcs_path = mkPrivate "$WORK VCS path" "";
+      work_email = mkPrivate "$WORK email" "";
+      work_jira = mkPrivate "$WORK JIRA instance" "";
+      work_sourcegraph = mkPrivate "$WORK Sourcegraph instance" "";
+      showrss_url = mkPrivate "Show RSS URL" "";
     };
 
     # Elaborate the current system for convenience elsewhere.
@@ -77,13 +64,10 @@ with lib; {
 
   config = {
     user =
-      let
-        user = builtins.getEnv "USER";
-        name = if elem user [ "" "root" ] then "mbaillie" else user;
-      in
       {
         inherit name;
         description = "Martin Baillie";
+        packages = with pkgs; [ sops ssh-to-age ];
       } // optionalAttrs config.targetSystem.isLinux {
         uid = 1000;
         extraGroups = [ "wheel" ];
@@ -108,6 +92,7 @@ with lib; {
     home-manager = {
       useUserPackages = true;
       useGlobalPkgs = true;
+      verbose = true;
       # NOTE: Home-manager shortened maps are as follows:
       # home.file        ->  home-manager.users.<user>.home.file
       # home.configFile  ->  home-manager.users.<user>.home.xdg.configFile
@@ -122,6 +107,10 @@ with lib; {
         };
         xdg = {
           enable = true;
+          userDirs = {
+            enable = true;
+            createDirectories = true;
+          };
           configFile = mkAliasDefinitions options.home.configFile;
           dataFile = mkAliasDefinitions options.home.dataFile;
         } // optionalAttrs config.targetSystem.isLinux {
@@ -144,10 +133,42 @@ with lib; {
     environment.extraInit = concatStringsSep "\n"
       (mapAttrsToList (n: v: ''export ${n}="${v}"'') config.env);
 
-    # Secrets.
-    # TODO: Evaluate `agenix` and other Nix store encryption options.
-    secrets =
-      let path = "${(builtins.getEnv "XDG_DATA_HOME")}/secrets.nix";
-      in if pathExists path then import path else { };
+    # Private expressions and secrets.
+    private = import "${config.dotfiles.privateDir}/private.nix";
+
+    sops = {
+      defaultSopsFile = /etc/dotfiles/.private/secrets.age.yaml;
+      age.keyFile = "${config.home-manager.users.${config.user.name}.xdg.dataHome}/keys.txt";
+      secrets =
+        let
+          owner = config.user.name;
+          group = if config.targetSystem.isDarwin then "staff" else "users";
+          genSecret = name: { inherit name; value = { inherit owner group; }; };
+        in
+        listToAttrs
+          (map genSecret [
+            "id_rsa"
+            "id_ed25519"
+            "gpg"
+            "cachix_signing_key"
+            "cachix_auth_token"
+            "openweathermap_api_key"
+          ]) //
+        {
+          password = { neededForUsers = true; };
+          cachix_dhall = {
+            inherit owner group;
+            path = "${config.my.xdg.configHome}/cachix/cachix.dhall";
+          };
+        };
+    };
+
+    env.SOPS_AGE_KEY_FILE = config.sops.age.keyFile;
   };
+
+  imports = [
+    # Some more shortened module aliases.
+    (mkAliasOptionModule [ "my" ] [ "home-manager" "users" "${name}" ])
+    (mkAliasOptionModule [ "secrets" ] [ "sops" "secrets" ])
+  ];
 }

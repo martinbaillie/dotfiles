@@ -16,7 +16,7 @@ in
       };
 
       home.file = {
-        ".gnupg/gpg.asc".text = config.secrets.gpg;
+        ".gnupg/gpg.asc".source = config.secrets.gpg.path;
         ".gnupg/gpg-agent.conf".text = ''
           default-cache-ttl ${toString cfg.cacheTTL}
           default-cache-ttl ${toString cfg.cacheTTL}
@@ -41,7 +41,10 @@ in
       #     enableSshSupport = true;
       #   };
       # };
-      user.packages = [ pkgs.pinentry ];
+      user = {
+        packages = [ pkgs.pinentry ];
+        extraGroups = [ "keys" ];
+      };
 
       # NOTE: Fresh installs currently require the following imperative one-offs:
       # chown -R $(whoami) ~/.gnupg

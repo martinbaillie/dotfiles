@@ -8,15 +8,14 @@ with darwin.lib; {
     let
       isNixOS = strings.hasInfix "linux" system;
       hostname = baseNameOf path;
+      # TODO: Improve theming technique.
       theme = "${(builtins.getEnv "XDG_DATA_HOME")}/theme.nix";
-      private = "${(builtins.getEnv "XDG_DATA_HOME")}/${hostname}.nix";
       hardware = "${path}/hardware-configuration.nix";
       commonModules = [
         rec {
           networking.hostName = mkDefault hostname;
           environment = {
             variables.HOSTNAME = networking.hostName;
-            systemPackages = [ inputs.deploy-rs.defaultPackage.${system} ];
           };
         }
         (filterAttrs (n: v: !elem n [ "system" ]) attrs)
@@ -27,8 +26,7 @@ with darwin.lib; {
         (dirOf path) # 3. Current architecture (e.g. aarch64, x86_64).
         (import path) # 4. Current host.
       ] ++ (mapModulesRec' ../modules import) # Make all my modules available.
-      ++ (optional (pathExists theme) theme) # Current host theme.
-      ++ (optional (pathExists private) private); # Current host private settings.
+      ++ (optional (pathExists theme) theme); # Current host theme.
       specialArgs = {
         inherit lib inputs;
         pkgs = pkgs.${system};
@@ -43,6 +41,7 @@ with darwin.lib; {
               imports = [
                 inputs.home-manager.nixosModules.home-manager
                 inputs.bad-hosts.nixosModule
+                inputs.sops-nix.nixosModules.sops
               ];
             })
           ] ++ (optional (pathExists hardware) (hardware)) ++ commonModules;
@@ -54,6 +53,7 @@ with darwin.lib; {
           ({ config, pkgs, ... }: {
             imports = [
               inputs.home-manager.darwinModules.home-manager
+              inputs.sops-nix.darwinModules.sops
             ];
           })
         ] ++ commonModules;

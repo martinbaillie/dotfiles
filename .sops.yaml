@@ -1,0 +1,10 @@
+keys:
+  - &mbaillie_gpg C2F079DED64B7361006AA0992A56EA64591E15E4
+  - &mbaillie_age age1urc6smsy7ezesgwgy3umsgtyl9fp8guamkfc3w7hujmknrpgkcys0glgvr
+creation_rules:
+  - path_regex: .private/[^/]+\.yaml$
+    key_groups:
+      - pgp:
+          - *mbaillie_gpg
+      - age:
+          - *mbaillie_age

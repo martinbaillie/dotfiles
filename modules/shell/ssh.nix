@@ -19,10 +19,10 @@ in
       home.file = {
         ".ssh/config".source = "${configDir}/config";
 
-        ".ssh/id_rsa".text = config.secrets.id_rsa;
+        ".ssh/id_rsa".source = config.secrets.id_rsa.path;
         ".ssh/id_rsa.pub".source = "${configDir}/id_rsa.pub";
 
-        ".ssh/id_ed25519".text = config.secrets.id_ed25519;
+        ".ssh/id_ed25519".source = config.secrets.id_ed25519.path;
         ".ssh/id_ed25519.pub".source = "${configDir}/id_ed25519.pub";
       };
     }
@@ -48,7 +48,8 @@ in
                   ]);
               } ''
               sed -s '$G' $source > $out
-            ''; in
+            '';
+        in
         dag.entryAfter [ "writeBoundary" ] ''
           install -D -m600 ${
             pkgs.callPackage mkAuthorizedKeys { }

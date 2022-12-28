@@ -31,7 +31,7 @@ in
           (mkIf config.modules.shell.gnupg.enable git-crypt)
         ];
 
-        env.WATCHMAN_CONFIG_FILE = "$XDG_CONFIG_HOME/watchman/watchman.json";
+        env.WATCHMAN_CONFIG_FILE = "${config.my.xdg.configHome}/watchman/watchman.json";
 
         modules.shell.zsh.rc = "cdr() { cd $(git rev-parse --show-toplevel) }";
 
@@ -44,10 +44,10 @@ in
                   fsmonitor = ${pkgs.rs-git-fsmonitor}/bin/rs-git-fsmonitor;
               # NOTE: This needs to be in the user config rather than work config
               # because $GOPATH is outside of the work dir.
-              [url "git@${config.secrets.work_vcs_host}:${config.secrets.work_vcs_path}"]
-                  insteadOf = https://${config.secrets.work_vcs_host}/${config.secrets.work_vcs_path}
-              [url "git@${config.secrets.work_vcs_host}:${config.secrets.work_vcs_path}/"]
-                  insteadOf = ${config.secrets.work_vcs_path}:
+              [url "git@${config.private.work_vcs_host}:${config.private.work_vcs_path}"]
+                  insteadOf = https://${config.private.work_vcs_host}/${config.private.work_vcs_path}
+              [url "git@${config.private.work_vcs_host}:${config.private.work_vcs_path}/"]
+                  insteadOf = ${config.private.work_vcs_path}:
             '';
             "git/ignore".source = "${configDir}/ignore";
             "git/attributes".source = "${configDir}/attributes";
@@ -63,7 +63,7 @@ in
           # Current $WORK specific helpers and directory-local user configuration.
           file."work/.gitconfig".text = ''
             [user]
-                email = ${config.secrets.work_email}
+                email = ${config.private.work_email}
             [init]
                 defaultBranch = master
             [pack]

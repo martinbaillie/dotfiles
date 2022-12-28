@@ -34,6 +34,8 @@
     };
   };
 
+  fileSystems."/mirror".noCheck = true;
+
   swapDevices = [{ device = "/.swapfile"; }];
 
   networking = {
@@ -77,7 +79,7 @@
     cron = {
       enable = true;
       systemCronJobs = [
-        "@hourly root rsync -avh --delete /media/ /mirror/ &>>/var/log/mirror.log"
+        "@daily root rsync -avh --delete /media/ /mirror/ &>>/var/log/mirror.log"
       ];
     };
 

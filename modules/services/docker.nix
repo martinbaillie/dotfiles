@@ -33,8 +33,8 @@ in
       # on NixOS.
 
       env = {
-        DOCKER_CONFIG = "$XDG_CONFIG_HOME/docker";
-        MACHINE_STORAGE_PATH = "$XDG_DATA_HOME/docker/machine";
+        DOCKER_CONFIG = "${config.my.xdg.configHome}/docker";
+        MACHINE_STORAGE_PATH = "${config.my.xdg.dataHome}/docker/machine";
       };
     })
     {

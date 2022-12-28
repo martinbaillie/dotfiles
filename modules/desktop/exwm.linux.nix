@@ -3,7 +3,6 @@ with lib;
 let
   cfg = config.modules.desktop;
   theme = config.modules.theme;
-  secrets = config.secrets;
 in
 {
   config = mkIf (cfg.wm == "exwm") {
@@ -35,7 +34,7 @@ in
           start = ''
             # Ensure Emacs env is up-to-date.
             if type doom &>/dev/null; then
-              rm -f $XDG_CONFIG_HOME/emacs/.local/env
+              rm -f ${config.my.xdg.configHome}/emacs/.local/env
               doom env
             fi
             # Launch a fullscreen DBused Emacs.
@@ -219,7 +218,7 @@ in
                   echo $icon
                 }
 
-                KEY="${secrets.openweathermap_api_key}"
+                KEY="$(cat ${config.secrets.openweathermap_api_key.path})"
                 CITY="2147714" # Erko
                 UNITS="metric"
                 SYMBOL="°C"

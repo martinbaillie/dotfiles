@@ -9,8 +9,8 @@ in
     user.packages = with pkgs; [ rustc cargo clippy rustfmt rust-analyzer rls ];
 
     env = {
-      CARGO_HOME = "$XDG_DATA_HOME/cargo";
-      PATH = [ "$CARGO_HOME/bin" ];
+      CARGO_HOME = "${config.my.xdg.dataHome}/cargo";
+      PATH = [ "${config.my.xdg.dataHome}/cargo/bin" ];
     };
   };
 }

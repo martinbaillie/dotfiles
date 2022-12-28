@@ -83,7 +83,7 @@ in
     {
       nixpkgs.overlays = [ inputs.emacs-overlay.overlay ];
 
-      env.PATH = [ "$XDG_CONFIG_HOME/emacs/bin" ];
+      env.PATH = [ "${config.my.xdg.configHome}/emacs/bin" ];
 
       home.configFile."zsh/rc.d/rc.emacs.zsh".source = "${configDir}/rc.zsh";
 
@@ -132,7 +132,7 @@ in
           comment = "Org protocol";
           desktopName = "org-protocol";
           type = "Application";
-          mimeTypes = ["x-scheme-handler/org-protocol"];
+          mimeTypes = [ "x-scheme-handler/org-protocol" ];
         })
       ];
 

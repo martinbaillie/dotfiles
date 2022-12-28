@@ -19,25 +19,27 @@
     bad-hosts.url = github:StevenBlack/hosts;
     bad-hosts.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Secrets.
+    sops-nix.url = github:4825764518/sops-nix/darwin;
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     # Emacs overlay.
     emacs-overlay.url = github:nix-community/emacs-overlay;
-
-    # Remote deploys.
-    deploy-rs.url = "github:serokell/deploy-rs";
+    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
     # Vale styles.
     vale-Google.flake = false;
-    vale-Google.url = "github:errata-ai/Google";
+    vale-Google.url = github:errata-ai/Google;
     vale-Microsoft.flake = false;
-    vale-Microsoft.url = "github:errata-ai/Microsoft";
+    vale-Microsoft.url = github:errata-ai/Microsoft;
     vale-Joblint.flake = false;
-    vale-Joblint.url = "github:errata-ai/Joblint";
+    vale-Joblint.url = github:errata-ai/Joblint;
     vale-alex.flake = false;
-    vale-alex.url = "github:errata-ai/alex";
+    vale-alex.url = github:errata-ai/alex;
     vale-proselint.flake = false;
-    vale-proselint.url = "github:errata-ai/proselint";
+    vale-proselint.url = github:errata-ai/proselint;
     vale-write-good.flake = false;
-    vale-write-good.url = "github:errata-ai/write-good";
+    vale-write-good.url = github:errata-ai/write-good;
 
     # NixOS hardware definitions.
     nixos-hardware.url = github:nixos/nixos-hardware;
@@ -52,7 +54,6 @@
     , darwin
     , bad-hosts
     , emacs-overlay
-    , deploy-rs
     , ...
     }:
     let
@@ -136,22 +137,5 @@
       # NixOS host configurations.
       nixosConfigurations =
         mapConfigurations supportedSystems.linux ./hosts/linux;
-
-      # Make NixOS host configurations remotely deployable.
-      # deploy.nodes = (builtins.mapAttrs
-      #   (hostname: attr: {
-      #     inherit hostname;
-      #     fastConnection = true;
-      #     remoteBuild = true;
-      #     profiles = {
-      #       system = {
-      #         # ???
-      #         path = deploy-rs.lib."${attr.config.nixpkgs.system}".activate.nixos
-      #           self.nixosConfigurations.naptime;
-      #         user = "root";
-      #       };
-      #     };
-      #   })
-      #   self.nixosConfigurations);
     };
 }

@@ -59,19 +59,16 @@ with lib; {
     ];
     variables = {
       # Force XDG defaults as soon as possible.
-      XDG_CONFIG_HOME = "$HOME/.config";
-      XDG_CACHE_HOME = "$HOME/.cache";
-      XDG_DATA_HOME = "$HOME/.local/share";
-      XDG_BIN_HOME = "$HOME/.local/bin";
-      XDG_DESKTOP_DIR = "$HOME"; # prevent creation of ~/Desktop
+      XDG_CONFIG_HOME = config.my.xdg.configHome;
+      XDG_CACHE_HOME = config.my.xdg.cacheHome;
+      XDG_DATA_HOME = config.my.xdg.dataHome;
+      XDG_BIN_HOME = "${config.my.home.homeDirectory}/.local/bin";
+      XDG_DESKTOP_DIR = config.my.home.homeDirectory; # prevent creation of ~/Desktop
       XDG_RUNTIME_DIR =
         if config.targetSystem.isLinux then
-          "/run/user/$UID"
+          "/run/user/${toString config.user.uid}"
         else
-          "$XDG_DATA_HOME";
-
-      # Set up Cachix for personal binary caching.
-      CACHIX_AUTH_TOKEN = config.secrets.cachix_auth_token;
+          config.my.xdg.dataHome;
 
       # Location, timezone and internationalisation.
       TZ = "Australia/Sydney";

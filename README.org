@@ -77,17 +77,6 @@ nix copy --no-check-sigs --keep-going --to ssh-ng://$REMOTE ~/.nix-profile
 sudo git clone --recursive git@github.com:martinbaillie/dotfiles.git /etc/dotfiles
 sudo chown -R $USER: /etc/dotfiles
 #+END_SRC
-**** Optionally decrypt secrets one-off
-If not forwarding.
-#+BEGIN_SRC shell
-nix-shell -p gpg
-mkdir -m 700 ~/.gnupg-temp
-<download gpg key>  > ~/.gnupg-temp/temporary.asc
-gpg --homedir ~/.gnupg-temp --import temporary.asc
-gpg --homedir ~/.gnupg-temp -d secrets.nix.gpg > secrets.nix
-gpg-connect-agent --homedir ~/.gnupg-temp KILLAGENT /bye
-rm -r ~/.gnupg-temp
-#+END_SRC
 **** Set up Cachix one-off
 #+BEGIN_SRC shell
 nix-shell -p cachix
