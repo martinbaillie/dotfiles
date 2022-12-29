@@ -18,8 +18,6 @@
       enable = true;
 
       git.enable = true;
-      gnupg.enable = true;
-      ssh.enable = true;
       zsh.enable = true;
     };
   };
@@ -34,7 +32,17 @@
     };
   };
 
-  fileSystems."/mirror".noCheck = true;
+  # Shit disk on its way out to pasture.
+  fileSystems."/mirror" = {
+    noCheck = true;
+    options = [
+      "defaults"
+      "noatime"
+      "nodiratime"
+      "nofail"
+      "x-systemd.device-timeout=1"
+    ];
+  };
 
   swapDevices = [{ device = "/.swapfile"; }];
 

@@ -1,4 +1,4 @@
-{ options, pkgs, config, lib, inputs, ... }:
+{ options, pkgs, config, lib, ... }:
 with lib;
 let
   cfg = config.modules.shell.ssh;
@@ -26,35 +26,5 @@ in
         ".ssh/id_ed25519.pub".source = "${configDir}/id_ed25519.pub";
       };
     }
-    (mkIf config.targetSystem.isLinux {
-      user.openssh.authorizedKeys.keyFiles =
-        mapAttrsToList (n: _: "${configDir}/${n}")
-          (filterAttrs (n: v: v == "regular" && (hasSuffix ".pub" n))
-            (builtins.readDir "${configDir}"));
-    })
-    (mkIf config.targetSystem.isDarwin {
-      home.activation.authorizedKeys =
-        let
-
-          inherit (inputs.home-manager.lib.hm) dag;
-          inherit (lib) mkMerge mkIf concatMapStrings;
-          mkAuthorizedKeys = { runCommand }:
-            runCommand "authorized_keys"
-              {
-                source = builtins.toFile "authorized_keys"
-                  (concatMapStrings builtins.readFile [
-                    "${configDir}/id_rsa.pub"
-                    "${configDir}/id_ed25519.pub"
-                  ]);
-              } ''
-              sed -s '$G' $source > $out
-            '';
-        in
-        dag.entryAfter [ "writeBoundary" ] ''
-          install -D -m600 ${
-            pkgs.callPackage mkAuthorizedKeys { }
-          } $HOME/.ssh/authorized_keys
-        '';
-    })
   ]);
 }

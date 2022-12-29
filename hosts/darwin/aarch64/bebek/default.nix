@@ -37,6 +37,7 @@
     };
 
     services = {
+      ssh.enable = true;
       dropbox.enable = true;
     };
 
