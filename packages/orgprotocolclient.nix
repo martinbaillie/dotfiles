@@ -1,4 +1,4 @@
-{ lib, stdenv, pkgs, writeText, config }:
+{ lib, stdenv, pkgs, writeText }:
 
 stdenv.mkDerivation rec {
   pname = "OrgProtocolClient";
@@ -8,7 +8,7 @@ stdenv.mkDerivation rec {
 
   scpt = writeText "main.scpt" ''
     on open location this_URL
-    	do shell script "PATH=/run/current-system/sw/bin:$PATH emacsclient -s ${config.my.xdg.dataHome}/emacs/server \"" & this_URL & "\""
+    	do shell script "PATH=/run/current-system/sw/bin:$PATH emacsclient -s $XDG_DATA_HOME/emacs/server \"" & this_URL & "\""
     	tell application "Emacs" to activate
     end open location
   '';

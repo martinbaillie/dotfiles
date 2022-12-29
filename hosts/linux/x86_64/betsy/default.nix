@@ -31,6 +31,8 @@
       go.enable = true;
     };
 
+    ops.enable = true;
+
     services = {
       ssh.enable = true;
       cachix.enable = true;

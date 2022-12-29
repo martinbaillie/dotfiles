@@ -92,7 +92,7 @@ in
     home-manager = {
       useUserPackages = true;
       useGlobalPkgs = true;
-      verbose = true;
+      verbose = false;
       # NOTE: Home-manager shortened maps are as follows:
       # home.file        ->  home-manager.users.<user>.home.file
       # home.configFile  ->  home-manager.users.<user>.home.xdg.configFile
@@ -107,13 +107,13 @@ in
         };
         xdg = {
           enable = true;
+          configFile = mkAliasDefinitions options.home.configFile;
+          dataFile = mkAliasDefinitions options.home.dataFile;
+        } // optionalAttrs config.targetSystem.isLinux {
           userDirs = {
             enable = true;
             createDirectories = true;
           };
-          configFile = mkAliasDefinitions options.home.configFile;
-          dataFile = mkAliasDefinitions options.home.dataFile;
-        } // optionalAttrs config.targetSystem.isLinux {
           mime.enable = true;
           mimeApps = {
             enable = true;
@@ -155,11 +155,12 @@ in
             "openweathermap_api_key"
           ]) //
         {
-          password = { neededForUsers = true; };
           cachix_dhall = {
             inherit owner group;
             path = "${config.my.xdg.configHome}/cachix/cachix.dhall";
           };
+        } // optionalAttrs config.targetSystem.isLinux {
+          password = { neededForUsers = true; };
         };
     };
 

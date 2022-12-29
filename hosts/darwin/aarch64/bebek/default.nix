@@ -36,7 +36,10 @@
       };
     };
 
+    ops.enable = true;
+
     services = {
+      cachix.enable = true;
       ssh.enable = true;
       dropbox.enable = true;
     };
