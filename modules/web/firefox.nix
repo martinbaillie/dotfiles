@@ -49,10 +49,10 @@ in
                 # Smaller tab widths.
                 "browser.tabs.tabMinWidth" = 50;
                 # Search.
-                "browser.urlbar.placeholderName" = "Kagi";
-                "browser.urlbar.placeholderName.private" = "Kagi";
-                "browser.search.defaultenginename" = "Kagi";
-                "browser.search.selectedEngine" = "Kagi";
+                "browser.urlbar.placeholderName" = "Google";
+                "browser.urlbar.placeholderName.private" = "Google";
+                "browser.search.defaultenginename" = "Google";
+                "browser.search.selectedEngine" = "Google";
                 # Locale.
                 "browser.search.region" = "AU";
                 # Allow custom styling.

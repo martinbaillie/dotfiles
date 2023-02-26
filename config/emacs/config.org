@@ -57,6 +57,8 @@
   - [[#undo-tree][undo-tree]]
   - [[#proced][proced]]
   - [[#nix][nix]]
+  - [[#markdown][markdown]]
+  - [[#spell-fu][spell-fu]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
   - [[#temp-wips][TEMP WIPs]]
@@ -1461,20 +1463,9 @@ Automatically add a git signoff line based on discovered environmental identity.
 ** yaml
 Get the YAML language server to validate Kubernetes resources.
 #+begin_src elisp
-(setq lsp-yaml-schemas (make-hash-table))
-(puthash "kubernetes" ["kube.yaml"
-                       "resources.yaml"
-                       "resources/*"
-                       "pod.yaml"
-                       "deployment.yaml"
-                       "serviceaccount.yaml"
-                       "clusterrole.yaml"
-                       "role.yaml"
-                       "clusterrolebinding.yaml"
-                       "rolebinding.yaml"
-                       "configmap.yaml"
-                       "service.yaml"]
-         lsp-yaml-schemas)
+(unless (boundp 'lsp-yaml-schemas)
+  (setq lsp-yaml-schemas (make-hash-table)))
+;; (puthash "kubernetes" ["/*"] lsp-yaml-schemas)
 (puthash "http://json.schemastore.org/kustomization" ["kustomization.yaml"] lsp-yaml-schemas)
 #+end_src
 ** bazel
@@ -1809,6 +1800,19 @@ this enabled in most text mode.
 ;; TODO is there a more standard way to trigger LSP?
 (add-hook! 'nix-mode-hook #'lsp!)
 (add-hook! 'nix-mode-hook 'nixpkgs-fmt-on-save-mode)
+#+end_src
+** markdown
+Add .mdx support
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'auto-mode-alist '("\\.mdx\\'" . markdown-mode))
+#+end_src
+
+** spell-fu
+Disabled modes.
+#+begin_src elisp
+(remove-hook 'text-mode-hook #'spell-fu-mode)
+(add-hook 'markdown-mode-hook #'spell-fu-mode)
+(add-hook 'org-mode-hook #'spell-fu-mode)
 #+end_src
 
 ** vterm

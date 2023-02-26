@@ -9,6 +9,7 @@
 (setq native-comp-deferred-compilation nil)
 (after! (doom-packages straight)
   (setq straight--native-comp-available t))
+(setq server-socket-dir "~/.local/share/emacs")
 
 (doom! :input
        :completion

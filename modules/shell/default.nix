@@ -41,6 +41,7 @@ in
         lsof
         ncdu
         nmap
+        parallel
         perl
         ripgrep
         screen

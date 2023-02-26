@@ -35,15 +35,21 @@ let
           emacsql-sqlite
 
           # FIXME: Currently building `epdinfo` on macOS like so:
+          # ; git clone https://github.com/vedang/pdf-tools.git
+          # ; cd pdf-tools/server
           # ; nix-shell -p pkg-config poppler automake libtool libpng autoconf
           # ; autoreconf -i -f
-          # ; ./autobuild -i /Users/mbaillie/.config/emacs/.local/straight/build-29.0.50/pdf-tools --os nixos
-          pdf-tools
+          # ; ./autobuild -i \
+          #   /Users/mbaillie/.config/emacs/.local/straight/build-29.0.50/pdf-tools \
+          #   --os nixos
 
           org-pdftools
           vterm
         ]
-        ++ optional (config.modules.desktop.wm == "exwm") exwm))
+        ++ optional (config.modules.desktop.wm == "exwm") exwm
+        ++ optional config.targetSystem.isLinux pdf-tools
+      ))
+
 
       # Use my own bespoke wrapper for `emacsclient`.
       (writeShellScriptBin "emacs.bash" (''

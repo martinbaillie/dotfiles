@@ -2,14 +2,17 @@
 
 with lib;
 with lib.my;
-with darwin.lib; {
+with darwin.lib;
+with builtins;
+{
   mkHost = path:
     attrs@{ system, ... }:
     let
       isNixOS = strings.hasInfix "linux" system;
       hostname = baseNameOf path;
       # TODO: Improve theming technique.
-      theme = "${(builtins.getEnv "XDG_DATA_HOME")}/theme.nix";
+      theme = "${(getEnv "XDG_DATA_HOME")}/theme.nix";
+      private = "${(getEnv "XDG_DATA_HOME")}/${hostname}.nix";
       hardware = "${path}/hardware-configuration.nix";
       commonModules = [
         rec {
@@ -26,6 +29,7 @@ with darwin.lib; {
         (dirOf path) # 3. Current architecture (e.g. aarch64, x86_64).
         (import path) # 4. Current host.
       ] ++ (mapModulesRec' ../modules import) # Make all my modules available.
+      ++ (optional (pathExists theme) private) # Current host private settings.
       ++ (optional (pathExists theme) theme); # Current host theme.
       specialArgs = {
         inherit lib inputs;

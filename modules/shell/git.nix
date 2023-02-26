@@ -33,7 +33,15 @@ in
 
         env.WATCHMAN_CONFIG_FILE = "${config.my.xdg.configHome}/watchman/watchman.json";
 
-        modules.shell.zsh.rc = "cdr() { cd $(git rev-parse --show-toplevel) }";
+        modules.shell.zsh.rc = ''
+          cdr() { cd $(git rev-parse --show-toplevel) }
+          cdpr() { cd $PRJ_ROOT }
+          gdbr() {
+            git for-each-ref --format '%(refname:short)' refs/heads \
+              | grep -v "master\|main" \
+              | xargs git branch -D
+          }
+        '';
 
         home = {
           configFile = {

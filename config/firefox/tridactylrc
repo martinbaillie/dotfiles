@@ -99,7 +99,7 @@ bind ;c hint -c [class*="expand"],[class="togg"]
 set tabsort mru
 
 " Search engine and shortcuts.
-set searchengine k
+set searchengine g
 " General.
 set searchurls.g https://www.google.com.au/search?q=%s
 set searchurls.k https://kagi.com/search?q=%s
@@ -107,8 +107,8 @@ set searchurls.ddg https://duckduckgo.com/?q=%s
 set searchurls.sp https://startpage.com/do/search?language=english&cat=web&query=%s
 set searchurls.yt https://youtube.com/results?search_query=%s
 set searchurls.sg https://sourcegraph.com/search?q=%s
-set searchurls.gh https://cs.github.com/?scopeName=All+repos&scope=&q=%s
-set searchurls.gho https://github.com/search?q=%s
+set searchurls.gh https://github.com/search?q=%s&type=code
+set searchurls.gho https://cs.github.com/?scopeName=All+repos&scope=&q=%s
 set searchurls.so https://stackoverflow.com/search?q=%s
 set searchurls.reddit https://old.reddit.com/r/%s
 " Nix.
