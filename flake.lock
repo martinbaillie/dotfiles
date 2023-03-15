@@ -21,6 +21,22 @@
         "type": "github"
       }
     },
+    "base16-tridactyl": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1678183570,
+        "narHash": "sha256-eCOzbauT24RMzX/h2JE5quaa4W2BNuwKF+AhHLoLIyI=",
+        "owner": "martinbaillie",
+        "repo": "base16-tridactyl",
+        "rev": "229c715b56064349b11fb812b1fcc94fb7a1f31d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "martinbaillie",
+        "repo": "base16-tridactyl",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -101,11 +117,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1663835995,
-        "narHash": "sha256-XNHQ+mdHbjNR1Oit00SFAEcrAZoCS08E7uAFcVMtwhM=",
+        "lastModified": 1678006026,
+        "narHash": "sha256-cGOfrU7JsKHAWXbPVDTOu2yyMb7GeWdUtJQNQSqht+w=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "bd83eab6220226085c82e637931a7ae3863d9893",
+        "rev": "68ba59578352815ac372b17fb3df9db39afb1407",
         "type": "github"
       },
       "original": {
@@ -132,11 +148,26 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1663761423,
-        "narHash": "sha256-bDLXl2BVq7eIQz/8CduZI1SLyhG9u/CrckHd6f7bwPE=",
+        "lastModified": 1677779205,
+        "narHash": "sha256-6DBjL9wjq86p2GczmwnHtFRnWPBPItc67gapWENBgX8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "d6490a0bd9dfb298fcd8382d3363b86870dc7340",
+        "rev": "96e18717904dfedcd884541e5a92bf9ff632cf39",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixos-22.11",
+        "type": "indirect"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1677932085,
+        "narHash": "sha256-+AB4dYllWig8iO6vAiGGYl0NEgmMgGHpy9gzWJ3322g=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3c5319ad3aa51551182ac82ea17ab1c6b0f0df89",
         "type": "github"
       },
       "original": {
@@ -145,24 +176,10 @@
         "type": "indirect"
       }
     },
-    "nixpkgs-unstable": {
-      "locked": {
-        "lastModified": 1663926790,
-        "narHash": "sha256-94I7+O66v5WbyYOP+qI9HmfeffoYvLqo93oJE4/20Is=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "866431777b6c766cea0db7aad347824d3816be68",
-        "type": "github"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "ref": "master",
-        "type": "indirect"
-      }
-    },
     "root": {
       "inputs": {
         "bad-hosts": "bad-hosts",
+        "base16-tridactyl": "base16-tridactyl",
         "darwin": "darwin",
         "emacs-overlay": "emacs-overlay",
         "home-manager": "home-manager",
@@ -175,7 +192,8 @@
         "vale-Microsoft": "vale-Microsoft",
         "vale-alex": "vale-alex",
         "vale-proselint": "vale-proselint",
-        "vale-write-good": "vale-write-good"
+        "vale-write-good": "vale-write-good",
+        "zgenom": "zgenom"
       }
     },
     "sops-nix": {
@@ -201,11 +219,11 @@
     },
     "utils": {
       "locked": {
-        "lastModified": 1659877975,
-        "narHash": "sha256-zllb8aq3YO3h8B/U0/J1WBgAL8EX5yWf5pMj3G0NAmc=",
+        "lastModified": 1667395993,
+        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
+        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
         "type": "github"
       },
       "original": {
@@ -307,6 +325,22 @@
       "original": {
         "owner": "errata-ai",
         "repo": "write-good",
+        "type": "github"
+      }
+    },
+    "zgenom": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1676499087,
+        "narHash": "sha256-J73krIOZ9m1ik+kUu1kDBtGC+NtsKUxzKFFMCCu1VNk=",
+        "owner": "jandamm",
+        "repo": "zgenom",
+        "rev": "f54ca43614ca10fc2695e3bad091303e1f0310b8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jandamm",
+        "repo": "zgenom",
         "type": "github"
       }
     }

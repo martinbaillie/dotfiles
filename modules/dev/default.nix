@@ -8,7 +8,6 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       cmake
-      gnumake
       nixpkgs-fmt
       nodePackages.bash-language-server
       rnix-lsp

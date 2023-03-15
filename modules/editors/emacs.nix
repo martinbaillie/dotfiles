@@ -70,8 +70,8 @@ let
       # (hiPrio clang)
       vale
     ]
-    ++ optional config.targetSystem.isDarwin my.orgprotocolclient
-    ++ optional config.targetSystem.isLinux wkhtmltopdf;
+    ++ optional config.targetSystem.isDarwin my.orgprotocolclient;
+  # ++ optional config.targetSystem.isLinux wkhtmltopdf; # BROKEN.
 in
 {
   options.modules.editors.emacs = {

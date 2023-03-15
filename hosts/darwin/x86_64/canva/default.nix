@@ -1,10 +1,7 @@
 # MacBook Pro (16-inch, Intel, 2019) 64GB 8-core i9
 { pkgs, ... }: {
-  nix.settings = rec {
-    # $ sysctl -n hw.ncpu
-    cores = 16;
-    max-jobs = cores;
-  };
+  # $ sysctl -n hw.ncpu
+  nix.settings.cores = 16;
 
   modules = {
     desktop = {

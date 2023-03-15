@@ -80,6 +80,9 @@ setnull searchurls.yahoo
 command org_roam js javascript:location.href='org-protocol://roam-ref?template=w&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
 bind X org_roam
 
+unbind s
+bind s fillcmdline bmarks
+
 " Pop to other persistent tabs
 unbind S
 bind S buffer soundcloud.com

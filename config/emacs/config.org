@@ -233,9 +233,7 @@ Configure Emacs Modus themes if using.
   (custom-theme-set-faces! 'modus-operandi
     '(git-gutter-fr:deleted :background nil :foreground "#a60000" )
     '(git-gutter-fr:modified :background nil :foreground "#0031a9" )
-    '(git-gutter-fr:added :background nil :foreground "#005e00"))
-
-  (modus-themes-load-themes))
+    '(git-gutter-fr:added :background nil :foreground "#005e00")))
 #+end_src
 
 *** Formatting

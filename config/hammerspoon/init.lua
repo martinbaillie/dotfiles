@@ -82,17 +82,17 @@ end
 --------------------------------
 -- START VIM CONFIG - https://github.com/dbalatero/VimMode.spoon
 --------------------------------
-local VimMode = hs.loadSpoon("VimMode")
-local vim = VimMode:new()
+-- local VimMode = hs.loadSpoon("VimMode")
+-- local vim = VimMode:new()
 
-vim
-  :disableForApp('Emacs')
-  -- :disableForApp('Firefox')
-  :disableForApp('Terminal')
-  :disableForApp('zoom.us')
-  :enterWithSequence('jk')
-  -- :bindHotKeys({ enter = { {}, 'escape'} })
-  :shouldDimScreenInNormalMode(false)
-  :shouldShowAlertInNormalMode(true)
-  :setAlertFont("Courier New")
-  :enableBetaFeature('block_cursor_overlay')
+-- vim
+--   :disableForApp('Emacs')
+--   -- :disableForApp('Firefox')
+--   :disableForApp('Terminal')
+--   :disableForApp('zoom.us')
+--   :enterWithSequence('jk')
+--   -- :bindHotKeys({ enter = { {}, 'escape'} })
+--   :shouldDimScreenInNormalMode(false)
+--   :shouldShowAlertInNormalMode(true)
+--   :setAlertFont("Courier New")
+--   :enableBetaFeature('block_cursor_overlay')

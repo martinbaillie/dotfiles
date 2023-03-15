@@ -1,11 +1,8 @@
 {
   description = "Martin Baillie's 99p Flake";
   inputs = {
-    # Flakes mostly forces us to live on the edge at the moment.
-    nixpkgs.url = "nixpkgs/nixos-unstable";
-
-    # Which shifts my traditional unstable to _really_ unstable.
-    nixpkgs-unstable.url = "nixpkgs/master";
+    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     # Declarative, NixOS-style configuration but for macOS.
     darwin.url = github:lnl7/nix-darwin/master;
@@ -43,6 +40,14 @@
 
     # NixOS hardware definitions.
     nixos-hardware.url = github:nixos/nixos-hardware;
+
+    # Zgenom zsh package manager.
+    zgenom.flake = false;
+    zgenom.url = github:jandamm/zgenom;
+
+    # Tridactyl themes.
+    base16-tridactyl.flake = false;
+    base16-tridactyl.url = github:martinbaillie/base16-tridactyl;
   };
 
   # NOTE: Flake interface found at:

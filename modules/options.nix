@@ -69,8 +69,7 @@ in
         description = "Martin Baillie";
         packages = with pkgs; [ sops ssh-to-age ];
       } // optionalAttrs config.targetSystem.isLinux {
-        uid = 1000;
-        extraGroups = [ "wheel" ];
+        extraGroups = [ "wheel" "autologin" ];
         group = "users";
         home = "/home/${name}";
         isNormalUser = true;

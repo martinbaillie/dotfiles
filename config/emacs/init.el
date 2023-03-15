@@ -1,15 +1,14 @@
-;;(when (and noninteractive IS-LINUX)
-;;  (add-to-list 'doom-env-blacklist "^SWAYSOCK$"))
-;; (when (and noninteractive IS-MAC)
-;;  (add-to-list 'doom-env-whitelist "^SSH_"))
-;;
-;;
 ;; https://github.com/doomemacs/doomemacs/issues/6811
 ;; doom build
 (setq native-comp-deferred-compilation nil)
 (after! (doom-packages straight)
   (setq straight--native-comp-available t))
-(setq server-socket-dir "~/.local/share/emacs")
+
+;; I actually want this in my Doom env.
+(setq doom-env-allow '("^XDG_RUNTIME_DIR$"))
+
+;; Force correct socket usage on macOS.
+(setq server-socket-dir (concat (getenv "XDG_RUNTIME_DIR") "/" "emacs"))
 
 (doom! :input
        :completion

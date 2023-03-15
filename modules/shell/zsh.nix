@@ -1,4 +1,4 @@
-{ config, options, pkgs, lib, ... }:
+{ config, options, pkgs, lib, inputs, ... }:
 with lib;
 let
   cfg = config.modules.shell.zsh;
@@ -40,11 +40,7 @@ in
             ZDOTDIR = "${config.my.xdg.configHome}/zsh";
             ZSH_CACHE = "${config.my.xdg.cacheHome}/zsh";
             ZGEN_DIR = "${config.my.xdg.dataHome}/zsh";
-            ZGEN_SRC = builtins.fetchGit {
-              url = "https://github.com/jandamm/zgenom.git";
-              rev = "6ff785d403dd3f0d3b739c9c2d3508f49003441f";
-              ref = "main"; # zgenom@<2021-05-15 Sat>
-            };
+            ZGEN_SRC = inputs.zgenom;
 
             # Try very hard to have things favour XDG convention.
             PATH = [ "${config.my.home.homeDirectory}/.local/bin" ];

@@ -1,4 +1,4 @@
-{ config, options, lib, pkgs, ... }:
+{ config, options, lib, pkgs, inputs, ... }:
 with lib;
 let
   cfg = config.modules.web.browser.firefox;
@@ -77,8 +77,7 @@ in
         configFile = mkIf cfg.tridactyl {
           # Base16 colour schemes for Tridactyl.
           "tridactyl/themes" = {
-            source =
-              builtins.fetchGit "https://github.com/bezmi/base16-tridactyl.git";
+            source = inputs.base16-tridactyl;
             recursive = true;
           };
           "tridactyl/tridactylrc".text =

@@ -22,11 +22,15 @@ with lib; {
     {
       # My trusted binary caches.
       settings = {
-        substituters = map (x: x.url) all;
+        extra-substituters = map (x: x.url) all;
         trusted-public-keys = map (x: x.key) all;
       };
 
       extraOptions = ''
+        # $WORK currently forces this.
+        require-sigs = false
+        # Number of derivations that Nix will build in parallel.
+        max-jobs = auto
         # Control binary cache connections.
         binary-caches-parallel-connections = 50
         connect-timeout = 5

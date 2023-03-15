@@ -30,9 +30,6 @@ with lib.my; {
 
   # Boot and console.
   boot = {
-    # Use the latest Linux kernel.
-    kernelPackages = mkDefault pkgs.linuxPackages_5_10;
-
     # Cattle not pets.
     tmpOnTmpfs = true;
 
