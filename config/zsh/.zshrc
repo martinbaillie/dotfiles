@@ -61,6 +61,9 @@ setopt interactivecomments
 # Remove superfluous blanks before adding to history.
 setopt histreduceblanks
 
+# History sizes.
+export HISTFILESIZE=10000000 HISTSIZE=10000000 SAVEHIST=10000000
+
 ########################################################################
 # Look and feel.
 THEME="${ZDOTDIR}/theme.zsh"

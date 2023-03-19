@@ -137,7 +137,7 @@ in
         # Wire up Tridactyl native for macOS.
         # file."Library/Application Support/Mozilla/NativeMessagingHosts" = {
         #   source =
-        #     "${pkgs.tridactyl-native}/lib/mozilla/native-messaging-hosts";
+        #     "${pkgs.unstable.tridactyl-native}/lib/mozilla/native-messaging-hosts";
         #   recursive = true;
         # };
       };

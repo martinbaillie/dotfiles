@@ -80,6 +80,7 @@ setnull searchurls.yahoo
 command org_roam js javascript:location.href='org-protocol://roam-ref?template=w&ref='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(window.getSelection())
 bind X org_roam
 
+" Prefer bookmarks to another search dialogue.
 unbind s
 bind s fillcmdline bmarks
 

@@ -41,6 +41,7 @@
   - [[#yaml][yaml]]
   - [[#bazel][bazel]]
   - [[#terraform][terraform]]
+  - [[#kubernetes][kubernetes]]
   - [[#ox-clip][ox-clip]]
   - [[#pinentry][pinentry]]
   - [[#treemacs][treemacs]]
@@ -96,6 +97,8 @@ Private settings for current system.
 (package! protobuf-mode)
 (package! graphql-mode)
 (package! git-link)
+(package! kubel)
+(package! kubel-evil)
 (package! proced-narrow)
 (package! transpose-frame)
 (package! golden-ratio)
@@ -1082,12 +1085,14 @@ Evil is a little too like Vim. Make it better.
           (setq dir-files (delq file dir-files))))
     dir-files))
 
-(projectile-add-known-project (expand-file-name "~/Dropbox/org"))
-(projectile-add-known-project "/etc/dotfiles")
 
-(setq projectile-project-search-path (append projectile-project-search-path
-                                      '("~/personal" "~/upstream")))
-(mapc 'mkdir-if-missing projectile-project-search-path)
+(after! projectile
+  (projectile-add-known-project (expand-file-name "~/Dropbox/org"))
+  (projectile-add-known-project "/etc/dotfiles")
+
+  (setq projectile-project-search-path (append projectile-project-search-path
+                                               '("~/personal" "~/upstream")))
+  (mapc 'mkdir-if-missing projectile-project-search-path))
 #+end_src
 
 *** Ignore certain source code directories
@@ -1468,7 +1473,8 @@ Get the YAML language server to validate Kubernetes resources.
 #+end_src
 ** bazel
 #+begin_src elisp
-(add-to-list 'projectile-globally-ignored-directories "bazel-*")
+(after! projectile
+  (add-to-list 'projectile-globally-ignored-directories "bazel-*"))
 (use-package! bazel
   :config
   (setq bazel-buildifier-before-save t))
@@ -1495,6 +1501,41 @@ Enable LSP for Terraform.
 ;;   )
 ;; (add-hook 'terraform-mode-hook #'lsp-deferred)
 #+end_src
+** kubernetes
+#+begin_src elisp
+(use-package! kubel
+  :config (kubel-vterm-setup))
+(use-package! kubel-evil :after kubel)
+
+(map! :leader
+      (:prefix-map ("k" . "Kubernetes")
+       :desc "Apply" "a" #'kubel-apply
+       :desc "Apply" "d" #'mb/kubel-delete
+                   (:prefix ("c" . "Context")
+                    :desc "Context" "c" #'kubel-set-context
+                    :desc "Namespace" "n" #'kubel-set-namespace)))
+
+(defun mb/kubel-delete ()
+  "Save the current buffer to a temp file and try to kubectl delete it."
+  (interactive)
+  (setq dir-prefix (or
+                    (when (tramp-tramp-file-p default-directory)
+                      (with-parsed-tramp-file-name default-directory nil
+                        (format "/%s%s:%s@%s:" (or hop "") method user host)))
+                    ""))
+
+  (let* ((filename-without-tramp-prefix (format "/tmp/kubel/%s-%s.yaml"
+                                                (replace-regexp-in-string "\*\\| " "" (buffer-name))
+                                                (floor (float-time))))
+         (filename (format "%s%s" dir-prefix filename-without-tramp-prefix)))
+    (when (y-or-n-p "Delete the resource? ")
+      (unless  (file-exists-p (format "%s/tmp/kubel" dir-prefix))
+        (make-directory (format "%s/tmp/kubel" dir-prefix) t))
+      (write-region (point-min) (point-max) filename)
+      (kubel--exec (format "kubectl - delete - %s" filename) (list "delete" "-f" filename-without-tramp-prefix))
+      (message "Deleted %s" filename))))
+#+end_src
+
 ** ox-clip
 Use =M-x ox-clip-formatted-copy=
 #+BEGIN_SRC emacs-lisp
@@ -1703,44 +1744,23 @@ this enabled in most text mode.
 
 ** keycast-mode
 #+begin_src elisp
-(defun mb/toggle-keycast-modeline ()
-  "Toggle the keycast modeline"
-  (interactive)
-  (if keycast-mode
-      (add-to-list 'global-mode-string '("" mode-line-keycast))
-    (setq global-mode-string (remove '("" mode-line-keycast) global-mode-string))))
-
 (after! keycast
-  (define-minor-mode keycast-mode
-    "Show current command and its key binding in the mode line."
-    :global t
-    (if keycast-mode
-        (add-hook 'pre-command-hook 'keycast--update t)
-      (remove-hook 'pre-command-hook 'keycast--update)))
+  (setq keycast-insert-after '(:eval (doom-modeline-format--main))))
 
-  ;; `emacs-doom-themes' doesn't yet support `keycast' faces.
-  (custom-set-faces!
-    '(keycast-command :inherit mode-line-emphasis)
-    '(keycast-key :inherit mode-line-highlight
-                  :weight bold))
-
-  ;; Prettier insert events.
-  (dolist (input '(self-insert-command
-                   org-self-insert-command))
-    (add-to-list 'keycast-substitute-alist `(,input "." "Martin is typing...")))
-
-  ;; Remove mouse scroll events.
-  (dolist (event '(mwheel-scroll
-                   mouse-event-p
-                   mouse-movement-p))
-    (add-to-list 'keycast-substitute-alist `(,event nil)))
-
-  (add-hook! 'keycast-mode-hook #'mb/toggle-keycast-modeline))
+(defun mb/toggle-keycast-modeline()
+  (interactive)
+  (if (member '("" keycast-mode-line " ") global-mode-string)
+      (progn (setq global-mode-string (delete '("" keycast-mode-line " ") global-mode-string))
+             (setq keycast-mode-line-mode nil)
+             (message "Keycast off"))
+    (add-to-list 'global-mode-string '("" keycast-mode-line " "))
+    (keycast-mode-line-mode)
+    (message "Keycast on")))
 
 (map!
  :leader
  (:prefix-map ("T" . "toggle")
-  :desc "Keycast mode" "k" #'keycast-mode))
+  :desc "Keycast mode" "k" #'mb/toggle-keycast-modeline))
 #+end_src
 
 ** undo-tree

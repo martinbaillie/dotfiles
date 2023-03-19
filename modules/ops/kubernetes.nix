@@ -12,6 +12,7 @@ in
       kubectx
       kubernetes-helm
       kustomize
+      k9s
       stern
     ];
 
