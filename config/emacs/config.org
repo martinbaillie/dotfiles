@@ -1504,7 +1504,8 @@ Enable LSP for Terraform.
 ** kubernetes
 #+begin_src elisp
 (use-package! kubel
-  :config (kubel-vterm-setup))
+  ;; :config (kubel-vterm-setup)
+  )
 (use-package! kubel-evil :after kubel)
 
 (map! :leader

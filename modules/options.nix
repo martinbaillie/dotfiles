@@ -142,7 +142,13 @@ in
         let
           owner = config.user.name;
           group = if config.targetSystem.isDarwin then "staff" else "users";
-          genSecret = name: { inherit name; value = { inherit owner group; }; };
+          genSecret = name: {
+            inherit name;
+            value = {
+              inherit owner group;
+              path = "${config.my.xdg.dataHome}/secrets/${name}";
+            };
+          };
         in
         listToAttrs
           (map genSecret [
