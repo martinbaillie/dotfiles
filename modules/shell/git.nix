@@ -5,7 +5,10 @@ let
   configDir = "${config.dotfiles.configDir}/git";
 in
 {
-  options.modules.shell.git = { enable = my.mkBoolOpt false; };
+  options.modules.shell.git = {
+    enable = my.mkBoolOpt false;
+    monorepo = my.mkBoolOpt true; # Optimise for large monorepos.
+  };
 
   config = mkIf cfg.enable
     (mkMerge [
@@ -25,13 +28,11 @@ in
           diff-so-fancy
           gh
           git-lfs
-          rs-git-fsmonitor
-          watchman
-
           (mkIf config.modules.shell.gnupg.enable git-crypt)
-        ];
+        ] ++ optionals cfg.monorepo [ rs-git-fsmonitor watchman ];
 
-        env.WATCHMAN_CONFIG_FILE = "${config.my.xdg.configHome}/watchman/watchman.json";
+        env.WATCHMAN_CONFIG_FILE = optional cfg.monorepo
+          "${config.my.xdg.configHome}/watchman/watchman.json";
 
         modules.shell.zsh.rc = ''
           cdr() { cd $(git rev-parse --show-toplevel) }
@@ -46,20 +47,22 @@ in
         home = {
           configFile = {
             "git/config".text = builtins.readFile "${configDir}/config" + ''
-              # Speed up git operations for large monorepos.
-              # NOTE: Confirm with `watchman watch-list`.
-              [core]
-                  fsmonitor = ${pkgs.rs-git-fsmonitor}/bin/rs-git-fsmonitor;
               # NOTE: This needs to be in the user config rather than work config
               # because $GOPATH is outside of the work dir.
               [url "git@${config.private.work_vcs_host}:${config.private.work_vcs_path}"]
                   insteadOf = https://${config.private.work_vcs_host}/${config.private.work_vcs_path}
               [url "git@${config.private.work_vcs_host}:${config.private.work_vcs_path}/"]
                   insteadOf = ${config.private.work_vcs_path}:
+            '' + optionalString cfg.monorepo ''
+              # Speed up git operations for large monorepos.
+              # NOTE: Confirm with `watchman watch-list`.
+              [core]
+                  fsmonitor = ${pkgs.rs-git-fsmonitor}/bin/rs-git-fsmonitor;
             '';
             "git/ignore".source = "${configDir}/ignore";
             "git/attributes".source = "${configDir}/attributes";
 
+          } // optionalAttrs cfg.monorepo {
             # Here we tell watchman to only watch directory hierarchies that have a
             # `.watchmanconfig` file at their root.
             "watchman/watchman.json".text = builtins.toJSON ({
@@ -74,6 +77,7 @@ in
                 email = ${config.private.work_email}
             [init]
                 defaultBranch = master
+          '' + optionalString cfg.monorepo ''
             [pack]
                 # NOTE: run `git repack -Ad`
                 writeReverseIndex = true
