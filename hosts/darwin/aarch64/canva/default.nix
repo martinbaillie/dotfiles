@@ -1,0 +1,69 @@
+# MacBook Pro (16-inch, Apple Silicon, 2021) 64GB M1 Max.
+{ pkgs, inputs, ... }: {
+  # $ sysctl -n hw.ncpu
+  nix.settings.cores = 10;
+
+  modules = {
+    desktop = {
+      enable = true;
+      sudoTouchID = true;
+      hammerspoon.enable = true;
+    };
+
+    editors = {
+      default = "emacs";
+
+      emacs = {
+        enable = true;
+        package = pkgs.emacsGit.overrideAttrs (_: {
+          src = inputs.emacs-macos;
+        });
+      };
+
+      vim.enable = true;
+    };
+
+    dev = {
+      enable = true;
+      go.enable = true;
+      python.enable = true;
+    };
+
+    ops = {
+      enable = true;
+      aws.enable = true;
+      kubernetes.enable = true;
+    };
+
+    services = {
+      dropbox.enable = true;
+      docker.enable = true;
+    };
+
+    shell = {
+      enable = true;
+      direnv.enable = true;
+      git = {
+        enable = true;
+        monorepo = false;
+      };
+      gnupg = {
+        enable = true;
+        cacheTTL = 34560000;
+      };
+      ssh.enable = true;
+      zsh.enable = true;
+    };
+
+    web = {
+      browser = {
+        firefox = {
+          enable = true;
+          tridactyl = true;
+        };
+      };
+    };
+  };
+
+  homebrew.casks = [ "vlc" "gimp" "drawio" ];
+}

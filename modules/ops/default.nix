@@ -7,14 +7,11 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
-      ngrok
-      # open-policy-agent
+      #open-policy-agent
       terraform
       terraform-ls
       yaml-language-server
-
-      # FIXME: Broken on aarch64.
-      # vault
+      vault
     ];
 
     modules.shell.zsh.aliases = { tf = "terraform"; };

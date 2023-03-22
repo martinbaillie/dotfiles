@@ -20,9 +20,16 @@
     sops-nix.url = github:4825764518/sops-nix/darwin;
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Emacs overlay.
+    # Emacs overlays.
     emacs-overlay.url = github:nix-community/emacs-overlay;
     emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    emacs-macos = {
+      type = "github";
+      owner = "tyler-dodge";
+      repo = "emacs";
+      ref = "tyler-main-emacs-29";
+      flake = false;
+    };
 
     # Vale styles.
     vale-Google.flake = false;

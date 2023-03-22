@@ -37,6 +37,17 @@ sudo systemsetup -setremotelogin on
 #+BEGIN_SRC shell
 sudo xcodebuild -license
 #+END_SRC
+**** Change hostname to match target Nix machine
+#+begin_src shell
+sudo scutil --set HostName nixmachine
+sudo scutil --set LocalHostName nixmachine
+sudo scutil --set ComputerName nixmachine
+dscacheutil -flushcache
+#+end_src
+**** Add a new =keys= group
+For sops-nix.
+1. System settings --> Users and Groups --> Add Account --> Group
+2. Press (i) on =keys= and attach it to =mbaillie=
 **** Install Homebrew for those macOS GUI apps unmanageable through Nix
 #+BEGIN_SRC shell
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -46,27 +57,10 @@ sudo xcodebuild -license
 softwareupdate --install-rosetta
 #+end_src
 **** Install Nix (multi-user)
-NOTE: Do not use =sudo= here.
 #+BEGIN_SRC shell
-# curl https://nixos.org/nix/install | sh
-sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume --daemon
-#+END_SRC
-**** Enable Flakes and experimental commands
-Move to experimental.
-#+begin_src shell
-nix-env -iA nixpkgs.nixUnstable
-#+end_src
-
-#+begin_src shell
-cat << EOF | sudo tee -a /etc/nix/nix.conf
-experimental-features = nix-command flakes
-extra-platforms = x86_64-darwin aarch64-darwin
-EOF
-sudo launchctl kickstart -k system/org.nixos.nix-daemon
-#+end_src
-**** [OPTIONAL] Confirm remotely accessible
-#+BEGIN_SRC shell
-ssh $REMOTE nix-daemon --version
+curl --proto '=https' --tlsv1.2 -sSf -L \
+    https://install.determinate.systems/nix | \
+    sh -s -- install
 #+END_SRC
 **** [OPTIONAL] Seed Nix store contents from an existing Darwin machine
 #+BEGIN_SRC shell

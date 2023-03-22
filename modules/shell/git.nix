@@ -15,10 +15,7 @@ in
       (if (builtins.hasAttr "homebrew" options) then {
         homebrew = {
           taps = [ "microsoft/git" ];
-          casks = [
-            # Microsoft Git deps are broken.
-            "microsoft-git"
-          ];
+          casks = [ "microsoft-git" ];
         };
       } else {
         user.packages = [ pkgs.gitFull ];
@@ -58,6 +55,13 @@ in
               # NOTE: Confirm with `watchman watch-list`.
               [core]
                   fsmonitor = ${pkgs.rs-git-fsmonitor}/bin/rs-git-fsmonitor;
+                  splitIndex = true
+              [status]
+                  aheadBehind = false
+              [sparse]
+                  expectFilesOutsideOfPatterns = true
+              [feature]
+                  manyFiles = true
             '';
             "git/ignore".source = "${configDir}/ignore";
             "git/attributes".source = "${configDir}/attributes";
@@ -79,7 +83,7 @@ in
                 defaultBranch = master
           '' + optionalString cfg.monorepo ''
             [pack]
-                # NOTE: run `git repack -Ad`
+                # NOTE: run `git repack -ad`
                 writeReverseIndex = true
           '';
         };

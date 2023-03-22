@@ -14,7 +14,7 @@
 	default = simple
 [checkout]
 	workers = 0
-	thresholdForParallelism = 50
+	thresholdForParallelism = 1000
 [fetch]
 	prune = true
 [protocol]
@@ -29,6 +29,11 @@
 	excludesfile = ~/.config/git/ignore
 [merge]
 	tool = ediff
+	stat = false
+[merge "ours"]
+	driver = true
+[rebase]
+	stat = false
 [mergetool "ediff"]
 	cmd = emacsclient -c -a \"\"  --eval \"(ediff-merge-files-with-ancestor \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" nil \\\"$MERGED\\\")\"
 [mergetool "nvimfugitive"]
