@@ -60,6 +60,7 @@
   - [[#nix][nix]]
   - [[#markdown][markdown]]
   - [[#spell-fu][spell-fu]]
+  - [[#openai][openai]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
   - [[#temp-wips][TEMP WIPs]]
@@ -1832,6 +1833,15 @@ Disabled modes.
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'markdown-mode-hook #'spell-fu-mode)
 (add-hook 'org-mode-hook #'spell-fu-mode)
+#+end_src
+
+** openai
+#+begin_src elisp
+(after! chatgpt-shell
+  (setq
+   chatgpt-shell-model-version "gpt-4"
+   chatgpt-shell-openai-key
+        (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 #+end_src
 
 ** vterm
