@@ -12,14 +12,12 @@
 
     editors = {
       default = "emacs";
-
       emacs = {
         enable = true;
-        package = pkgs.emacsGit.overrideAttrs (_: {
-          src = inputs.emacs-macos;
-        });
+        #package = pkgs.emacs.overrideAttrs (_: {
+        #          src = inputs.emacs-macos;
+        #        });
       };
-
       vim.enable = true;
     };
 
@@ -45,7 +43,7 @@
       direnv.enable = true;
       git = {
         enable = true;
-        monorepo = false;
+        monorepo = true;
       };
       gnupg = {
         enable = true;

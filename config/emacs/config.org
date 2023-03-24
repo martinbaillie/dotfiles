@@ -108,6 +108,8 @@ Private settings for current system.
 (package! magit-lfs)
 (package! bazel-mode
   :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
+(package! chatgpt-shell
+  :recipe (:type git :host github :repo "xenodium/chatgpt-shell"))
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
@@ -332,10 +334,11 @@ Use orderless and fallback on flex.
   (add-to-list 'completion-styles 'flex t))
 #+end_src
 *** Lookup online
-I really just use the one search engine from Emacs.
 #+begin_src elisp
 (setq +lookup-provider-url-alist
-      '(("Kagi" "https://kagi.com/search?q=%s")))
+      '(("Google" "https://google.com/search?q=%s")
+        ("GitHub" "https://github.com/search?ref=simplesearch&q=%s")
+        ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
 #+end_src
 * UI/macOS
 *** Source a clean shell environment
@@ -1838,7 +1841,7 @@ Disabled modes.
 ** openai
 #+begin_src elisp
 (after! chatgpt-shell
-  (setq
+ (setq
    chatgpt-shell-model-version "gpt-4"
    chatgpt-shell-openai-key
         (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))

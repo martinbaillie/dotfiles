@@ -3,6 +3,17 @@ with lib;
 let
   cfg = config.modules.shell.git;
   configDir = "${config.dotfiles.configDir}/git";
+  rs-git-fsmonitor =
+    if config.targetSystem.isDarwin then
+      pkgs.rs-git-fsmonitor.overrideAttrs
+        (_: {
+          # Take control of TMPDIR to prevent annoying macOS launchd popups.
+          fixupPhase = ''
+            wrapProgram $out/bin/rs-git-fsmonitor \
+            --set TMPDIR "/tmp" \
+            --prefix PATH ":" "${lib.makeBinPath [ pkgs.watchman ]}" ;
+          '';
+        }) else pkgs.rs-git-fsmonitor;
 in
 {
   options.modules.shell.git = {
@@ -24,9 +35,12 @@ in
         user.packages = with pkgs; [
           diff-so-fancy
           gh
-          git-lfs
           (mkIf config.modules.shell.gnupg.enable git-crypt)
-        ] ++ optionals cfg.monorepo [ rs-git-fsmonitor watchman ];
+        ] ++ optionals cfg.monorepo [
+          git-lfs
+          rs-git-fsmonitor
+          watchman
+        ];
 
         env.WATCHMAN_CONFIG_FILE = optional cfg.monorepo
           "${config.my.xdg.configHome}/watchman/watchman.json";
@@ -42,6 +56,7 @@ in
         '';
 
         home = {
+
           configFile = {
             "git/config".text = builtins.readFile "${configDir}/config" + ''
               # NOTE: This needs to be in the user config rather than work config
@@ -54,7 +69,7 @@ in
               # Speed up git operations for large monorepos.
               # NOTE: Confirm with `watchman watch-list`.
               [core]
-                  fsmonitor = ${pkgs.rs-git-fsmonitor}/bin/rs-git-fsmonitor;
+                  fsmonitor = ${rs-git-fsmonitor}/bin/rs-git-fsmonitor;
                   splitIndex = true
               [status]
                   aheadBehind = false
@@ -67,11 +82,8 @@ in
             "git/attributes".source = "${configDir}/attributes";
 
           } // optionalAttrs cfg.monorepo {
-            # Here we tell watchman to only watch directory hierarchies that have a
-            # `.watchmanconfig` file at their root.
             "watchman/watchman.json".text = builtins.toJSON ({
-              enforce_root_files = true;
-              root_files = [ ".watchmanconfig" ];
+              root_restrict_files = [ ".git" ];
             });
           };
 

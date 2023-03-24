@@ -55,6 +55,7 @@ in
         xar
         yq-go
         zip
+        zstd
 
         # unstable.wireshark
 
