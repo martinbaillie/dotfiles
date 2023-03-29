@@ -8,6 +8,7 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       #open-policy-agent
+      crane
       terraform
       terraform-ls
       yaml-language-server

@@ -7,6 +7,7 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
+      jsonnet-language-server
       krew
       kubectl
       kubectx

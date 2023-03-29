@@ -42,7 +42,6 @@ let
           # ; ./autobuild -i \
           #   /Users/mbaillie/.config/emacs/.local/straight/build-29.0.50/pdf-tools \
           #   --os nixos
-
           org-pdftools
           vterm
         ]

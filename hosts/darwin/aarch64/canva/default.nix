@@ -24,6 +24,14 @@
     dev = {
       enable = true;
       go.enable = true;
+      javascript = {
+        enable = true;
+        typescript.enable = true;
+      };
+      jvm = {
+        enable = true;
+        bazel.enable = true;
+      };
       python.enable = true;
     };
 
@@ -36,6 +44,7 @@
     services = {
       dropbox.enable = true;
       docker.enable = true;
+      ssh.enable = true;
     };
 
     shell = {
@@ -63,5 +72,5 @@
     };
   };
 
-  homebrew.casks = [ "vlc" "gimp" "drawio" ];
+  homebrew.casks = [ "vlc" "gimp" "drawio" "monodraw" ];
 }

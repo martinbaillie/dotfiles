@@ -1,16 +1,16 @@
 {
   description = "Martin Baillie's 99p Flake";
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixpkgs.url = "nixpkgs/release-22.11";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
+
+    # Declarative user home management.
+    home-manager.url = github:rycee/home-manager/release-22.11;
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Declarative, NixOS-style configuration but for macOS.
     darwin.url = github:lnl7/nix-darwin/master;
     darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Declarative user home management.
-    home-manager.url = github:rycee/home-manager/master;
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Block adservers, fake news etc.
     bad-hosts.url = github:StevenBlack/hosts;

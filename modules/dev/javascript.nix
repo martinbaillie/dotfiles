@@ -18,6 +18,8 @@ in
         nodePackages.stylelint
         nodePackages.js-beautify
 
+        nodePackages.vscode-json-languageserver
+
         # FIXME: Various things still call this `json-ls` so alias required.
         nodePackages.vscode-json-languageserver-bin
         (runCommand "json-ls-alias" { } ''

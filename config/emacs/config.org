@@ -55,6 +55,8 @@
   - [[#rainbow-mode][rainbow-mode]]
   - [[#web-mode][web-mode]]
   - [[#keycast-mode][keycast-mode]]
+  - [[#prettier-js][prettier-js]]
+  - [[#jsonnet-mode][jsonnet-mode]]
   - [[#undo-tree][undo-tree]]
   - [[#proced][proced]]
   - [[#nix][nix]]
@@ -95,6 +97,8 @@ Private settings for current system.
 (package! exec-path-from-shell)
 (package! keycast)
 (package! rego-mode)
+(package! prettier-js)
+(package! jsonnet-mode)
 (package! protobuf-mode)
 (package! graphql-mode)
 (package! git-link)
@@ -110,6 +114,11 @@ Private settings for current system.
   :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
 (package! chatgpt-shell
   :recipe (:type git :host github :repo "xenodium/chatgpt-shell"))
+(package! openai
+  :recipe (:type git :host github :repo "emacs-openai/openai"))
+(package! chatgpt
+  :recipe (:type git :host github :repo "emacs-openai/chatgpt"))
+(package! gptel)
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
@@ -1161,6 +1170,9 @@ Silence annoying popup
 ** go
 *** LSP (lsp-mode)
 #+begin_src elisp
+;; Debug LSP with:
+;; (setq lsp-log-io t)
+
 ;; (after! go-mode
 ;;   (defun lsp-go-install-save-hooks ()
 ;;     (add-hook 'before-save-hook #'lsp-organize-imports t t))
@@ -1767,6 +1779,43 @@ this enabled in most text mode.
  (:prefix-map ("T" . "toggle")
   :desc "Keycast mode" "k" #'mb/toggle-keycast-modeline))
 #+end_src
+** prettier-js
+#+begin_src elisp
+(setq lsp-javascript-format-enable nil)
+(add-hook! 'js2-mode-hook 'prettier-js-mode)
+(add-hook! 'web-mode-hook 'prettier-js-mode)
+(add-hook! 'typescript-mode-hook 'prettier-js-mode)
+#+end_src
+
+** jsonnet-mode
+#+begin_src elisp
+(after! lsp-mode
+  ;; Configure lsp-mode language identifiers.
+  (defcustom lsp-jsonnet-executable "jsonnet-language-server"
+    "Command to start the Jsonnet language server."
+    :group 'lsp-jsonnet
+    :risky t
+    :type 'file)
+
+  (add-to-list 'lsp-language-id-configuration '(jsonnet-mode . "jsonnet"))
+
+  (lsp-register-custom-settings
+   '(("formatting.StringStyle" "double")))
+
+  ;; Register jsonnet-language-server with the LSP client.
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-stdio-connection (lambda () lsp-jsonnet-executable))
+    :activation-fn (lsp-activate-on "jsonnet")
+    :initialized-fn (lambda (workspace)
+                      (with-lsp-workspace workspace
+                        (lsp--set-configuration
+                         (lsp-configuration-section "formatting"))))
+    :server-id 'jsonnet))
+
+  ;; Start the language server whenever jsonnet-mode is used.
+  (add-hook! 'jsonnet-mode-hook #'lsp-deferred))
+#+end_src
 
 ** undo-tree
 #+begin_src elisp
@@ -1821,7 +1870,7 @@ this enabled in most text mode.
 ** nix
 #+begin_src elisp
 ;; TODO is there a more standard way to trigger LSP?
-(add-hook! 'nix-mode-hook #'lsp!)
+(add-hook! 'nix-mode-hook #'lsp-deferred)
 (add-hook! 'nix-mode-hook 'nixpkgs-fmt-on-save-mode)
 #+end_src
 ** markdown
@@ -1841,10 +1890,19 @@ Disabled modes.
 ** openai
 #+begin_src elisp
 (after! chatgpt-shell
- (setq
+  (setq
    chatgpt-shell-model-version "gpt-4"
    chatgpt-shell-openai-key
-        (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+
+(after! openai
+        (setq openai-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+
+(after! gptel
+        (setq gptel-api-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+
+(after! chatgpt
+  (setq chatgpt-model "gpt-4"))
 #+end_src
 
 ** vterm
