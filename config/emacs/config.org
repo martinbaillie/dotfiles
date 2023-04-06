@@ -118,6 +118,7 @@ Private settings for current system.
   :recipe (:type git :host github :repo "emacs-openai/openai"))
 (package! chatgpt
   :recipe (:type git :host github :repo "emacs-openai/chatgpt"))
+(package! org-ai)
 (package! gptel)
 
 ;; Let roam-ui manage org-roam
@@ -1873,6 +1874,7 @@ this enabled in most text mode.
 (add-hook! 'nix-mode-hook #'lsp-deferred)
 (add-hook! 'nix-mode-hook 'nixpkgs-fmt-on-save-mode)
 #+end_src
+
 ** markdown
 Add .mdx support
 #+begin_src emacs-lisp :tangle yes
@@ -1896,13 +1898,24 @@ Disabled modes.
    (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 
 (after! openai
-        (setq openai-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+  (setq openai-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 
 (after! gptel
-        (setq gptel-api-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+  (setq
+   gptel-api-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
+   gptel-default-mode 'org-mode))
 
 (after! chatgpt
   (setq chatgpt-model "gpt-4"))
+
+(use-package! org-ai
+  :ensure
+  :commands (org-ai-mode)
+  :init
+  (add-hook 'org-mode-hook #'org-ai-mode)
+  :config
+  (setq org-ai-default-chat-model "gpt-4")
+  (org-ai-install-yasnippets))
 #+end_src
 
 ** vterm

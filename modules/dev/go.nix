@@ -22,7 +22,7 @@ in
 
       unstable.go_1_19
       unstable.gofumpt
-      # unstable.gopls
+      unstable.gopls
       # unstable.golangci-lint
     ]
     ++ optional config.modules.dev.jvm.bazel.enable bazel-gazelle
@@ -35,7 +35,6 @@ in
       # Ensure Go modules work with $WORK private (SSH keyed) repositories.
       GOPRIVATE = config.private.work_vcs_host + "/"
         + config.private.work_vcs_path + "/*";
-      GOOS = "$(uname -s | tr '[:upper:]' '[:lower:]')";
       GOPATH = "${config.my.xdg.dataHome}/go";
       PATH = [ "${config.my.xdg.dataHome}/go/bin" ];
     };
