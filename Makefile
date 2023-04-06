@@ -70,8 +70,8 @@ endif
 .PHONY:	gc
 
 # Remote deploy targets.
-deploy-zuul: ; sudo nixos-rebuild switch --flake '.#zuul' --target-host mbaillie@zuul --build-host localhost --impure
-deploy-naptime: ; sudo nixos-rebuild switch --flake '.#naptime' --target-host mbaillie@naptime --build-host localhost --impure
+deploy-zuul: ; sudo nixos-rebuild switch --flake '.#zuul' --target-host mbaillie@zuul --build-host localhost --impure && rsync -avz --delete --exclude '.git' --exclude '.private/.git' /etc/dotfiles mbaillie@zuul:/etc/
+deploy-naptime: ; sudo nixos-rebuild switch --flake '.#naptime' --target-host mbaillie@naptime --build-host localhost --impure && rsync -avz --delete --exclude '.git' --exclude '.private/.git' /etc/dotfiles mbaillie@naptime:/etc/
 .PHONY: deploy-zuul deploy-naptime
 
 # Emacs configuration.

@@ -127,7 +127,9 @@
       enable = true;
       layout = "au";
       desktopManager = {
-        kodi.enable = true;
+        kodi = {
+          enable = true;
+        };
       };
 
       displayManager = {
@@ -141,5 +143,16 @@
     # TODO:
     # - Prometheus, Grafana etc.
     # - RTC Wake?
+  };
+
+  networking.firewall = {
+    allowedTCPPorts = [
+      8080 # Kodi.
+      9090 # Kodi.
+    ];
+    allowedUDPPorts = [
+      8080 # Kodi.
+      9090 # Kodi.
+    ];
   };
 }
