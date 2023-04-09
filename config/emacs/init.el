@@ -12,8 +12,8 @@
 
 (doom! :input
        :completion
-       (company +tng)    ; the ultimate code completion backend
-       (vertico +icons)  ; the search engine of the future
+       (company +tng +childframe)    ; the ultimate code completion backend
+       (vertico +icons +childframe)  ; the search engine of the future
 
        :ui
        doom              ; what makes DOOM look the way it does
@@ -21,16 +21,14 @@
        doom-quit         ; DOOM quit-message prompts when you quit Emacs
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        minimap           ; show a map of the code on the side
-       modeline          ; snazzy, Atom-inspired modeline, plus API
+       ;;modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
        ophints           ; highlight the region an operation acts on
        (popup +all
               +defaults) ; tame sudden yet inevitable temporary windows
-       (ligatures
-        +extra
-        ;; +iosevka TODO: needs special version
-        ); ligatures or substitute text with pretty symbols
-       treemacs          ; a project drawer, like neotree but cooler
+       (ligatures +extra); ligatures or substitute text with pretty symbols
+       (treemacs +lsp)   ; a project drawer, like neotree but cooler
+       unicode
        vc-gutter         ; vcs diff in the fringe
        ;; vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
@@ -61,12 +59,12 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax            ; tasing you for every semicolon you forget
+       (syntax            ; tasing you for every semicolon you forget
+        +childframe)
        spell             ; tasing you for misspelling mispelling
        ;; grammar           ; tasing grammar mistake every you make
 
        :tools
-       ansible
        direnv
        docker
        editorconfig      ; let someone else argue about tabs vs spaces

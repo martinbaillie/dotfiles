@@ -72,5 +72,5 @@
     };
   };
 
-  homebrew.casks = [ "vlc" "gimp" "drawio" "monodraw" ];
+  homebrew.casks = [ "discord" "gimp" "drawio" "monodraw" "vlc" ];
 }

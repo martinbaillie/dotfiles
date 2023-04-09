@@ -86,7 +86,10 @@ bind s fillcmdline bmarks
 
 " Pop to other persistent tabs
 unbind S
-bind S buffer soundcloud.com
+unbind D
+bind A buffer soundcloud.com
+bind S buffer slack.com
+bind D buffer discord.com
 bind M buffer mail.google.com
 bind C buffer calendar.google.com
 

@@ -24,11 +24,11 @@
     "base16-tridactyl": {
       "flake": false,
       "locked": {
-        "lastModified": 1678183570,
-        "narHash": "sha256-eCOzbauT24RMzX/h2JE5quaa4W2BNuwKF+AhHLoLIyI=",
+        "lastModified": 1681011494,
+        "narHash": "sha256-NImzuGeNM3ZIyMFSSglN0d79394wAy9pGy6r36HUpHQ=",
         "owner": "martinbaillie",
         "repo": "base16-tridactyl",
-        "rev": "229c715b56064349b11fb812b1fcc94fb7a1f31d",
+        "rev": "cd9d0c15f98e0838311ec997ce5c4c557289451a",
         "type": "github"
       },
       "original": {

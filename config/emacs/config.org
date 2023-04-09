@@ -63,6 +63,7 @@
   - [[#markdown][markdown]]
   - [[#spell-fu][spell-fu]]
   - [[#openai][openai]]
+  - [[#vertico][vertico]]
   - [[#vterm][vterm]]
   - [[#exwm][EXWM]]
   - [[#temp-wips][TEMP WIPs]]
@@ -73,6 +74,7 @@
       user-mail-address "martin@baillie.id"
       auth-sources '((:source "/etc/dotfiles/.private/authinfo.gpg")))
 #+end_src
+
 * Private
 Private settings for current system.
 #+begin_src elisp
@@ -80,13 +82,13 @@ Private settings for current system.
       (when (file-exists-p +private)
         (load! +private)))
 #+end_src
+
 * Packages
 ** Upstream
 #+begin_src elisp :tangle packages.el
 ;; (package! dap-mode)
-(package! nyan-mode)
+;; (package! nyan-mode)
 (package! org-fancy-priorities)
-(package! magit-org-todos)
 (package! edit-indirect)
 (package! vimrc-mode)
 (package! pinentry)
@@ -109,7 +111,6 @@ Private settings for current system.
 (package! golden-ratio)
 (package! pomm)
 (package! emacs-everywhere)
-(package! magit-lfs)
 (package! bazel-mode
   :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
 (package! chatgpt-shell
@@ -120,10 +121,18 @@ Private settings for current system.
   :recipe (:type git :host github :repo "emacs-openai/chatgpt"))
 (package! org-ai)
 (package! gptel)
+(package! doom-nano-modeline
+  :recipe (:type git :host github :repo "ronisbr/doom-nano-modeline"))
+
+(package! transient-posframe)
+
+(package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
 
 ;; Let roam-ui manage org-roam
 (unpin! org-roam)
 (package! org-roam-ui)
+
+(package! magit-org-todos)
 
 ;; Trialing the Modus themes in stock Emacs
 (package! modus-themes)
@@ -280,6 +289,23 @@ Configure Emacs Modus themes if using.
 
 *** Simpler modeline
 #+begin_src elisp
+(use-package! doom-nano-modeline
+  :config
+  (doom-nano-modeline-mode 1)
+  (global-hide-mode-line-mode 1)
+  (setq  doom-nano-modeline-top-padding 0.1
+         doom-nano-modeline-bottom-padding 0.1)
+
+  (defun doom-nano-modeline--space ()
+  "Function to return a space for the modeline render function."
+  `(("" . nil)))
+
+  (defun doom-nano-modeline--vterm-mode ()
+    "Render the modeline in `vterm-mode'."
+    (doom-nano-modeline--render
+     `((,(abbreviate-file-name default-directory)
+        . doom-nano-modeline-major-mode-face)) nil t)))
+
 (after! doom-modeline
   ;; Don't care about encoding.
   (setq doom-modeline-buffer-encoding nil)
@@ -307,11 +333,11 @@ Configure Emacs Modus themes if using.
   ;; Re-organise and simplify when in EXWM.
   (when IS-LINUX
     (doom-modeline-def-modeline 'main
-      '(bar workspace-name window-number buffer-info word-count
-            remote-host parrot modals buffer-position selection-info)
-      '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
-                    input-method indent-info buffer-encoding major-mode
-                    process vcs checker matches))))
+                                '(bar workspace-name window-number buffer-info word-count
+                                  remote-host parrot modals buffer-position selection-info)
+                                '(objed-state persp-name grip irc mu4e gnus debug repl lsp minor-modes
+                                  input-method indent-info buffer-encoding major-mode
+                                  process vcs checker matches))))
 #+end_src
 
 *** Default modes
@@ -332,17 +358,20 @@ Configure Emacs Modus themes if using.
 #+begin_src elisp
 (setq load-prefer-newer t)
 #+end_src
+
 *** Pixel scroll precision
 Aww yeah. Scroll up or down at pixel resolution.
 #+begin_src elisp
 (when (fboundp 'pixel-scroll-precision-mode) (pixel-scroll-precision-mode 1))
 #+end_src
+
 *** Fuzzier completion
 Use orderless and fallback on flex.
 #+begin_src elisp
 (after! orderless
   (add-to-list 'completion-styles 'flex t))
 #+end_src
+
 *** Lookup online
 #+begin_src elisp
 (setq +lookup-provider-url-alist
@@ -350,6 +379,7 @@ Use orderless and fallback on flex.
         ("GitHub" "https://github.com/search?ref=simplesearch&q=%s")
         ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
 #+end_src
+
 * UI/macOS
 *** Source a clean shell environment
 #+begin_src elisp
@@ -1389,17 +1419,21 @@ Locate the preferred language server.
 ** nyanmode
 Oh gees.
 #+begin_src elisp
-(use-package! nyan-mode
-  :after doom-modeline
-  :init
-  (setq nyan-bar-length 20)
-   (nyan-mode))
+;; (use-package! nyan-mode
+;;   :after doom-modeline
+;;   :init
+;;   (setq nyan-bar-length 20)
+;;    (nyan-mode))
 #+end_src
 
 ** dired
 Dired coloured icons.
 #+begin_src elisp
 (setq all-the-icons-dired-monochrome nil)
+
+(use-package! dired
+  :custom
+  (dired-listing-switches "-Aghov --group-directories-first"))
 #+end_src
 
 ** avy
@@ -1898,24 +1932,33 @@ Disabled modes.
    (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 
 (after! openai
-  (setq openai-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+  (setq openai-key
+        (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 
 (after! gptel
   (setq
-   gptel-api-key (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
+   gptel-api-key
+   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
    gptel-default-mode 'org-mode))
 
 (after! chatgpt
   (setq chatgpt-model "gpt-4"))
 
 (use-package! org-ai
-  :ensure
   :commands (org-ai-mode)
   :init
   (add-hook 'org-mode-hook #'org-ai-mode)
   :config
   (setq org-ai-default-chat-model "gpt-4")
   (org-ai-install-yasnippets))
+#+end_src
+** vertico
+#+begin_src elisp
+(after! vertico
+  (vertico-mouse-mode)
+  (setq vertico-posframe-border-width 2)
+  (custom-set-faces!
+    '(vertico-posframe-border :inherit default :background "#bd93f9")))
 #+end_src
 
 ** vterm
@@ -1986,6 +2029,10 @@ also uses `evil-mode'. This version sends a `vterm' INS when in `emacs'."
   )
 
 (add-hook 'evil-insert-state-entry-hook #'evil-collection-vterm-send-escape-vterm)
+#+end_src
+*** Speed
+#+begin_src elisp
+(setq vterm-timer-delay 0.01)
 #+end_src
 
 *** Scroll
@@ -2079,8 +2126,8 @@ Miscellaneous vterm bindings.
   :i "H-S-SPC" "SPC"
 
   ;; Term sequences.
-  :i "C-c" #'vterm-send-C-c
-  :i "C-z" #'vterm-send-C-z
+  :i "C-c" (lambda () (interactive) (vterm-send-key (kbd "C-c")))
+  :i "C-z" (lambda () (interactive) (vterm-send-key (kbd "C-z")))
 
   ;; Claim TAB from Emacs.
   :i [tab] #'vterm-send-tab

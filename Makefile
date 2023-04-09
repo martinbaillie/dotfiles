@@ -114,6 +114,7 @@ light: TERM_THEME ?=base16-tomorrow.sh
 light:
 ifeq ($(SYSTEM),Darwin)
 light: darwin-wallpaper
+light:
 	osascript \
 		-e 'tell application "System Events"' \
 		-e 'tell appearance preferences' \
@@ -138,6 +139,7 @@ dark: TERM_THEME ?=base16-dracula.sh
 dark:
 ifeq ($(SYSTEM),Darwin)
 dark: darwin-wallpaper
+dark:
 	osascript \
 		-e 'tell application "System Events"' \
 		-e 'tell appearance preferences' \
