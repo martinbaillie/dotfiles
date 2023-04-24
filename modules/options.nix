@@ -73,6 +73,7 @@ in
         group = "users";
         home = "/home/${name}";
         isNormalUser = true;
+        uid = 1000;
       }
       // optionalAttrs config.targetSystem.isDarwin { home = "/Users/${name}"; };
 

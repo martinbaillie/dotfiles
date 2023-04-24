@@ -10,17 +10,17 @@ let
     nodes = [
       {
         hostName = "betsy";
-        ipAddress = "10.0.1.5";
+        ipAddress = "10.1.1.5";
         ethernetAddress = "28:7f:cf:53:79:6f";
       }
       {
         hostName = "eth.betsy";
-        ipAddress = "10.0.1.5";
+        ipAddress = "10.1.1.5";
         ethernetAddress = "f8:75:a4:1c:c0:38";
       }
       {
         hostName = "bebek";
-        ipAddress = "10.0.1.6";
+        ipAddress = "10.1.1.6";
         ethernetAddress = "3c:a6:f6:10:98:dc";
       }
     ];
@@ -37,16 +37,6 @@ in
     blockFakenews = true;
     blockGambling = true;
   };
-
-  ##############################################################
-  # TEMP:
-  users.users.root.password = lib.mkForce "nixos";
-  services.openssh = {
-    permitRootLogin = lib.mkForce "yes";
-    passwordAuthentication = lib.mkForce true;
-  };
-  services.getty.autologinUser = lib.mkForce "root";
-  ##############################################################
 
   modules = {
     editors = {
@@ -94,26 +84,11 @@ in
 
   networking = {
     enableIPv6 = false;
+
     domain = network.domain;
     search = [ network.domain ];
 
-    bridges = {
-      br0.interfaces = lan;
-    };
-
-    vlans = {
-      # Trusted, free-roam personal devices.
-      prv = {
-        id = 20;
-        interface = "br0";
-      };
-
-      # Untrusted, locked-down IoT devices.
-      iot = {
-        id = 30;
-        interface = "br0";
-      };
-    };
+    bridges.br0.interfaces = lan;
 
     # The global useDHCP flag is deprecated, therefore explicitly set to false
     # here. Per-interface useDHCP will be mandatory in the future, so this
@@ -131,34 +106,25 @@ in
       enp2s0.useDHCP = false;
       enp3s0.useDHCP = false;
 
-      prv = {
+      br0 = {
         ipv4.addresses = [{
-          address = "10.0.1.1";
+          address = "10.1.1.1";
           prefixLength = 24;
         }];
+        useDHCP = false;
       };
-
-      iot = {
-        ipv4.addresses = [{
-          address = "10.0.254.1";
-          prefixLength = 24;
-        }];
-      };
-
     };
 
     # NAT.
     nat = {
       enable = true;
+      enableIPv6 = false;
+
       externalInterface = wan;
       internalInterfaces = lan;
-      internalIPs = [ ]
-        ++ map (a: "${a.address}/${toString a.prefixLength} allow")
-        config.networking.interfaces.prv.ipv4.addresses
-        ++ map (a: "${a.address}/${toString a.prefixLength} allow")
-        config.networking.interfaces.iot.ipv4.addresses;
+      internalIPs = map (a: "${a.address}/${toString a.prefixLength}")
+        config.networking.interfaces.br0.ipv4.addresses;
     };
-
 
     firewall = {
       enable = true;
@@ -172,25 +138,18 @@ in
 
   services.dhcpd4 = {
     enable = true;
-    interfaces = lan;
+    interfaces = [ "br0" ];
     machines = network.nodes;
     extraFlags = [ "-d" ];
     extraConfig = ''
-      option domain-name-servers 10.0.1.1;
+      option domain-name-servers 10.1.1.1;
       option subnet-mask 255.255.255.0;
 
-      subnet 10.0.1.0 netmask 255.255.255.0 {
-        option domain-name-servers 10.0.1.1;
-        option broadcast-address 10.0.1.255;
-        option routers 10.0.1.1;
-        range 10.0.1.128 10.0.1.254;
-      }
-
-      subnet 10.0.254.0 netmask 255.255.255.0 {
-        option domain-name-servers 10.0.1.1;
-        option broadcast-address 10.0.254.255;
-        option routers 10.0.254.1;
-        range 10.0.254.128 10.0.254.254;
+      subnet 10.1.1.0 netmask 255.255.255.0 {
+        option domain-name-servers 10.1.1.1;
+        option broadcast-address 10.1.1.255;
+        option routers 10.1.1.1;
+        range 10.1.1.128 10.1.1.254;
       }
     '';
   };
@@ -214,16 +173,14 @@ in
             "127.0.0.0/8 allow"
           ]
           ++ map (a: "${a.address}/${toString a.prefixLength} allow")
-            config.networking.interfaces.prv.ipv4.addresses
-          ++ map (a: "${a.address}/${toString a.prefixLength} allow")
-            config.networking.interfaces.iot.ipv4.addresses;
+            config.networking.interfaces.br0.ipv4.addresses;
 
           # Ensure privacy of local IP (RFC1918) ranges.
           private-address = [
             "192.168.0.0/16"
             "169.254.0.0/16"
             "172.16.0.0/12"
-            "10.0.0.0/8"
+            "10.1.0.0/8"
             "fd00::/8"
             "fe80::/10"
           ];
@@ -275,6 +232,17 @@ in
       };
     };
   };
+
+  # Monitoring.
+  # services.grafana-agent.enable = true;
+
+  services.prometheus.exporters.unbound.enable = true;
+  services.prometheus.exporters.unbound.listenAddress = "127.0.0.1";
+  services.prometheus.exporters.unbound.controlInterface = "/run/unbound/unbound.ctl";
+
+  services.prometheus.exporters.node.enable = true;
+  services.prometheus.exporters.node.listenAddress = "127.0.0.1";
+  services.prometheus.exporters.node.enabledCollectors = [ "systemd" ];
 
   environment.systemPackages = with pkgs; [
     conntrack-tools
