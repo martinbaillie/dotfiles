@@ -14,9 +14,9 @@
       default = "emacs";
       emacs = {
         enable = true;
-        #package = pkgs.emacs.overrideAttrs (_: {
-        #          src = inputs.emacs-macos;
-        #        });
+        # package = pkgs.emacsUnstable.overrideAttrs (_: {
+        #   src = inputs.emacs-macos;
+        # });
       };
       vim.enable = true;
     };

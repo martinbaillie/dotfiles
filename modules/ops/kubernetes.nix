@@ -7,6 +7,7 @@ in
 
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
+      argocd
       jsonnet-language-server
       krew
       kubectl

@@ -59,7 +59,7 @@ with lib; {
     systemPackages = with pkgs; [
       cachix
       neofetch
-      # TODO unstable.nix-output-monitor
+      unstable.nurl
     ];
     variables = {
       # Force XDG defaults as soon as possible.

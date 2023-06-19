@@ -1,11 +1,11 @@
 {
   description = "Martin Baillie's 99p Flake";
   inputs = {
-    nixpkgs.url = "nixpkgs/release-22.11";
+    nixpkgs.url = "nixpkgs/release-23.05";
     nixpkgs-unstable.url = "nixpkgs/nixos-unstable";
 
     # Declarative user home management.
-    home-manager.url = github:rycee/home-manager/release-22.11;
+    home-manager.url = github:rycee/home-manager/release-23.05;
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Declarative, NixOS-style configuration but for macOS.

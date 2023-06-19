@@ -1,9 +1,9 @@
 ;; https://github.com/doomemacs/doomemacs/issues/6811
 ;; doom build
-(setq native-comp-deferred-compilation nil)
+;; (setq native-comp-deferred-compilation nil)
+(setq inhibit-automatic-native-compilation t)
 (after! (doom-packages straight)
   (setq straight--native-comp-available t))
-
 ;; I actually want this in my Doom env.
 (setq doom-env-allow '("^XDG_RUNTIME_DIR$"))
 
@@ -24,6 +24,7 @@
        ;;modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
        ophints           ; highlight the region an operation acts on
+       indent-guides
        (popup +all
               +defaults) ; tame sudden yet inevitable temporary windows
        (ligatures +extra); ligatures or substitute text with pretty symbols

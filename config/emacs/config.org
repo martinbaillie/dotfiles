@@ -19,6 +19,7 @@
 - [[#keyslinux][Keys/Linux]]
 - [[#keysmacos][Keys/macOS]]
 - [[#package-customisation][Package Customisation]]
+  - [[#treesit-auto][treesit-auto]]
   - [[#org][org]]
   - [[#org-roam][org-roam]]
   - [[#org-gcal][org-gcal]]
@@ -30,7 +31,6 @@
   - [[#direnv][direnv]]
   - [[#hl-todo][hl-todo]]
   - [[#format-all][format-all]]
-  - [[#company][company]]
   - [[#go][go]]
   - [[#python][python]]
   - [[#flycheck][flycheck]]
@@ -62,6 +62,7 @@
   - [[#nix][nix]]
   - [[#markdown][markdown]]
   - [[#spell-fu][spell-fu]]
+  - [[#company][company]]
   - [[#openai][openai]]
   - [[#vertico][vertico]]
   - [[#vterm][vterm]]
@@ -115,6 +116,9 @@ Private settings for current system.
   :recipe (:type git :host github :repo "bazelbuild/emacs-bazel-mode"))
 (package! chatgpt-shell
   :recipe (:type git :host github :repo "xenodium/chatgpt-shell"))
+(package! shell-maker
+  :recipe (:type git :host github :repo "xenodium/chatgpt-shell" :files ("shell-maker.el")))
+(package! org-assistant)
 (package! openai
   :recipe (:type git :host github :repo "emacs-openai/openai"))
 (package! chatgpt
@@ -124,6 +128,8 @@ Private settings for current system.
 (package! doom-nano-modeline
   :recipe (:type git :host github :repo "ronisbr/doom-nano-modeline"))
 
+;; (package! treesit-auto)
+
 (package! transient-posframe)
 
 (package! closql :pin "0a7226331ff1f96142199915c0ac7940bac4afdd")
@@ -132,7 +138,7 @@ Private settings for current system.
 (unpin! org-roam)
 (package! org-roam-ui)
 
-(package! magit-org-todos)
+;; (package! magit-org-todos)
 
 ;; Trialing the Modus themes in stock Emacs
 (package! modus-themes)
@@ -160,9 +166,12 @@ Various forks and packages of my own.
 *** Frame titles and toolbar
 #+begin_src elisp
 ;; Set a standard title.
-(setq frame-title-format '("%b — Emacs")
-      doom-fallback-buffer-name "*new buffer*"
-      +doom-dashboard-name "Emacs")
+(when IS-MAC (setq frame-title-format nil))
+(when IS-LINUX (setq frame-title-format '("%b — Emacs")))
+
+(setq
+ doom-fallback-buffer-name "*new buffer*"
+ +doom-dashboard-name "Emacs")
 
 ;; Hide the toolbar.
 (tool-bar-mode 0)
@@ -300,6 +309,11 @@ Configure Emacs Modus themes if using.
   "Function to return a space for the modeline render function."
   `(("" . nil)))
 
+  (defun mb/doom-nano-modeline-local-disable ()
+    (interactive)
+    "Disables the modeline locally in a buffer"
+    (setq-local doom-nano-modeline-mode nil))
+
   (defun doom-nano-modeline--vterm-mode ()
     "Render the modeline in `vterm-mode'."
     (doom-nano-modeline--render
@@ -329,7 +343,7 @@ Configure Emacs Modus themes if using.
   ;; SEE: doom-modeline-continuous-word-count-modes
   (setq doom-modeline-enable-word-count t)
   ;; Try to fix icons falling off the RHS edge.
-  (setq all-the-icons-scale-factor 0.9)
+  ;; (setq all-the-icons-scale-factor 0.9)
   ;; Re-organise and simplify when in EXWM.
   (when IS-LINUX
     (doom-modeline-def-modeline 'main
@@ -368,8 +382,9 @@ Aww yeah. Scroll up or down at pixel resolution.
 *** Fuzzier completion
 Use orderless and fallback on flex.
 #+begin_src elisp
-(after! orderless
-  (add-to-list 'completion-styles 'flex t))
+;; Don't like this anymore.
+;; (after! orderless
+;;   (add-to-list 'completion-styles 'flex t))
 #+end_src
 
 *** Lookup online
@@ -423,8 +438,8 @@ Use orderless and fallback on flex.
 *** Transparency
 #+begin_src elisp
 (when IS-MAC
-  (set-frame-parameter (selected-frame) 'alpha '(97 . 97))
-  (add-to-list 'default-frame-alist '(alpha . (97 . 97)))
+  (set-frame-parameter (selected-frame) 'alpha '(98 . 98))
+  (add-to-list 'default-frame-alist '(alpha . (98 . 98)))
   (add-to-list 'default-frame-alist '(inhibit-double-buffering . t)))
 #+end_src
 
@@ -441,6 +456,9 @@ Set frame transparency and maximize windows by default.
 * Keys/General
 Miscellaneous.
 #+begin_src elisp
+(unbind-key "C-<tab>" evil-normal-state-map)
+(unbind-key "C-<tab>" evil-visual-state-map)
+(unbind-key "C-<tab>" evil-insert-state-map)
 (map!
  :n "C-s" #'save-buffer
  :n "C-/" #'evil-avy-goto-char-timer
@@ -565,6 +583,14 @@ Find in dotfiles.
 (defun mkdir-if-missing (path)
   (if (not (file-exists-p (expand-file-name path)))
     (make-directory (expand-file-name path t))))
+#+end_src
+
+** treesit-auto
+#+begin_src elisp
+;; (use-package! treesit-auto
+;;   :config
+;;   (setq treesit-auto-install 'prompt)
+;;   (global-treesit-auto-mode))
 #+end_src
 
 ** org
@@ -1186,18 +1212,6 @@ Silence annoying popup
 ;;   (remove-hook 'before-save-hook #'+format-buffer-h))
 #+end_src
 
-** company
-*** Keys
-#+begin_src elisp
-(use-package! company-tng
-  :config
-  (define-key! company-active-map
-    "RET" 'company-complete-selection
-    [return] 'company-complete-selection
-    )
-  )
-#+end_src
-
 ** go
 *** LSP (lsp-mode)
 #+begin_src elisp
@@ -1259,6 +1273,9 @@ Silence annoying popup
                     :major-modes '(sh-mode)
                     :priority -1
                     :server-id 'bash-ls)))
+
+;; Prefer snippets.
+;; (setq +lsp-company-backends '(:separate company-yasnippet company-capf))
 
 ;; (defun lsp-mode-go-packages-driver
 ;;       (puthash "GOPACKAGESDRIVER" (concat (projectile-project-root) "/gopackagesdriver.sh") lsp-go-env)
@@ -1489,7 +1506,7 @@ Automatically add a git signoff line based on discovered environmental identity.
 #+end_src
 *** TODOs
 #+begin_src elisp
-(use-package magit-org-todos :config (magit-org-todos-autoinsert))
+;; (use-package magit-org-todos :config (magit-org-todos-autoinsert))
 #+end_src
 
 *** Status buffer
@@ -1554,10 +1571,9 @@ Enable LSP for Terraform.
 #+end_src
 ** kubernetes
 #+begin_src elisp
-(use-package! kubel
+(setq kubel-kubectl "/etc/profiles/per-user/mbaillie/bin/kubectl")
+;; (use-package! kubel-evil :after kubel)
   ;; :config (kubel-vterm-setup)
-  )
-(use-package! kubel-evil :after kubel)
 
 (map! :leader
       (:prefix-map ("k" . "Kubernetes")
@@ -1825,31 +1841,30 @@ this enabled in most text mode.
 ** jsonnet-mode
 #+begin_src elisp
 (after! lsp-mode
-  ;; Configure lsp-mode language identifiers.
   (defcustom lsp-jsonnet-executable "jsonnet-language-server"
     "Command to start the Jsonnet language server."
     :group 'lsp-jsonnet
     :risky t
     :type 'file)
 
+  ;; Configure lsp-mode language identifiers.
   (add-to-list 'lsp-language-id-configuration '(jsonnet-mode . "jsonnet"))
-
-  (lsp-register-custom-settings
-   '(("formatting.StringStyle" "double")))
 
   ;; Register jsonnet-language-server with the LSP client.
   (lsp-register-client
    (make-lsp-client
     :new-connection (lsp-stdio-connection (lambda () lsp-jsonnet-executable))
     :activation-fn (lsp-activate-on "jsonnet")
-    :initialized-fn (lambda (workspace)
-                      (with-lsp-workspace workspace
-                        (lsp--set-configuration
-                         (lsp-configuration-section "formatting"))))
     :server-id 'jsonnet))
 
   ;; Start the language server whenever jsonnet-mode is used.
-  (add-hook! 'jsonnet-mode-hook #'lsp-deferred))
+  (add-hook 'jsonnet-mode-hook #'lsp-deferred)
+
+  ;; Annoying that this is in the global LSP workspace scope but it's the only
+  ;; way I could make it work.
+  (add-hook 'lsp-after-initialize-hook (lambda () (lsp--set-configuration
+                                                   (list :formatting
+                                                         (list :StringStyle "double"))))))
 #+end_src
 
 ** undo-tree
@@ -1922,36 +1937,96 @@ Disabled modes.
 (add-hook 'markdown-mode-hook #'spell-fu-mode)
 (add-hook 'org-mode-hook #'spell-fu-mode)
 #+end_src
+** company
+*** Keys
+#+begin_src elisp
+;; (use-package! company
+;;   :custom
+;;   (company-minimum-prefix-length 1)
+;;   (company-idle-delay 0.0))
+
+(defun mb/reset-company-complete-selection ()
+  (map! (:map company-active-map
+              "RET" #'company-complete-selection
+              "[return]" #'company-complete-selection)))
+(add-hook! 'company-mode-hook :append #'mb/reset-company-complete-selection)
+#+end_src
 
 ** openai
 #+begin_src elisp
+(setf (alist-get (rx bos (or "*dall-e*" "*chatgpt*" "*ChatGPT*") eos)
+                 display-buffer-alist nil nil #'equal)
+      '((display-buffer-reuse-window
+         (lambda (buffer alist)
+           (when-let* ((win (display-buffer-pop-up-window buffer alist)))
+             (select-window win))))
+        (side . right)
+        (direction . right)))
+
 (after! chatgpt-shell
   (setq
-   chatgpt-shell-model-version "gpt-4"
+   chatgpt-shell-model-version "gpt-4-32k"
    chatgpt-shell-openai-key
-   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
+   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
+   dall-e-shell-openai-key
+   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie"))
+  (map!
+   :after comint
+   :map comint-mode-map
+   :nv "RET" 'vterm-exit-visual-insert
+   :vni "C-SPC" 'evil-normal-state
+   :nvi "C-w" evil-window-map))
 
 (after! openai
   (setq openai-key
         (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")))
 
-(after! gptel
+(use-package! gptel
+  :hook (gptel-mode . visual-fill-column-mode)
+  :config
   (setq
    gptel-api-key
    (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
-   gptel-default-mode 'org-mode))
+   gptel-default-mode 'org-mode)
+  :init
+  (setq gptel-model "gpt-4-32k")
+  (defvar gptel-quick--history nil)
+  (defun gptel-quick (prompt)
+    (interactive (list (read-string "ChatGPT: " nil gptel-quick--history)))
+    (when (string= prompt "") (user-error "A prompt is required."))
+    (gptel-request
+     prompt
+     :callback
+     (lambda (response info)
+       (if (not response)
+           (message "gptel-quick failed with message: %s" (plist-get info :status))
+         (with-current-buffer (get-buffer-create "*gptel-quick*")
+           (let ((inhibit-read-only t))
+             (erase-buffer)
+             (insert response))
+           (special-mode)
+           (display-buffer (current-buffer)))))))
+  (map!
+   :vgni "s-]" #'gptel-menu
+   :vgni "s-[" #'gptel-quick))
 
 (after! chatgpt
-  (setq chatgpt-model "gpt-4"))
+  (setq chatgpt-model "gpt-4-32k"))
 
 (use-package! org-ai
   :commands (org-ai-mode)
   :init
   (add-hook 'org-mode-hook #'org-ai-mode)
   :config
-  (setq org-ai-default-chat-model "gpt-4")
+  (setq org-ai-default-chat-model "gpt-4-32k")
   (org-ai-install-yasnippets))
+
+(after! org-assistant
+(setq org-assistant-auth-function
+   (auth-source-pick-first-password :host "api.openai.com" :user "mbaillie")
+   org-assistant-model "gpt-4-32k"))
 #+end_src
+
 ** vertico
 #+begin_src elisp
 (after! vertico
@@ -2193,6 +2268,8 @@ Load my flavour of EXWM when in Linux.
 #+end_src
 
 ** TEMP WIPs
+
+
 Work around https://github.com/hlissner/doom-emacs/issues/5529
 #+begin_src elisp
 (add-hook! vterm-mode (persp-add-buffer (current-buffer)))
@@ -2245,3 +2322,40 @@ mailing list.
 | Hi there          | Mate |
 |-------------------+------|
 | Not working is it | No   |
+
+#+begin_src elisp
+(defun mb/show-welcome-buffer ()
+  "Show *scratch* buffer."
+  (with-current-buffer (get-buffer-create "*scratch*")
+    (setq truncate-lines t)
+    (let* ((buffer-read-only)
+           (image-path (expand-file-name "unicorn.png" doom-private-dir))
+           (image (create-image image-path))
+           (size (image-size image))
+           (height (cdr size))
+           (width (car size))
+           (top-margin (floor (/ (- (window-height) height) 2)))
+           (left-margin (floor (/ (- (window-width) width) 2)))
+           (prompt-title ""))
+      (erase-buffer)
+      (setq mode-line-format nil)
+      (goto-char (point-min))
+      (insert (make-string top-margin ?\n ))
+      (insert (make-string left-margin ?\ ))
+      (insert-image image)
+      (insert "\n\n\n")
+      (insert (make-string (floor (/ (- (window-width) (string-width prompt-title)) 2)) ?\ ))
+      (insert prompt-title))
+    (setq cursor-type nil)
+    (read-only-mode +1)
+    (switch-to-buffer (current-buffer))
+    (local-set-key (kbd "q") 'kill-this-buffer)))
+
+(setq initial-scratch-message nil)
+(setq inhibit-startup-screen t)
+
+(when (< (length command-line-args) 2)
+  (add-hook 'emacs-startup-hook (lambda ()
+                                  (when (display-graphic-p)
+                                    (mb/show-welcome-buffer)))))
+#+end_src

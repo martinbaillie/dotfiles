@@ -137,7 +137,7 @@ stdenv.mkDerivation rec {
   installPhase = ''
     mkdir -p $out/Applications
     /usr/bin/osacompile -o $out/Applications/OrgProtocolClient.app ${scpt}
-    cp ${pkgs.emacsGit}/Applications/Emacs.app/Contents/Resources/{document,Emacs}.icns $out/Applications/OrgProtocolClient.app/Contents/Resources/
+    cp ${pkgs.emacs}/Applications/Emacs.app/Contents/Resources/{document,Emacs}.icns $out/Applications/OrgProtocolClient.app/Contents/Resources/
     cp -f ${plist} $out/Applications/OrgProtocolClient.app/Contents/Info.plist
   '';
 

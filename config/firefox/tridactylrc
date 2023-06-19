@@ -2,6 +2,7 @@
 sanitise tridactyllocal tridactylsync
 
 " Plain old, new tabs.
+" NOTE: If stuck on one of these, use <C-,> to get Tridactyl focus
 set newtab about:blank
 
 " Slack shortcuts.
