@@ -107,7 +107,7 @@ bind ;c hint -c [class*="expand"],[class="togg"]
 set tabsort mru
 
 " Search engine and shortcuts.
-set searchengine g
+set searchengine k
 " General.
 set searchurls.g https://www.google.com.au/search?q=%s
 set searchurls.k https://kagi.com/search?q=%s

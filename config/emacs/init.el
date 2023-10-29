@@ -66,11 +66,14 @@
        ;; grammar           ; tasing grammar mistake every you make
 
        :tools
+       (debugger +lsp)
        direnv
        docker
        editorconfig      ; let someone else argue about tabs vs spaces
        (eval +overlay)   ; run code, run (also, repls)
-       lookup            ; navigate your code and its documentation
+       (lookup           ; navigate your code and its documentation
+        +dictionary
+        +offline)
        (lsp +peek)
        (magit +forge)    ; a git porcelain for Emacs
        make              ; run make tasks from Emacs

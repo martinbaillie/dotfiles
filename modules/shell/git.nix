@@ -24,10 +24,7 @@ in
   config = mkIf cfg.enable
     (mkMerge [
       (if (builtins.hasAttr "homebrew" options) then {
-        homebrew = {
-          taps = [ "microsoft/git" ];
-          casks = [ "microsoft-git" ];
-        };
+        user.packages = [ pkgs.unstable.gitFull ];
       } else {
         user.packages = [ pkgs.gitFull ];
       })
@@ -38,7 +35,7 @@ in
           (mkIf config.modules.shell.gnupg.enable git-crypt)
         ] ++ optionals cfg.monorepo [
           git-lfs
-          rs-git-fsmonitor
+          unstable.rs-git-fsmonitor
           watchman
         ];
 
@@ -52,6 +49,11 @@ in
             git for-each-ref --format '%(refname:short)' refs/heads \
               | grep -v "master\|main" \
               | xargs git branch -D
+          }
+          gfu() {
+            git fetch origin $1
+            git branch $1 FETCH_HEAD
+            git checkout $1
           }
         '';
 
@@ -70,7 +72,8 @@ in
               # NOTE: Confirm with `watchman watch-list`.
               [core]
                   fsmonitor = ${rs-git-fsmonitor}/bin/rs-git-fsmonitor;
-                  splitIndex = true
+                  # Causes corruption:
+                  # splitIndex = true
               [status]
                   aheadBehind = false
               [sparse]

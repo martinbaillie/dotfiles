@@ -130,9 +130,8 @@ in
       # homebrew.casks = [ "firefox" ];
       # Expose my custom Darwin Firefox derivation to the environment and the
       # home-manager module.
-      environment.systemPackages = [ pkgs.my.firefox ];
       home = {
-        programs.firefox.package = pkgs.my.firefox;
+        programs.firefox.package = pkgs.firefox-bin;
 
         # Wire up Tridactyl native for macOS.
         # file."Library/Application Support/Mozilla/NativeMessagingHosts" = {

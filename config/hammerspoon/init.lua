@@ -12,6 +12,7 @@ hs.hotkey.bind({"ctrl", "cmd"}, "1", utils.toggleApplication(
     -- "/Applications/Emacs"
 ))
 hs.hotkey.bind({"ctrl", "cmd"}, "2", utils.toggleApplication("org.mozilla.firefox", nil))
+hs.hotkey.bind({"ctrl", "cmd"}, "3", utils.toggleApplication("com.tinyspeck.slackmacgap", nil))
 
 -- Emacs edit / capture.
 require("hs.ipc")

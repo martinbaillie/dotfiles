@@ -37,6 +37,11 @@ in
         ijq
         inetutils
         jq
+        (pkgs.writeShellScriptBin "jqMaybe"
+          ''while IFS= read -r line
+            do
+            echo "$line" | jq -S '.' 2>/dev/null || echo "$line"
+            done'')
         killall
         lsof
         ncdu
@@ -53,6 +58,7 @@ in
         unzip
         wget
         xar
+        xsv
         yq-go
         zip
         zstd

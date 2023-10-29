@@ -30,7 +30,7 @@
       };
       jvm = {
         enable = true;
-        bazel.enable = true;
+        bazel.enable = false;
       };
       python.enable = true;
     };
@@ -72,5 +72,5 @@
     };
   };
 
-  homebrew.casks = [ "discord" "gimp" "drawio" "monodraw" "vlc" ];
+  homebrew.casks = [ "discord" "gimp" "drawio" "monodraw" "vlc" "amazon-chime" ];
 }

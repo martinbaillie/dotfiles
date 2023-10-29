@@ -54,6 +54,8 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+[diff]
+	noprefix = true
 [diff-so-fancy]
 	stripLeadingSymbols = false
 [filter "lfs"]
@@ -63,3 +65,7 @@
 	required = true
 [url "git@github.com:martinbaillie"]
     insteadOf = martinbaillie:
+[blame]
+	ignoreRevsFile = .git-blame-ignore-revs
+	markIgnoredLines = true
+	markUnblamableLines = true

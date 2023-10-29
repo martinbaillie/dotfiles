@@ -97,6 +97,26 @@
         "type": "github"
       }
     },
+    "firefox-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1694824736,
+        "narHash": "sha256-GQGN99hVdhwDMHsAWhnWahESWLXfzBu4RWMcqFyzHvA=",
+        "owner": "bandithedoge",
+        "repo": "nixpkgs-firefox-darwin",
+        "rev": "f3043cd4b4a01b4fbcf0a433ccba25bb52d3306d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bandithedoge",
+        "repo": "nixpkgs-firefox-darwin",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "inputs": {
         "systems": "systems"
@@ -222,6 +242,7 @@
         "darwin": "darwin",
         "emacs-macos": "emacs-macos",
         "emacs-overlay": "emacs-overlay",
+        "firefox-darwin": "firefox-darwin",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",

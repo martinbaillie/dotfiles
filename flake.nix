@@ -48,6 +48,10 @@
     # NixOS hardware definitions.
     nixos-hardware.url = github:nixos/nixos-hardware;
 
+    # Firefox Darwin overlay.
+    firefox-darwin.url = github:bandithedoge/nixpkgs-firefox-darwin;
+    firefox-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     # Zgenom zsh package manager.
     zgenom.flake = false;
     zgenom.url = github:jandamm/zgenom;
@@ -66,6 +70,7 @@
     , darwin
     , bad-hosts
     , emacs-overlay
+    , firefox-darwin
     , ...
     }:
     let
@@ -97,7 +102,7 @@
         });
 
       pkgs = genAttrs supportedSystems.all
-        (mkPkgs nixpkgs [ emacs-overlay.overlay self.overlay rosettaOverlay ]);
+        (mkPkgs nixpkgs [ emacs-overlay.overlay self.overlay rosettaOverlay firefox-darwin.overlay ]);
       pkgsUnstable =
         genAttrs supportedSystems.all (mkPkgs nixpkgs-unstable [ ]);
 

@@ -8,10 +8,12 @@ in
   config = mkIf cfg.enable {
     user.packages = with pkgs; [
       #open-policy-agent
+      buildkite-cli
+      buildkite-agent
       crane
       terraform
       terraform-ls
-      yaml-language-server
+      unstable.yaml-language-server
       vault
     ];
 

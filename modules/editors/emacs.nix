@@ -68,6 +68,7 @@ let
       # pandoc
       # (hiPrio clang)
       vale
+      wordnet
     ]
     ++ optional config.targetSystem.isDarwin my.orgprotocolclient;
   # ++ optional config.targetSystem.isLinux wkhtmltopdf; # BROKEN.

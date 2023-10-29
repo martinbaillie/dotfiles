@@ -23,6 +23,7 @@
   - [[#org][org]]
   - [[#org-roam][org-roam]]
   - [[#org-gcal][org-gcal]]
+  - [[#org-auto-tangle][org-auto-tangle]]
   - [[#ediff][ediff]]
   - [[#pomm][pomm]]
   - [[#evil][evil]]
@@ -89,9 +90,11 @@ Private settings for current system.
 #+begin_src elisp :tangle packages.el
 ;; (package! dap-mode)
 ;; (package! nyan-mode)
+(package! org-auto-tangle)
 (package! org-fancy-priorities)
 (package! edit-indirect)
 (package! vimrc-mode)
+(package! synosaurus)
 (package! pinentry)
 (package! move-text)
 (package! buffer-move)
@@ -390,7 +393,8 @@ Use orderless and fallback on flex.
 *** Lookup online
 #+begin_src elisp
 (setq +lookup-provider-url-alist
-      '(("Google" "https://google.com/search?q=%s")
+      '(("Kagi" "https://kagi.com/search?q=%s")
+        ("Google" "https://google.com/search?q=%s")
         ("GitHub" "https://github.com/search?ref=simplesearch&q=%s")
         ("Sourcegraph" "https://sourcegraph.com/search?q=context:global+%s&patternType=literal")))
 #+end_src
@@ -614,7 +618,7 @@ Find in dotfiles.
 #+begin_src elisp
 (org-tree-slide-presentation-profile)
 
-(setq +org-present-text-scale 1
+(setq +org-present-text-scale 3
       org-tree-slide-modeline-display nil
       org-tree-slide-slide-in-effect t
       org-tree-slide-cursor-init nil
@@ -626,8 +630,8 @@ Find in dotfiles.
         :content nil))
 
 (defun mb/org-tree-slide-mode-hook ()
-  (setq-local evil-motion-trainer-mode nil)
-  (spell-fu-mode-disable)
+  (spell-fu-mode -1)
+  (setq evil-motion-trainer-mode nil)
   (org-display-inline-images)
   (doom-disable-line-numbers-h))
 
@@ -683,9 +687,10 @@ Org the world.
   (file-name-directory (directory-file-name org-archive-location)))
 #+end_src
 
-*** Fold all on startup
+*** Fold/show things on startup
 #+begin_src elisp
 (setq org-startup-folded 'content)
+(setq org-startup-with-inline-images t)
 #+end_src
 
 *** Capture templates
@@ -961,6 +966,14 @@ NOTE: Occasionally need to run =org-gcal-sync-tokens-clear=
       :map evil-org-agenda-mode-map :m "q" #'org-agenda-exit)
 #+end_src
 
+** org-auto-tangle
+#+begin_src elisp
+(use-package! org-auto-tangle
+  :defer t
+  :config (setq org-auto-tangle-default t)
+  :hook (org-mode . org-auto-tangle-mode))
+#+end_src
+
 ** ediff
 #+begin_src elisp
 (defun ediff-copy-both-to-C ()
@@ -1113,6 +1126,8 @@ Removes the status if EMOJI and TEXT are nil."
 Evil is a little too like Vim. Make it better.
 #+begin_src elisp
 (setq
+ ;; Evil minibuffers
+ evil-collection-setup-minibuffer t
  ;; Do not move the cursor back one after insert mode.
  ;; evil-move-cursor-back nil
  ;; Finer undo according to Emacs heuristics
@@ -1239,6 +1254,7 @@ Silence annoying popup
    lsp-file-watch-threshold 4000
    lsp-enable-file-watchers nil
    lsp-go-use-gofumpt t
+   lsp-go-use-placeholders t
    lsp-go-goimports-local mb/device-local-gopackage
    lsp-gopls-hover-kind "FullDocumentation"
    lsp-go-build-flags ["-tags=integration e2e smoke"]
@@ -1257,6 +1273,7 @@ Silence annoying popup
                      (shadow . t)
                      (unusedparams . t)
                      (unusedwrite . t)
+                     (unusedvariable . t)
                      (useany . t)))
   (lsp-register-custom-settings
    '(("gopls.completeUnimported" t t)
@@ -1473,6 +1490,12 @@ Dired coloured icons.
 *** Avatars
 #+begin_src elisp
 (setq magit-revision-show-gravatars '("^Author:     " . "^Commit:     "))
+#+end_src
+
+*** Branch ordering
+#+begin_src elisp
+;; "-creatordate"
+(setq magit-list-refs-sortby "-committerdate")
 #+end_src
 
 *** Git sign-off line
@@ -1935,7 +1958,7 @@ Disabled modes.
 #+begin_src elisp
 (remove-hook 'text-mode-hook #'spell-fu-mode)
 (add-hook 'markdown-mode-hook #'spell-fu-mode)
-(add-hook 'org-mode-hook #'spell-fu-mode)
+(remove-hook 'org-mode-hook #'spell-fu-mode)
 #+end_src
 ** company
 *** Keys
@@ -2358,4 +2381,52 @@ mailing list.
   (add-hook 'emacs-startup-hook (lambda ()
                                   (when (display-graphic-p)
                                     (mb/show-welcome-buffer)))))
+#+end_src
+
+#+begin_src elisp
+(defun +org-present-prettify-slide-h ()
+  "Set up the org window for presentation."
+  (let ((arg (if org-tree-slide-mode +1 -1)))
+    (if (not org-tree-slide-mode)
+        (when +org-present--last-wconf
+          (set-window-configuration +org-present--last-wconf))
+      (setq +org-present--last-wconf (current-window-configuration))
+      (doom/window-maximize-buffer))
+    ;; (when (fboundp 'centered-window-mode)
+    ;;   (setq-local cwm-use-vertical-padding t)
+    ;;   (setq-local cwm-frame-internal-border 100)
+    ;;   (setq-local cwm-left-fringe-ratio -10)
+    ;;   (setq-local cwm-centered-window-width 300)
+    ;;   (centered-window-mode arg))
+    (hide-mode-line-mode arg)
+    (+org-pretty-mode arg)
+    (cond (org-tree-slide-mode
+           (set-window-fringes nil 0 0)
+           (when (bound-and-true-p flyspell-mode)
+             (flyspell-mode -1))
+           (add-hook 'kill-buffer-hook #'+org-present--cleanup-org-tree-slides-mode
+                     nil 'local)
+           (text-scale-set +org-present-text-scale)
+           (ignore-errors (org-latex-preview '(4))))
+          (t
+           (text-scale-set 0)
+           (pcase (type-of fringe-mode)
+             ((or 'integer 'symbol) (set-window-fringes nil fringe-mode fringe-mode))
+             ('cons (set-window-fringes nil (car fringe-mode) (cdr fringe-mode))))
+           (org-clear-latex-preview)
+           (org-remove-inline-images)
+           (org-mode)))
+    (redraw-display)))
+#+end_src
+
+#+begin_src elisp
+(defun mb/insert-todo-here ()
+  "Add a TODO item."
+  (interactive)
+  (insert "TODO(mbaillie): ")
+  (evil-insert-state 1))
+(map!
+ :leader
+ (:prefix-map ("i" . "insert")
+  :desc "TODO item here" "t" #'mb/insert-todo-here))
 #+end_src
