@@ -15,8 +15,6 @@ in
       configFile = {
         # Piggyback wallpaper change trigger to perform non-Nix managed updates.
         "wallpaper".onChange = "make -B -C /etc/dotfiles dark";
-
-        "bat/config".text = ''--theme="Dracula"'';
       };
     };
   };

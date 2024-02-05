@@ -18,9 +18,6 @@ in
       configFile = {
         # Piggyback wallpaper change trigger to perform non-Nix managed updates.
         "wallpaper".onChange = "make -B -C /etc/dotfiles light";
-
-        # "bat/config".text = ''--theme="Solarized (light)"'';
-        "bat/config".text = ''--theme="ansi"'';
       };
     };
   };

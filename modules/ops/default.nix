@@ -12,7 +12,7 @@ in
       buildkite-agent
       crane
       terraform
-      terraform-ls
+      unstable.terraform-ls
       unstable.yaml-language-server
       vault
     ];

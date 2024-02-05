@@ -18,6 +18,9 @@ function prompt_martin_setup {
   autoload -Uz add-zsh-hook
   add-zsh-hook -Uz chpwd (){print -Pn "\e]2;%2~\a"}
 
+  # Set the title once initially.
+  print -Pn "\e]2;%2~\a"
+
   # Tell prezto we manage this prompt.
   zstyle ':prezto:module:prompt' managed 'yes'
 

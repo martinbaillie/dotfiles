@@ -55,6 +55,7 @@ in
             git branch $1 FETCH_HEAD
             git checkout $1
           }
+          alias gcu=gfu
         '';
 
         home = {

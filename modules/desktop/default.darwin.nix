@@ -48,8 +48,12 @@ in
         "cursorcerer" # Hide pointer when typing.
         "flux" # Still better than macOS NightShift.
         "font-iosevka" # Emacs font.
-        "font-iosevka-aile" # Emacs font.
+        "font-iosevka-curly" # Emacs font.
         "font-iosevka-etoile" # Emacs font.
+        "font-iosevka-aile" # Emacs font.
+        "font-iosevka-nerd-font" # Emacs font.
+        "font-iosevka-term-nerd-font" # Emacs font.
+        "font-symbols-only-nerd-font" # Emacs font.
         "karabiner-elements" # CapsLock as CTRL when held, ESC when tapped.
         # TODO: Use of secure enclave.
         # "secretive"

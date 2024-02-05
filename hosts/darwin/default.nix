@@ -19,6 +19,9 @@
 
       # Upgrade during activation.
       upgrade = false;
+
+      # Be verbose.
+      extraFlags = [ "--verbose" ];
     };
 
     # Use the Brewfile in the Nix store everywhere.

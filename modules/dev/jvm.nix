@@ -11,7 +11,10 @@ in
   config = mkMerge [
     ((mkIf cfg.enable) {
       user.packages = with pkgs; optionals cfg.bazel.enable
-        [ bazel_5 buildifier ];
+        [
+          # bazel_6
+          buildifier
+        ];
     })
     ((mkIf cfg.bazel.enable) {
       home.file.".bazelrc".text = ''

@@ -41,6 +41,9 @@ tags
 # General
 *.log
 *.cache
+*.pid
+*.sock
+*.tmp
 .DS_Store?
 .DS_Store
 .CFUserTextEncoding
@@ -49,8 +52,6 @@ tags
 thumbs.db
 Thumbs.db
 .cache
-.pid
-.sock
 
 # Bazel symlinks
 bazel-*

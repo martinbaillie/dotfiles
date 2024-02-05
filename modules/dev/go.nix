@@ -20,7 +20,7 @@ in
       protobuf
       revive
 
-      unstable.go_1_19
+      unstable.go
       unstable.gofumpt
       unstable.gopls
       # unstable.golangci-lint

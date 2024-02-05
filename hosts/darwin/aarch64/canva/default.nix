@@ -30,7 +30,7 @@
       };
       jvm = {
         enable = true;
-        bazel.enable = false;
+        bazel.enable = true;
       };
       python.enable = true;
     };

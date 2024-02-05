@@ -1834,6 +1834,7 @@ this enabled in most text mode.
 #+end_src
 
 ** keycast-mode
+
 #+begin_src elisp
 (after! keycast
   (setq keycast-insert-after '(:eval (doom-modeline-format--main))))

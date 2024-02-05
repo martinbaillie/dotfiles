@@ -14,6 +14,8 @@ bind gsr composite js document.getElementsByClassName("p-unreads_view__footer")[
 bind gst composite js document.getElementsByClassName("p-channel_sidebar__link--all-threads")[0].click()
 " Jump to DMs
 bind gsd composite js document.getElementsByClassName("p-channel_sidebar__link--page_pdms")[0].click()
+" Make Slack's Shift-Esc clear all work.
+unbind <S-Escape>
 
 " Make Tridactyl work on more sites at the expense of some security.
 jsb browser.webRequest.onHeadersReceived.addListener(tri.request.clobberCSP,{urls:["<all_urls>"],types:["main_frame"]},["blocking","responseHeaders"])

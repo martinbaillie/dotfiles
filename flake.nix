@@ -7,8 +7,6 @@
     # Declarative user home management.
     home-manager.url = github:rycee/home-manager/release-23.05;
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Declarative, NixOS-style configuration but for macOS.
     darwin.url = github:lnl7/nix-darwin/master;
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 

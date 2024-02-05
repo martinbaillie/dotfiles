@@ -10,6 +10,7 @@ in
       cmake
       nixpkgs-fmt
       nodePackages.bash-language-server
+      marksman
       rnix-lsp
       shellcheck
       shfmt

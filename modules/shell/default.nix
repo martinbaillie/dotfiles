@@ -34,6 +34,7 @@ in
         graphviz
         gron
         htop
+        unstable.hwatch
         ijq
         inetutils
         jq
@@ -44,6 +45,8 @@ in
             done'')
         killall
         lsof
+        unstable.mcfly
+        unstable.mcfly-fzf
         ncdu
         nmap
         parallel
@@ -93,6 +96,7 @@ in
       rg = "rg --hidden";
       tree = "tree -a -I '.git'";
       wget = "wget -c";
+      watch = "hwatch";
       tailf = "tail -f"; # util-linux habits.
     };
 
@@ -101,5 +105,10 @@ in
       "zsh/rc.d/rc.fzy.zsh".source = "${config.dotfiles.configDir}/fzy/rc.zsh";
       "zsh/rc.d/rc.fzf.zsh".source = "${config.dotfiles.configDir}/fzf/rc.zsh";
     };
+
+    modules.shell.zsh.rc = ''
+      eval "$(mcfly init zsh)"
+      eval "$(mcfly-fzf init zsh)"
+    '';
   };
 }
