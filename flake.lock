@@ -160,16 +160,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1687041925,
-        "narHash": "sha256-Zfn/SphInZ9PEIHWdQk+wGQ0XGlwAgRUp/Qso+8vDOY=",
+        "lastModified": 1706981411,
+        "narHash": "sha256-cLbLPTL1CDmETVh4p0nQtvoF+FSEjsnJTFpTxhXywhQ=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "a8d549351d4b87ab80665f35e57bee2a04201245",
+        "rev": "652fda4ca6dafeb090943422c34ae9145787af37",
         "type": "github"
       },
       "original": {
         "owner": "rycee",
-        "ref": "release-23.05",
+        "ref": "release-23.11",
         "repo": "home-manager",
         "type": "github"
       }
@@ -191,16 +191,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1687063751,
-        "narHash": "sha256-UZwwetR9hekoO4/KfJutPrRUtRaAjHXkGwFG68UAl4o=",
+        "lastModified": 1707205788,
+        "narHash": "sha256-dFPctGYh7cNPAuJQY9i4+1/M+LdrRDpk0RRwpClEQ4w=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "194e4cf077a9e07ccded00124f1335d158b5074a",
+        "rev": "e311f423a6e56505afae9d4b621759826e7270c0",
         "type": "github"
       },
       "original": {
         "id": "nixpkgs",
-        "ref": "release-23.05",
+        "ref": "release-23.11",
         "type": "indirect"
       }
     },
@@ -239,6 +239,8 @@
       "inputs": {
         "bad-hosts": "bad-hosts",
         "base16-tridactyl": "base16-tridactyl",
+        "canva-canva-nix": "canva-canva-nix",
+        "canva-infra-tools-nix": "canva-infra-tools-nix",
         "darwin": "darwin",
         "emacs-macos": "emacs-macos",
         "emacs-overlay": "emacs-overlay",

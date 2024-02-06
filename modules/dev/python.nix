@@ -8,7 +8,7 @@ in
   config = mkIf cfg.enable {
     user.packages =
       [
-        (pkgs.python39.withPackages
+        (pkgs.python3.withPackages
           (ps: with ps; [ python-lsp-black python-lsp-server ]
             ++ optional config.modules.editors.emacs.enable grip))
       ];

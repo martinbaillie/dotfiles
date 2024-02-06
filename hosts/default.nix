@@ -40,9 +40,6 @@ with lib; {
         warn-dirty = false
       '';
 
-      # Use the Flakes edition of Nix.
-      package = pkgs.unstable.nix;
-
       nixPath = (mapAttrsToList (n: v: "${n}=${v}") filteredInputs) ++ [
         "nixpkgs-overlays=${config.dotfiles.dir}/overlays"
         "dotfiles=${config.dotfiles.dir}"

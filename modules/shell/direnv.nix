@@ -8,7 +8,10 @@ in
   config = mkIf cfg.enable {
     home.programs.direnv = {
       enable = true;
-      nix-direnv.enable = true;
+      nix-direnv = {
+        enable = true;
+        package = pkgs.nix-direnv.override { nix = config.nix.package; };
+      };
     };
 
     modules.shell.zsh.rc = ''eval "$(direnv hook zsh)"'';

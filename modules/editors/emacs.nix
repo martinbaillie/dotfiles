@@ -62,13 +62,13 @@ let
         fi
       '' + optionalString config.targetSystem.isDarwin osascript))
 
-      discount
+      # unstable.discount
       editorconfig-core-c
       languagetool
       # pandoc
       # (hiPrio clang)
       vale
-      wordnet
+      # wordnet
     ]
     ++ optional config.targetSystem.isDarwin my.orgprotocolclient;
   # ++ optional config.targetSystem.isLinux wkhtmltopdf; # BROKEN.

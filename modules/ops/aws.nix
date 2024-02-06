@@ -14,7 +14,6 @@ in
 
     # Why not follow standard zsh completion? AWS always have to be different.
     # Sigh.
-    modules.shell.zsh.rc =
-      ". ${pkgs.awscli2}/share/zsh/site-functions/aws_zsh_completer.sh";
+    modules.shell.zsh.rc = ". ${pkgs.awscli2}/share/zsh/site-functions/_aws";
   };
 }

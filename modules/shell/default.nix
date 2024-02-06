@@ -19,7 +19,7 @@ in
         diffutils
         dnsutils
         entr
-        exa
+        eza
         fd
         file
         findutils
@@ -85,13 +85,13 @@ in
     modules.shell.zsh.aliases = {
       bc = "bc -lq";
       egrep = "egrep --color=auto";
-      exa = "exa -h --group-directories-first --git";
+      eza = "eza -h --group-directories-first --git";
       fgrep = "fgrep --color=auto";
       grep = "grep --color=auto";
-      l = "exa -1a";
-      ll = "exa -la";
-      ls = "exa";
-      lt = "exa -lm -s modified";
+      l = "eza -1a";
+      ll = "eza -la";
+      ls = "eza";
+      lt = "eza -lm -s modified";
       mkdir = "mkdir -p";
       rg = "rg --hidden";
       tree = "tree -a -I '.git'";
