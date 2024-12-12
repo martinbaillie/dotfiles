@@ -9,6 +9,12 @@
 - [[#references][References]]
 
 * About
+---
+UPDATE: This is sorely out of date. I have maintained all my Nix and Emacs
+config using a literate Org file for the last couple of years. I plan to tidy up
+the private parts and publish... at some point.
+---
+
 Welcome to the [[https://en.wiktionary.org/wiki/bikeshedding][bikeshed]]!
 
 This repository houses all my [[machines][machine configurations]] expressed declaratively using a [[https://nixos.org/nix][Nix]] [[https://nixos.wiki/wiki/Flakes][flake]]. It covers both my personal and work devices that are running either NixOS or macOS.
